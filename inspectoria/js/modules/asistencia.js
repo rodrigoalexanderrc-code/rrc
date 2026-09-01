@@ -201,6 +201,8 @@
             await apiCall('bulk_insert', 'Asistencia', registrosPlanos);
             showToast('✅ Asistencia guardada (Vista Rápida)', 'success');
             
+            if (typeof actualizarBadgeInasistencias === 'function') actualizarBadgeInasistencias();
+            if (typeof actualizarDashboard === 'function') actualizarDashboard();
             cargarListaAsistencia(); // Refresh UI
         };
 

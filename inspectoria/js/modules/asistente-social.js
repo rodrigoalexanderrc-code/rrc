@@ -1829,6 +1829,10 @@
             
             if (typeof cerrarModal === 'function') cerrarModal('modalJustificacionRapida');
             if (typeof showToast === 'function') showToast("✅ Justificación guardada correctamente", "success");
+            
+            if (typeof renderizarInasistenciasInjustificadas === 'function') {
+                renderizarInasistenciasInjustificadas();
+            }
         };
 
         window.exportarInasistenciasExcel = function() {

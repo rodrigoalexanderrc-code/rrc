@@ -298,8 +298,9 @@
 
             showToast(`📞 Comunicación registrada con ${alumno.apoderado}`);
             cerrarModal('modalComunicacion');
+            
             cargarComunicaciones();
-            actualizarDashboard();
+            if (typeof actualizarDashboard === 'function') actualizarDashboard();
             document.getElementById('pendientesBadge').textContent = comunicacionesPendientes.length;
         }
 
