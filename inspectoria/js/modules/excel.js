@@ -257,6 +257,16 @@
                         const telefono = String(row[10] || '').trim() || 'Sin teléfono';
                         const correo = String(row[11] || '').trim() || 'Sin correo';
 
+                        const numeroListaRaw = String(row[12] || '').trim();
+                        let numeroListaParsed = parseInt(numeroListaRaw);
+                        const numeroLista = !isNaN(numeroListaParsed) ? numeroListaParsed : '';
+
+                        const vigenteRaw = String(row[13] || '').trim().toLowerCase();
+                        let estado = 'activo';
+                        if (vigenteRaw === 'no' || vigenteRaw.includes('retirado')) {
+                            estado = 'retirado';
+                        }
+
                         if (!rawRut || !nombreEstudiante || !rawGrado || !rawCurso) {
                             excelDataMasivo.errores.push({ fila: i + 1, alumno: rawRut || nombreEstudiante || 'Desconocido', motivo: 'Faltan datos obligatorios (RUT, Nombre, Grado o Curso)' });
                             continue;
@@ -306,6 +316,8 @@
                             apoderado: apoderadoCompleto,
                             telefono: telefono,
                             correo: correo,
+                            numeroLista: numeroLista,
+                            estado: estado,
                             cursoTempId: cursoTemp.tempId,
                             cursoNombre: cursoNombre,
                             cursoNivel: nivelFinal,
@@ -399,6 +411,8 @@
                             existingAlumno.apoderado = aTemp.apoderado;
                             existingAlumno.telefono = aTemp.telefono;
                             existingAlumno.correo = aTemp.correo;
+                            if (aTemp.numeroLista !== '') existingAlumno.numeroLista = aTemp.numeroLista;
+                            if (aTemp.estado) existingAlumno.estado = aTemp.estado;
                             alumnosParaActualizar.push(existingAlumno);
                         }
                     } else {
@@ -409,13 +423,15 @@
                             cursoId: realCursoId, 
                             apoderado: aTemp.apoderado, 
                             telefono: aTemp.telefono, 
-                            correo: aTemp.correo 
+                            correo: aTemp.correo,
+                            estado: aTemp.estado || 'activo'
                         };
+                        if (aTemp.numeroLista !== '') nuevoAlumno.numeroLista = aTemp.numeroLista;
                         alumnosParaGuardar.push(nuevoAlumno);
                     }
                 }
 
-                // Asignar N° de Lista automático a los alumnos nuevos
+                // Asignar N° de Lista automático a los alumnos nuevos (solo si no viene en el Excel)
                 // Agrupamos por curso
                 const alumnosPorCurso = {};
                 alumnosParaGuardar.forEach(a => {
@@ -435,10 +451,12 @@
                         if (!isNaN(n) && n > maxNum) maxNum = n;
                     });
                     
-                    // Asignar números
+                    // Asignar números solo a los que no tienen
                     alumnosPorCurso[cursoId].forEach(a => {
-                        maxNum++;
-                        a.numeroLista = maxNum;
+                        if (a.numeroLista === undefined || a.numeroLista === '') {
+                            maxNum++;
+                            a.numeroLista = maxNum;
+                        }
                         alumnos.push(a); // Agregamos a la lista global ahora que está listo
                     });
                 }
