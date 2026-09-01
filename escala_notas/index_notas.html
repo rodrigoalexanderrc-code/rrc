@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Generador de Escala de Notas</title>
+        <script>
+            // Bloquear clic derecho
+            document.addEventListener('contextmenu', function (e) {
+                e.preventDefault();
+            });
+
+            // Bloquear teclas específicas
+            document.addEventListener('keydown', function (e) {
+                // Ctrl+U, Ctrl+Shift+I, F12
+                if (
+                    (e.ctrlKey && e.key.toLowerCase() === 'u') ||   // Ctrl+U
+                    (e.ctrlKey && e.shiftKey && e.key === 'I') ||   // Ctrl+Shift+I
+                    (e.key === 'F12')                               // F12
+                ) {
+                    e.preventDefault();
+                }
+            });
+        </script>
+    </head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <title>Generador de Escala de Notas</title>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #cbd5e1 0%, #e2e8f0 50%, #cbd5e1 100%);
+            padding: 24px 16px;
+            color: #1e293b;
+        }
+
+        /* ── CONTAINER ── */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 20px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+        }
+
+        /* ── HEADER ── */
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 32px 40px 28px;
+            background: #6a9bd8;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-manual {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.2s ease;
+            backdrop-filter: blur(4px);
+            z-index: 10;
+        }
+
+        .btn-manual:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-container::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .header-container::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: -40px;
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .header-text {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-text h1 {
+            color: #fff;
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-text p {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 15px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        .escudo-img {
+            height: 80px;
+            width: auto;
+            position: relative;
+            z-index: 1;
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+        }
+
+        /* ── MAIN CONTENT PADDING ── */
+        .container>*:not(.header-container):not(#planilla-container):not(#modal-planilla) {
+            padding-left: 32px;
+            padding-right: 32px;
+        }
+
+        /* ── ERROR ── */
+        .error-message {
+            margin: 20px 32px 0;
+            padding: 12px 16px;
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            border-left: 4px solid #dc2626;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* ── FORM ── */
+        .form-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding-top: 28px;
+            padding-bottom: 8px;
+        }
+
+        .input-group {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        input {
+            width: 100%;
+            padding: 11px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+            background: #f8fafc;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #3b82f6;
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+        }
+
+        /* ── INFO PANEL ── */
+        .info-panel {
+            margin: 16px 32px;
+            padding: 14px 18px;
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            font-size: 14px;
+            color: #1e40af;
+            font-weight: 500;
+        }
+
+        /* ── TITLE CONTAINER ── */
+        .title-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 8px;
+            padding-bottom: 4px;
+        }
+
+        h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+            letter-spacing: -0.3px;
+        }
+
+        /* ── BTN GENERAR PLANILLA ── */
+        .btn-generar-planilla {
+            display: none;
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+        }
+
+        .btn-generar-planilla:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(34, 197, 94, 0.4);
+        }
+
+        /* ── TABLA DE CONVERSIÓN ── */
+        .resultados-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+            margin: 16px 0 24px;
+        }
+
+        .columna-notas {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        .columna-notas:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+        }
+
+        .columna-header {
+            background: #6a9bd8;
+            color: white;
+            padding: 8px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .columna-subheader {
+            background: #f1f5f9;
+            font-weight: 700;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .columna-body {
+            padding: 0;
+        }
+
+        .nota-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 13px;
+            position: relative;
+        }
+
+        .nota-item:last-child {
+            border-bottom: none;
+        }
+
+        .nota-item:not(.columna-subheader)::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 50%;
+            height: 100%;
+            width: 1px;
+            background: #e2e8f0;
+        }
+
+        .aprobado {
+            background: #bbf7d0;
+            color: #14532d;
+            font-weight: 600;
+        }
+
+        .reprobado {
+            background: #fecaca;
+            color: #7f1d1d;
+            font-weight: 600;
+        }
+
+        /* ── MODAL ── */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #fff;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 18px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: slideUp 0.25s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px 24px 18px;
+            background: #6a9bd8;
+        }
+
+        .modal-header h2 {
+            color: #fff;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .close {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 22px;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.15s;
+        }
+
+        .close:hover {
+            color: #fff;
+        }
+
+        /* Tabs del modal */
+        .modal-tabs {
+            display: flex;
+            border-bottom: 2px solid #f1f5f9;
+            background: #f8fafc;
+            padding: 0 24px;
+        }
+
+        .modal-tab {
+            padding: 12px 16px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            color: #94a3b8;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .modal-tab.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .modal-body {
+            padding: 20px 24px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 14px 24px 20px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .btn-modal {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            transition: transform 0.12s, box-shadow 0.12s;
+        }
+
+        .btn-modal:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-confirm {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+        }
+
+        .btn-cancel {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .btn-cancel:hover {
+            background: #e2e8f0;
+        }
+
+        /* Zona Excel drop */
+        .excel-drop-zone {
+            border: 2px dashed #93c5fd;
+            border-radius: 12px;
+            padding: 28px 16px;
+            text-align: center;
+            color: #3b82f6;
+            cursor: pointer;
+            background: #f0f9ff;
+            transition: background 0.2s, border-color 0.2s;
+            margin-bottom: 12px;
+        }
+
+        .excel-drop-zone:hover,
+        .excel-drop-zone.dragover {
+            background: #dbeafe;
+            border-color: #3b82f6;
+        }
+
+        .excel-drop-zone svg {
+            margin-bottom: 8px;
+        }
+
+        .excel-drop-zone p {
+            margin: 6px 0 0;
+            font-size: 13px;
+        }
+
+        .excel-file-info {
+            font-size: 13px;
+            color: #16a34a;
+            font-weight: 600;
+            margin-top: 6px;
+            display: none;
+        }
+
+        .excel-format-hint {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 8px;
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 10px 12px;
+            border-left: 3px solid #3b82f6;
+            line-height: 1.6;
+        }
+
+        /* ── PLANILLA ── */
+        #planilla-container {
+            margin-top: 0;
+            display: none;
+            padding: 28px 32px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .planilla-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .planilla-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* Botones de acción de la planilla */
+        .btn-pdf,
+        .btn-excel,
+        .btn-reset {
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: transform 0.12s, box-shadow 0.12s;
+        }
+
+        .btn-pdf,
+        .btn-excel,
+        .btn-reset {
+            color: #fff;
+        }
+
+        .btn-pdf {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+        }
+
+        .btn-excel {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #475569, #64748b);
+            box-shadow: 0 4px 12px rgba(71, 85, 105, 0.2);
+        }
+
+        .btn-pdf:hover,
+        .btn-excel:hover,
+        .btn-reset:hover {
+            transform: translateY(-1px);
+        }
+
+        .editable-info {
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: #000000;
+            background: #fef08a;
+            /* Amarillo más oscuro suave */
+            border: 1px solid #fde047;
+            border-radius: 8px;
+            padding: 8px 12px;
+        }
+
+        /* ── TABLE ── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        th,
+        td {
+            padding: 10px 14px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background: #6a9bd8;
+            color: #fff;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        td {
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Centrar columnas Curso(2), Puntaje(3), Calificacion(4), Situacion(5) */
+        #tabla-alumnos th:nth-child(2),
+        #tabla-alumnos td:nth-child(2),
+        #tabla-alumnos th:nth-child(3),
+        #tabla-alumnos td:nth-child(3),
+        #tabla-alumnos th:nth-child(4),
+        #tabla-alumnos td:nth-child(4),
+        #tabla-alumnos th:nth-child(5),
+        #tabla-alumnos td:nth-child(5) {
+            text-align: center;
+        }
+
+        tr:hover td {
+            background: #f8fafc;
+        }
+
+        .editable {
+            background: #fef08a;
+            /* Amarillo más oscuro suave */
+            font-weight: 600;
+            color: #000000;
+        }
+
+        .puntaje-error {
+            background: #fef08a !important;
+            /* Mantiene el amarillo en lugar del rojo */
+            color: #dc2626;
+        }
+
+        .insuficiente {
+            color: #dc2626;
+            font-weight: 700;
+        }
+
+        .suficiente {
+            color: #16a34a;
+            font-weight: 700;
+        }
+
+        /* ── ESTADÍSTICAS ── */
+        .resumen-estadisticas {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+            padding: 20px 0 0;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .stat-card {
+            flex: 1;
+            min-width: 140px;
+            padding: 18px 20px;
+            border-radius: 14px;
+            text-align: center;
+        }
+
+        .stat-card.total {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            border: 1px solid #bfdbfe;
+        }
+
+        .stat-card.suf {
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border: 1px solid #bbf7d0;
+        }
+
+        .stat-card.insuf {
+            background: linear-gradient(135deg, #fff1f2, #ffe4e6);
+            border: 1px solid #fecdd3;
+        }
+
+        .stat-card .stat-number {
+            font-size: 36px;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .stat-card.total .stat-number {
+            color: #2563eb;
+        }
+
+        .stat-card.suf .stat-number {
+            color: #16a34a;
+        }
+
+        .stat-card.insuf .stat-number {
+            color: #dc2626;
+        }
+
+        .stat-card .stat-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.7;
+        }
+
+        .stat-card.total .stat-label {
+            color: #1d4ed8;
+        }
+
+        .stat-card.suf .stat-label {
+            color: #15803d;
+        }
+
+        .stat-card.insuf .stat-label {
+            color: #dc2626;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
+
+            .header-container {
+                padding: 24px 20px;
+            }
+
+            .container>*:not(.header-container):not(#planilla-container):not(#modal-planilla) {
+                padding-left: 16px;
+                padding-right: 16px;
+            }
+
+            #planilla-container {
+                padding: 20px 16px;
+            }
+
+            .input-group {
+                min-width: 100%;
+            }
+
+            .resultados-grid {
+                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+            }
+
+            .title-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .planilla-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .resumen-estadisticas {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <!-- Librería para exportar a Excel -->
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <!-- Librería para exportar a PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header-container">
+            <a href="https://rodrigoalexanderrc-code.github.io/rrc/escala_notas/manual_escrito.html" target="_blank"
+                rel="noopener noreferrer" class="btn-manual">
+                📘 Manual de Usuario
+            </a>
+            <img src="https://www.liceo-simonbolivar.cl/intranet/insignia/ESCUDO.png" alt="Escudo Liceo Simón Bolívar"
+                class="escudo-img">
+            <div class="header-text">
+                <h1>Generador de Escalas de Notas</h1>
+                <p>Liceo Libertador Simón Bolívar</p>
+            </div>
+        </div>
+
+        <div id="error-container" class="error-message" style="display: none;"></div>
+
+        <div class="form-group">
+            <div class="input-group">
+                <label for="puntajeMaximo">Puntaje máximo</label>
+                <input type="number" id="puntajeMaximo" value="100" min="1">
+            </div>
+
+            <div class="input-group">
+                <label for="exigencia">Exigencia (%)</label>
+                <input type="number" id="exigencia" value="60" min="1" max="99">
+            </div>
+
+            <div class="input-group">
+                <label for="notaMinima">Nota mínima</label>
+                <input type="number" id="notaMinima" value="1.0" min="1" max="7" step="0.1">
+            </div>
+
+            <div class="input-group">
+                <label for="notaMaxima">Nota máxima</label>
+                <input type="number" id="notaMaxima" value="7.0" min="1" max="10" step="0.1">
+            </div>
+
+            <div class="input-group">
+                <label for="notaAprobacion">Nota aprobación</label>
+                <input type="number" id="notaAprobacion" value="4.0" min="1" max="10" step="0.1">
+            </div>
+        </div>
+
+        <div id="info-panel" class="info-panel"></div>
+
+        <div class="title-container">
+            <h2>Tabla de conversión</h2>
+            <button id="btn-generar-planilla" class="btn-generar-planilla">Generar Planilla de Calificaciones</button>
+        </div>
+
+        <div id="resultados-container" class="resultados-grid">
+            <!-- Aquí se generarán las columnas de notas dinámicamente -->
+        </div>
+
+        <!-- Planilla de alumnos -->
+        <div id="planilla-container">
+            <div class="planilla-header">
+                <h2>Planilla de Calificaciones</h2>
+                <div class="planilla-actions">
+                    <button id="btn-pdf" class="btn-pdf">Exportar a PDF</button>
+                    <button id="btn-excel" class="btn-excel">Exportar a Excel</button>
+                    <button id="btn-reset" class="btn-reset">Borrar Planilla Calificaciones</button>
+                </div>
+            </div>
+            <div class="editable-info">Todas las columnas de color <strong>amarillo</strong> son editables</div>
+            <table id="tabla-alumnos">
+                <thead>
+                    <tr>
+                        <th>Nombre Alumno</th>
+                        <th>Curso</th>
+                        <th>Puntaje</th>
+                        <th>Calificación</th>
+                        <th>Situación</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Aquí se generarán las filas de alumnos dinámicamente -->
+                </tbody>
+            </table>
+
+            <!-- Sección de estadísticas -->
+            <div id="estadisticas-container" class="resumen-estadisticas">
+                <div class="stat-card total">
+                    <div class="stat-number" id="total-alumnos">0</div>
+                    <div class="stat-label">Total Alumnos</div>
+                </div>
+                <div class="stat-card suf">
+                    <div class="stat-number" id="alumnos-suficientes">0</div>
+                    <div class="stat-label">Suficientes</div>
+                </div>
+                <div class="stat-card insuf">
+                    <div class="stat-number" id="alumnos-insuficientes">0</div>
+                    <div class="stat-label">Insuficientes</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para generar planilla -->
+    <div id="modal-planilla" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Generar Planilla</h2>
+                <span class="close">&times;</span>
+            </div>
+            <!-- Pestañas -->
+            <div class="modal-tabs">
+                <button class="modal-tab active" data-tab="tab-manual">✏️ Manual</button>
+                <button class="modal-tab" data-tab="tab-excel">📊 Desde Excel</button>
+            </div>
+            <div class="modal-body">
+                <!-- Pestaña Manual -->
+                <div id="tab-manual" class="tab-panel active">
+                    <div class="input-group">
+                        <label for="cantidad-alumnos">Cantidad de alumnos a calificar</label>
+                        <input type="number" id="cantidad-alumnos" min="1" value="1">
+                    </div>
+                    <div class="input-group" style="margin-top: 15px;">
+                        <label for="nombre-curso">Curso</label>
+                        <input type="text" id="nombre-curso" placeholder="Ingrese el nombre del curso">
+                    </div>
+                </div>
+                <!-- Pestaña Excel -->
+                <div id="tab-excel" class="tab-panel">
+                    <div class="input-group" style="margin-bottom: 12px;">
+                        <label for="nombre-curso-excel">Curso</label>
+                        <input type="text" id="nombre-curso-excel" placeholder="Ingrese el nombre del curso">
+                    </div>
+                    <div class="excel-drop-zone" id="excel-drop-zone">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="#3498db"
+                            viewBox="0 0 16 16">
+                            <path
+                                d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z" />
+                            <path
+                                d="M8.5 6.5a.5.5 0 0 0-1 0v3.793L6.354 9.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 10.293V6.5z" />
+                        </svg>
+                        <p><strong>Arrastra tu archivo Excel aquí</strong></p>
+                        <p>o haz clic para seleccionar</p>
+                        <input type="file" id="excel-file-input" accept=".xlsx,.xls,.csv" style="display:none">
+                    </div>
+                    <div class="excel-file-info" id="excel-file-info">✅ <span id="excel-file-name"></span></div>
+                    <div class="excel-format-hint">
+                        📋 <strong>Formato del Excel:</strong> El archivo debe tener dos columnas:<br>
+                        <strong>Columna A</strong> = Nombre del alumno &nbsp;|&nbsp; <strong>Columna B</strong> =
+                        Puntaje<br>
+                        La primera fila puede ser encabezado (se omitirá automáticamente).
+                    </div>
+                    <button id="btn-descargar-plantilla" onclick="descargarPlantillaEjemplo()"
+                        style="margin-top:12px; width:100%; padding:9px; background-color:#27ae60; color:white; border:none; border-radius:5px; font-size:13px; font-weight:bold; cursor:pointer;">⬇
+                        Descargar Plantilla de Ejemplo</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal btn-cancel">Cancelar</button>
+                <button class="btn-modal btn-confirm" id="btn-confirm-manual">Generar</button>
+                <button class="btn-modal btn-confirm" id="btn-confirm-excel" style="display:none">Cargar Excel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables para controlar cambios
+        let escalaGenerada = false;
+        let datosModificados = false;
+        let escalaNotas = {}; // Almacenará el mapeo de puntaje a nota
+        let notaAprobacion = 4.0;
+        let puntajeMaximoActual = 100;
+
+        // Función para validar los parámetros ingresados
+        function validarParametros(puntajeMaximo, exigencia, notaMinima, notaMaxima, notaAprobacion) {
+            if (puntajeMaximo <= 0) {
+                return "El puntaje máximo debe ser mayor a 0";
+            }
+            if (exigencia <= 0 || exigencia >= 100) {
+                return "La exigencia debe estar entre 1% y 99%";
+            }
+            if (notaMinima >= notaAprobacion) {
+                return "La nota mínima debe ser menor a la nota de aprobación";
+            }
+            if (notaAprobacion >= notaMaxima) {
+                return "La nota de aprobación debe ser menor a la nota máxima";
+            }
+            return "";
+        }
+
+        // Función para generar la escala de notas
+        function generarEscala() {
+            // Obtener los valores de los campos
+            puntajeMaximoActual = parseInt(document.getElementById('puntajeMaximo').value) || 0;
+            const exigencia = parseInt(document.getElementById('exigencia').value) || 0;
+            const notaMinima = parseFloat(document.getElementById('notaMinima').value) || 0;
+            const notaMaxima = parseFloat(document.getElementById('notaMaxima').value) || 0;
+            notaAprobacion = parseFloat(document.getElementById('notaAprobacion').value) || 0;
+
+            // Validar parámetros
+            const errorMsg = validarParametros(puntajeMaximoActual, exigencia, notaMinima, notaMaxima, notaAprobacion);
+            const errorContainer = document.getElementById('error-container');
+            const btnGenerarPlanilla = document.getElementById('btn-generar-planilla');
+
+            if (errorMsg) {
+                errorContainer.textContent = errorMsg;
+                errorContainer.style.display = 'block';
+                btnGenerarPlanilla.style.display = 'none';
+                escalaGenerada = false;
+                return;
+            } else {
+                errorContainer.style.display = 'none';
+                escalaGenerada = true;
+            }
+
+            // Calcular puntaje de aprobación basado en la exigencia
+            const puntajeAprobacion = Math.round((puntajeMaximoActual * exigencia) / 100);
+
+            // Actualizar panel de información
+            document.getElementById('info-panel').innerHTML = `
+                <p>Con un <strong>${puntajeMaximoActual}</strong> como puntaje máximo y una exigencia del <strong>${exigencia}%</strong>,
+                se requieren <strong>${puntajeAprobacion}</strong> puntos para aprobar con una nota <strong>${notaAprobacion.toFixed(1)}</strong>.</p>
+            `;
+
+            // Generar tabla de conversión
+            const resultadosContainer = document.getElementById('resultados-container');
+            resultadosContainer.innerHTML = ''; // Limpiar contenedor existente
+
+            // Limpiar y regenerar el mapeo de puntaje a nota
+            escalaNotas = {};
+
+            // Determinar cuántas columnas crear (dividir el rango en máximo 8 columnas)
+            const columnasMax = 8;
+            const puntajesPorColumna = Math.ceil((puntajeMaximoActual + 1) / columnasMax);
+            const columnas = Math.ceil((puntajeMaximoActual + 1) / puntajesPorColumna);
+
+            // Crear columnas
+            for (let c = 0; c < columnas; c++) {
+                const puntajeInicio = c * puntajesPorColumna;
+                const puntajeFin = Math.min(puntajeInicio + puntajesPorColumna - 1, puntajeMaximoActual);
+
+                // Crear columna
+                const columna = document.createElement('div');
+                columna.className = 'columna-notas';
+
+                // Crear encabezado de columna
+                const columnaHeader = document.createElement('div');
+                columnaHeader.className = 'columna-header';
+                columnaHeader.textContent = `${puntajeInicio} - ${puntajeFin}`;
+                columna.appendChild(columnaHeader);
+
+                // Crear cuerpo de columna
+                const columnaBody = document.createElement('div');
+                columnaBody.className = 'columna-body';
+
+                // Agregar encabezados de columna para Puntaje y Nota
+                const headerItem = document.createElement('div');
+                headerItem.className = 'nota-item columna-subheader';
+                headerItem.innerHTML = `
+                    <span style="width: 45%; text-align: center;"><strong>Puntaje</strong></span>
+                    <span style="width: 45%; text-align: center;"><strong>Nota</strong></span>
+                `;
+                columnaBody.appendChild(headerItem);
+
+                // Para cada punto en esta columna
+                for (let puntaje = puntajeInicio; puntaje <= puntajeFin; puntaje++) {
+                    let nota;
+
+                    if (puntaje < puntajeAprobacion) {
+                        // Por debajo del puntaje de aprobación
+                        nota = notaMinima + ((notaAprobacion - notaMinima) * puntaje) / puntajeAprobacion;
+                    } else {
+                        // Por encima o igual al puntaje de aprobación
+                        nota = notaAprobacion + ((notaMaxima - notaAprobacion) * (puntaje - puntajeAprobacion)) / (puntajeMaximoActual - puntajeAprobacion);
+                    }
+
+                    // Redondear a 1 decimal
+                    nota = Math.round(nota * 10) / 10;
+
+                    // Almacenar en el mapeo
+                    escalaNotas[puntaje] = nota;
+
+                    // Crear item de nota
+                    const notaItem = document.createElement('div');
+                    notaItem.className = `nota-item ${nota >= notaAprobacion ? 'aprobado' : 'reprobado'}`;
+
+                    // Crear el contenido del item con espacios equidistantes
+                    notaItem.innerHTML = `
+                        <span style="width: 45%; text-align: center;">${puntaje}</span>
+                        <span style="width: 45%; text-align: center;">${nota.toFixed(1)}</span>
+                    `;
+
+                    columnaBody.appendChild(notaItem);
+                }
+
+                columna.appendChild(columnaBody);
+                resultadosContainer.appendChild(columna);
+            }
+
+            // Mostrar el botón de generar planilla solo si la escala se generó correctamente y se modificaron datos
+            if (escalaGenerada && datosModificados) {
+                btnGenerarPlanilla.style.display = 'inline-block';
+            } else {
+                btnGenerarPlanilla.style.display = 'none';
+            }
+
+            // Actualizar calificaciones en la planilla si ya existe
+            if (document.getElementById('planilla-container').style.display !== 'none' &&
+                document.getElementById('planilla-container').style.display !== '') {
+                actualizarTodasLasCalificaciones();
+            }
+        }
+
+        // Función para actualizar todas las calificaciones de la planilla según la escala actual
+        function actualizarTodasLasCalificaciones() {
+            const filasPuntaje = document.querySelectorAll('#tabla-alumnos tbody tr');
+
+            filasPuntaje.forEach(fila => {
+                const puntajeCell = fila.querySelector('.puntaje');
+                const puntaje = parseInt(puntajeCell.textContent) || 0;
+                const calificacionCell = fila.querySelector('.calificacion');
+                const situacionCell = fila.querySelector('.situacion');
+
+                // Validar que el puntaje no sea mayor al máximo
+                if (puntaje > puntajeMaximoActual) {
+                    puntajeCell.classList.add('puntaje-error');
+                    calificacionCell.textContent = "Error";
+                    situacionCell.textContent = "Puntaje inválido";
+                    situacionCell.className = "situacion insuficiente";
+                } else {
+                    puntajeCell.classList.remove('puntaje-error');
+
+                    // Obtener la nota correspondiente al puntaje según la escala actualizada
+                    let nota = escalaNotas[puntaje] || 0;
+                    nota = Math.round(nota * 10) / 10; // Redondear a 1 decimal
+
+                    calificacionCell.textContent = nota.toFixed(1);
+
+                    // Determinar la situación
+                    if (nota < notaAprobacion) {
+                        situacionCell.textContent = "Insuficiente";
+                        situacionCell.className = "situacion insuficiente";
+                    } else {
+                        situacionCell.textContent = "Suficiente";
+                        situacionCell.className = "situacion suficiente";
+                    }
+                }
+            });
+
+            // Actualizar estadísticas
+            actualizarEstadisticas();
+        }
+
+        // Función para actualizar las estadísticas
+        function actualizarEstadisticas() {
+            const filas = document.querySelectorAll('#tabla-alumnos tbody tr');
+            let totalAlumnos = filas.length;
+            let suficientes = 0;
+            let insuficientes = 0;
+
+            filas.forEach(fila => {
+                const situacion = fila.querySelector('.situacion').textContent;
+                if (situacion === "Suficiente") {
+                    suficientes++;
+                } else if (situacion === "Insuficiente") {
+                    insuficientes++;
+                }
+            });
+
+            document.getElementById('total-alumnos').textContent = totalAlumnos;
+            document.getElementById('alumnos-suficientes').textContent = suficientes;
+            document.getElementById('alumnos-insuficientes').textContent = insuficientes;
+        }
+
+        // Función para abrir el modal de generar planilla
+        function abrirModalPlanilla() {
+            const modal = document.getElementById('modal-planilla');
+            modal.classList.add('active');
+        }
+
+        // Función para cerrar el modal de generar planilla
+        function cerrarModalPlanilla() {
+            const modal = document.getElementById('modal-planilla');
+            modal.classList.remove('active');
+        }
+
+        // Función para generar la planilla de alumnos
+        function generarPlanillaAlumnos() {
+            const cantidadAlumnos = parseInt(document.getElementById('cantidad-alumnos').value) || 0;
+            const nombreCurso = document.getElementById('nombre-curso').value.trim();
+
+            if (cantidadAlumnos <= 0) {
+                alert("La cantidad de alumnos debe ser mayor a 0");
+                return;
+            }
+
+            if (nombreCurso === "") {
+                alert("Debe ingresar un nombre de curso");
+                return;
+            }
+
+            // Generar la tabla de alumnos
+            const tablaBody = document.querySelector('#tabla-alumnos tbody');
+            tablaBody.innerHTML = '';
+
+            for (let i = 1; i <= cantidadAlumnos; i++) {
+                const fila = document.createElement('tr');
+                fila.innerHTML = `
+                    <td class="editable" contenteditable="true"></td>
+                    <td>${nombreCurso}</td>
+                    <td class="editable puntaje" contenteditable="true"></td>
+                    <td class="calificacion">0.0</td>
+                    <td class="situacion"></td>
+                `;
+                tablaBody.appendChild(fila);
+            }
+
+            // Mostrar la planilla
+            document.getElementById('planilla-container').style.display = 'block';
+
+            // Ocultar el botón de generar planilla
+            document.getElementById('btn-generar-planilla').style.display = 'none';
+
+            // Cerrar el modal
+            cerrarModalPlanilla();
+
+            // Agregar event listeners a las celdas editables de puntaje
+            document.querySelectorAll('.puntaje').forEach(celda => {
+                celda.addEventListener('input', function () {
+                    const puntaje = parseInt(this.textContent) || 0;
+                    const fila = this.parentNode;
+                    const calificacionCell = fila.querySelector('.calificacion');
+                    const situacionCell = fila.querySelector('.situacion');
+
+                    // Validar que el puntaje no sea mayor al máximo
+                    if (puntaje > puntajeMaximoActual) {
+                        this.classList.add('puntaje-error');
+                        calificacionCell.textContent = "Error";
+                        situacionCell.textContent = "Puntaje inválido";
+                        situacionCell.className = "situacion insuficiente";
+                    } else {
+                        this.classList.remove('puntaje-error');
+
+                        // Obtener la nota correspondiente al puntaje
+                        let nota = escalaNotas[puntaje] || 0;
+                        nota = Math.round(nota * 10) / 10; // Redondear a 1 decimal
+
+                        calificacionCell.textContent = nota.toFixed(1);
+
+                        // Determinar la situación
+                        if (nota < notaAprobacion) {
+                            situacionCell.textContent = "Insuficiente";
+                            situacionCell.className = "situacion insuficiente";
+                        } else {
+                            situacionCell.textContent = "Suficiente";
+                            situacionCell.className = "situacion suficiente";
+                        }
+                    }
+
+                    // Actualizar estadísticas
+                    actualizarEstadisticas();
+                });
+            });
+
+            // Actualizar estadísticas iniciales
+            actualizarEstadisticas();
+        }
+
+        // Función para exportar a PDF
+        function exportarAPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            function generarPDF(imgData) {
+                // Agregar el escudo si la imagen estuvo disponible
+                if (imgData) {
+                    try { doc.addImage(imgData, 'PNG', 15, 10, 30, 30); } catch (e) { }
+                }
+
+                // Títulos
+                doc.setFontSize(18);
+                doc.text('Generador de Escalas de Notas', 105, 15, { align: 'center' });
+                doc.setFontSize(16);
+                doc.text('Liceo Libertador Simon Bolivar', 105, 22, { align: 'center' });
+                doc.setFontSize(14);
+                doc.text('Planilla de Calificaciones', 105, 29, { align: 'center' });
+
+                // Encabezados de la tabla
+                const headers = [];
+                document.querySelectorAll('#tabla-alumnos thead th').forEach(th => headers.push(th.textContent.trim()));
+
+                // Filas de datos
+                const rows = [];
+                document.querySelectorAll('#tabla-alumnos tbody tr').forEach(tr => {
+                    const row = [];
+                    tr.querySelectorAll('td').forEach(td => row.push(td.textContent.trim()));
+                    rows.push(row);
+                });
+
+                // Tabla
+                doc.autoTable({
+                    head: [headers],
+                    body: rows,
+                    startY: 40,
+                    styles: { fontSize: 10, cellPadding: 3 },
+                    headStyles: { fillColor: [52, 152, 219], textColor: [255, 255, 255], fontStyle: 'bold' },
+                    alternateRowStyles: { fillColor: [242, 242, 242] }
+                });
+
+                // Estadísticas
+                const totalAlumnos = document.getElementById('total-alumnos').textContent;
+                const suficientes = document.getElementById('alumnos-suficientes').textContent;
+                const insuficientes = document.getElementById('alumnos-insuficientes').textContent;
+                const finalY = doc.lastAutoTable.finalY + 10;
+                doc.setFontSize(12);
+                doc.text('Total de alumnos: ' + totalAlumnos, 14, finalY);
+                doc.text('Alumnos suficientes: ' + suficientes, 14, finalY + 7);
+                doc.text('Alumnos insuficientes: ' + insuficientes, 14, finalY + 14);
+
+                doc.save('planilla_calificaciones.pdf');
+            }
+
+            // Intentar cargar el escudo; si falla, generar igual sin imagen
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = function () {
+                try {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    canvas.getContext('2d').drawImage(img, 0, 0);
+                    generarPDF(canvas.toDataURL('image/png'));
+                } catch (e) {
+                    generarPDF(null); // CORS bloqueó el canvas
+                }
+            };
+            img.onerror = function () {
+                generarPDF(null); // No se pudo cargar la imagen
+            };
+            img.src = 'https://www.liceo-simonbolivar.cl/intranet/insignia/ESCUDO.png';
+        }
+
+        // Función para exportar a Excel
+        function exportarAExcel() {
+            const curso = document.querySelector('#tabla-alumnos tbody tr td:nth-child(2)').textContent;
+            const fecha = new Date().toLocaleDateString();
+
+            // Crear libro de trabajo
+            const wb = XLSX.utils.book_new();
+
+            // Crear hoja de datos
+            const wsData = [
+                ['Planilla de Calificaciones'],
+                [`Curso: ${curso}`],
+                [`Generado el: ${fecha}`],
+                [],
+                ['Nombre', 'Curso', 'Puntaje', 'Calificación', 'Situación']
+            ];
+
+            // Agregar filas de datos
+            document.querySelectorAll('#tabla-alumnos tbody tr').forEach(fila => {
+                wsData.push([
+                    fila.cells[0].textContent,
+                    fila.cells[1].textContent,
+                    fila.cells[2].textContent,
+                    fila.cells[3].textContent,
+                    fila.cells[4].textContent
+                ]);
+            });
+
+            // Agregar estadísticas
+            wsData.push([]);
+            wsData.push(['Resumen de Calificaciones']);
+            wsData.push([`Total de alumnos: ${document.getElementById('total-alumnos').textContent}`]);
+            wsData.push([`Alumnos suficientes: ${document.getElementById('alumnos-suficientes').textContent}`]);
+            wsData.push([`Alumnos insuficientes: ${document.getElementById('alumnos-insuficientes').textContent}`]);
+
+            // Crear hoja de cálculo
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+            // Añadir hoja al libro
+            XLSX.utils.book_append_sheet(wb, ws, 'Calificaciones');
+
+            // Guardar archivo
+            XLSX.writeFile(wb, `Calificaciones_${curso}_${fecha}.xlsx`);
+        }
+
+        // Función para resetear la planilla
+        function resetearPlanilla() {
+            if (confirm('¿Está seguro que desea borrar toda la planilla de calificaciones?')) {
+                document.querySelector('#tabla-alumnos tbody').innerHTML = '';
+                document.getElementById('planilla-container').style.display = 'none';
+                document.getElementById('btn-generar-planilla').style.display = 'inline-block';
+                actualizarEstadisticas();
+            }
+        }
+
+        // ===================== LÓGICA EXCEL IMPORT =====================
+        let archivoExcelCargado = null;
+
+        function inicializarTabsModal() {
+            document.querySelectorAll('.modal-tab').forEach(tab => {
+                tab.addEventListener('click', function () {
+                    document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                    this.classList.add('active');
+                    document.getElementById(this.dataset.tab).classList.add('active');
+                    // Mostrar botón correcto
+                    if (this.dataset.tab === 'tab-excel') {
+                        document.getElementById('btn-confirm-manual').style.display = 'none';
+                        document.getElementById('btn-confirm-excel').style.display = 'inline-block';
+                    } else {
+                        document.getElementById('btn-confirm-manual').style.display = 'inline-block';
+                        document.getElementById('btn-confirm-excel').style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        function inicializarDropZoneExcel() {
+            const dropZone = document.getElementById('excel-drop-zone');
+            const fileInput = document.getElementById('excel-file-input');
+
+            dropZone.addEventListener('click', () => fileInput.click());
+
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                const file = e.dataTransfer.files[0];
+                if (file) procesarArchivoExcel(file);
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) procesarArchivoExcel(file);
+            });
+        }
+
+        function procesarArchivoExcel(file) {
+            archivoExcelCargado = null;
+            const infoDiv = document.getElementById('excel-file-info');
+            const nombreSpan = document.getElementById('excel-file-name');
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const hoja = workbook.Sheets[workbook.SheetNames[0]];
+                    const filas = XLSX.utils.sheet_to_json(hoja, { header: 1, defval: '' });
+
+                    // Detectar si la primera fila es encabezado (si la col B no es número)
+                    let inicio = 0;
+                    if (filas.length > 0) {
+                        const primerValorB = filas[0][1];
+                        if (isNaN(Number(primerValorB)) || String(primerValorB).trim() === '') inicio = 1;
+                    }
+
+                    const alumnos = [];
+                    for (let i = inicio; i < filas.length; i++) {
+                        const nombre = String(filas[i][0] || '').trim();
+                        const puntaje = filas[i][1];
+                        if (nombre !== '') {
+                            alumnos.push({ nombre, puntaje: puntaje !== '' ? Number(puntaje) : null });
+                        }
+                    }
+
+                    if (alumnos.length === 0) {
+                        alert('No se encontraron datos válidos en el archivo. Revisa el formato.');
+                        return;
+                    }
+
+                    archivoExcelCargado = alumnos;
+                    nombreSpan.textContent = `${file.name} (${alumnos.length} alumnos encontrados)`;
+                    infoDiv.style.display = 'block';
+                } catch (err) {
+                    alert('Error al leer el archivo Excel. Asegúrate de que sea un archivo .xlsx, .xls o .csv válido.');
+                    console.error(err);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function generarPlanillaDesdeExcel() {
+            const nombreCurso = document.getElementById('nombre-curso-excel').value.trim();
+            if (!nombreCurso) {
+                alert('Debe ingresar un nombre de curso.');
+                return;
+            }
+            if (!archivoExcelCargado || archivoExcelCargado.length === 0) {
+                alert('Primero debes cargar un archivo Excel con los datos de los alumnos.');
+                return;
+            }
+
+            const tablaBody = document.querySelector('#tabla-alumnos tbody');
+            tablaBody.innerHTML = '';
+
+            archivoExcelCargado.forEach(alumno => {
+                const puntaje = alumno.puntaje !== null && !isNaN(alumno.puntaje) ? Math.round(alumno.puntaje) : null;
+                let notaTexto = '0.0';
+                let situacion = '';
+                let claseExtra = '';
+
+                if (puntaje !== null) {
+                    if (puntaje > puntajeMaximoActual) {
+                        notaTexto = 'Error';
+                        situacion = 'Puntaje inválido';
+                        claseExtra = 'puntaje-error';
+                    } else {
+                        let nota = escalaNotas[puntaje] || 0;
+                        nota = Math.round(nota * 10) / 10;
+                        notaTexto = nota.toFixed(1);
+                        situacion = nota >= notaAprobacion ? 'Suficiente' : 'Insuficiente';
+                    }
+                }
+
+                const fila = document.createElement('tr');
+                fila.innerHTML = `
+                    <td class="editable" contenteditable="true">${alumno.nombre}</td>
+                    <td>${nombreCurso}</td>
+                    <td class="editable puntaje ${claseExtra}" contenteditable="true">${puntaje !== null ? puntaje : ''}</td>
+                    <td class="calificacion">${notaTexto}</td>
+                    <td class="situacion ${situacion === 'Suficiente' ? 'suficiente' : situacion === 'Insuficiente' ? 'insuficiente' : ''}">${situacion}</td>
+                `;
+                tablaBody.appendChild(fila);
+            });
+
+            // Agregar event listeners a celdas de puntaje
+            document.querySelectorAll('.puntaje').forEach(celda => {
+                celda.addEventListener('input', function () {
+                    const puntaje = parseInt(this.textContent) || 0;
+                    const fila = this.parentNode;
+                    const calificacionCell = fila.querySelector('.calificacion');
+                    const situacionCell = fila.querySelector('.situacion');
+                    if (puntaje > puntajeMaximoActual) {
+                        this.classList.add('puntaje-error');
+                        calificacionCell.textContent = 'Error';
+                        situacionCell.textContent = 'Puntaje inválido';
+                        situacionCell.className = 'situacion insuficiente';
+                    } else {
+                        this.classList.remove('puntaje-error');
+                        let nota = escalaNotas[puntaje] || 0;
+                        nota = Math.round(nota * 10) / 10;
+                        calificacionCell.textContent = nota.toFixed(1);
+                        situacionCell.textContent = nota >= notaAprobacion ? 'Suficiente' : 'Insuficiente';
+                        situacionCell.className = 'situacion ' + (nota >= notaAprobacion ? 'suficiente' : 'insuficiente');
+                    }
+                    actualizarEstadisticas();
+                });
+            });
+
+            document.getElementById('planilla-container').style.display = 'block';
+            document.getElementById('btn-generar-planilla').style.display = 'none';
+            cerrarModalPlanilla();
+            actualizarEstadisticas();
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function () {
+            // Generar escala inicial
+            generarEscala();
+
+            // Event listeners para los campos de entrada
+            document.getElementById('puntajeMaximo').addEventListener('input', function () {
+                datosModificados = true;
+                if (escalaGenerada && datosModificados) {
+                    document.getElementById('btn-generar-planilla').style.display = 'inline-block';
+                }
+                generarEscala();
+            });
+
+            document.getElementById('exigencia').addEventListener('input', generarEscala);
+            document.getElementById('notaMinima').addEventListener('input', generarEscala);
+            document.getElementById('notaMaxima').addEventListener('input', generarEscala);
+            document.getElementById('notaAprobacion').addEventListener('input', generarEscala);
+
+            // Botón para generar planilla
+            document.getElementById('btn-generar-planilla').addEventListener('click', abrirModalPlanilla);
+
+            // Modal de planilla
+            document.querySelector('.close').addEventListener('click', cerrarModalPlanilla);
+            document.querySelector('.btn-cancel').addEventListener('click', cerrarModalPlanilla);
+            document.getElementById('btn-confirm-manual').addEventListener('click', generarPlanillaAlumnos);
+            document.getElementById('btn-confirm-excel').addEventListener('click', generarPlanillaDesdeExcel);
+
+            // Inicializar tabs y drop zone del Excel
+            inicializarTabsModal();
+            inicializarDropZoneExcel();
+
+            // Botones de exportación
+            document.getElementById('btn-pdf').addEventListener('click', exportarAPDF);
+            document.getElementById('btn-excel').addEventListener('click', exportarAExcel);
+            document.getElementById('btn-reset').addEventListener('click', resetearPlanilla);
+
+            // Cerrar modal al hacer clic fuera de él
+            window.addEventListener('click', function (event) {
+                const modal = document.getElementById('modal-planilla');
+                if (event.target === modal) {
+                    cerrarModalPlanilla();
+                }
+            });
+        });
+
+        // Función para descargar plantilla de ejemplo
+        function descargarPlantillaEjemplo() {
+            const datos = [
+                ['Nombre Alumno', 'Puntaje'],
+                ['Juan Pérez González', 10],
+                ['María Rodríguez López', 20],
+                ['Carlos Martínez Silva', 30],
+                ['Ana Gómez Herrera', 40],
+                ['Luis Fernández Torres', 50]
+            ];
+
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.aoa_to_sheet(datos);
+
+            // Ancho de columnas
+            ws['!cols'] = [{ wch: 30 }, { wch: 12 }];
+
+            XLSX.utils.book_append_sheet(wb, ws, 'Alumnos');
+            XLSX.writeFile(wb, 'plantilla_alumnos.xlsx');
+        }
+    </script>
+</body>
+
+</html>
