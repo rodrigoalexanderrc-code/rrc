@@ -446,16 +446,24 @@
             try {
                 const response = await fetch('obtener_informes.php?t=' + Date.now());
                 if (response.ok) {
-                    const newData = await response.json();
-                    if (JSON.stringify(newData) !== JSON.stringify(REPORTS_DB)) {
-                        REPORTS_DB = newData;
-                        renderSidebar();
-                        renderDashboard();
+                    // Verificamos el contenido primero para evitar errores con PHP no interpretado
+                    const text = await response.text();
+                    try {
+                        const newData = JSON.parse(text);
+                        if (JSON.stringify(newData) !== JSON.stringify(REPORTS_DB)) {
+                            REPORTS_DB = newData;
+                            renderSidebar();
+                            renderDashboard();
+                        }
+                        statusIndicator.innerHTML = '<i class="fas fa-check-circle" style="color: #10B981;"></i> Actualizado';
+                    } catch (parseError) {
+                        // Si no es JSON (ej. código PHP en crudo), significa que no hay backend PHP
+                        throw new Error("Respuesta no es JSON válido");
                     }
-                    statusIndicator.innerHTML = '<i class="fas fa-check-circle" style="color: #10B981;"></i> Actualizado';
                 }
             } catch (e) {
-                statusIndicator.innerHTML = '<i class="fas fa-exclamation-circle" style="color: #EF4444;"></i> Modo local';
+                // En GitHub Pages o sin servidor PHP, se usa el archivo datos_informes.js estático
+                statusIndicator.innerHTML = '<i class="fas fa-check-circle" style="color: #10B981;"></i> Actualizado (Estático)';
             }
         }
 
