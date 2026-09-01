@@ -1,5 +1,0 @@
-# Formato: mes, curso, dia_numero, nombre_dia, hora, lugar
-# Ejemplo: abril, 1ro Medio A, 22, miércoles, 18:30 hrs, Comedor Central
-
-# abril, Reunión 1 Basico A, 20, Lunes, 16:30 hrs, Sala 1 Profesora Bárbara Vergara
-
