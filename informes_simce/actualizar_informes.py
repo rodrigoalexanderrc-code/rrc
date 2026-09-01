@@ -11,43 +11,44 @@ OUTPUT_FILE = "datos_informes.js"
 def parse_filename(filename):
     """
     Extrae Curso, Asignatura y N° de Ensayo del nombre del archivo.
-    Ejemplo esperado: Reporte_ENSAYO SIMCE N1 MATEMATICAS 6 BASICO A.html
+    Usa una lógica robusta similar a la de obtener_informes.php
     """
-    # Patrón: Reporte_ENSAYO SIMCE (N1) (ASIGNATURA) (CURSO) (LETRA Opcional)
-    pattern = r"Reporte_ENSAYO SIMCE (N\d+)\s+(.*?)\s+(\d+\sB[AÁ]SICO|\d+\sMEDIO)(?:[\s\xa0]*([A-Z]))?"
-    match = re.search(pattern, filename, re.IGNORECASE)
+    # 1. Extraer el número de ensayo (N1, N 1, N°1, etc.)
+    ensayo = "N/A"
+    m_ensayo = re.search(r'N\s*[°]?\s*(\d+)', filename, re.IGNORECASE)
+    if m_ensayo:
+        ensayo = f"N{m_ensayo.group(1)}"
+        
+    # 2. Extraer el curso
+    curso = "Desconocido"
+    # \xa0 es el non-breaking space
+    m_curso = re.search(r'(\d+)[\s\xa0]*(B[AÁ]SICO|MEDIO)[\s\xa0]*([A-Z])?', filename, re.IGNORECASE)
+    if m_curso:
+        curso_num = m_curso.group(1)
+        tipo = m_curso.group(2).upper().replace("BÁSICO", "BASICO")
+        letra = f" {m_curso.group(3).upper()}" if m_curso.group(3) else ""
+        
+        tipo_str = "° Medio" if "MEDIO" in tipo else "° Básico"
+        curso = f"{curso_num} {tipo_str}{letra}"
+        
+    # 3. Extraer Asignatura limpiando el resto del nombre
+    clean_name = re.sub(r'(?i)Reporte_ENSAYO|\.html|_SIMCE', '', filename)
+    clean_name = re.sub(r'(?i)Informe_', '', clean_name) # Dejar IDPS
+    clean_name = re.sub(r'(?i)N\s*[°]?\s*\d+', '', clean_name)
+    clean_name = re.sub(r'(?i)\d+[\s\xa0]*(B[AÁ]SICO|MEDIO)[\s\xa0]*[A-Z]?', '', clean_name)
+    clean_name = re.sub(r'\s+', ' ', clean_name).strip(' -_()')
     
-    if match:
-        ensayo_id = match.group(1) # Ej: N1
-        asignatura = match.group(2).strip() # Ej: MATEMATICAS
-        curso_raw = match.group(3).strip().upper() # Ej: 6 BASICO o 6 BÁSICO
-        letra_curso = match.group(4) # Ej: A
-        
-        # Normalizar tildes para uniformidad
-        curso_raw = curso_raw.replace("BÁSICO", "BASICO")
-        
-        if letra_curso:
-            curso_raw = f"{curso_raw} {letra_curso.strip()}"
-        
-        # Formatear el curso para que se vea bien en la web
-        curso_pretty = curso_raw
-        if "BASICO" in curso_pretty:
-            curso_pretty = curso_pretty.replace("BASICO", "° Básico")
-        elif "MEDIO" in curso_pretty:
-            curso_pretty = curso_pretty.replace("MEDIO", "° Medio")
-            
-        # Limpiar asignatura (Capitalizar primera letra)
-        asignatura_pretty = asignatura.capitalize()
+    # Capitalizar como título (Title Case)
+    asignatura = clean_name.title() if clean_name else "General"
 
-        # Codificar URL para que funcione en el navegador (espacios -> %20, etc)
+    if curso != "Desconocido":
         encoded_folder = urllib.parse.quote(FOLDER_PATH)
         encoded_filename = urllib.parse.quote(filename)
-
         return {
             "archivo": f"{encoded_folder}/{encoded_filename}",
-            "ensayo": ensayo_id,
-            "asignatura": asignatura_pretty,
-            "curso": curso_pretty,
+            "ensayo": ensayo,
+            "asignatura": asignatura,
+            "curso": curso,
             "nombre_completo": filename.replace(".html", "")
         }
     return None
