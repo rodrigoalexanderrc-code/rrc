@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Reporte SIMCE (Ensayo SIMCE N2 Lenguaje 2 Medio (1-31))</title>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
+            --secondary: #f8fafc;
+            --accent: #10b981;
+            --danger: #cb2431;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #e0e7ff 100%);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            font-size: 16px;
+            /* Aumentado de default a 16px para mejor legibilidad general */
+        }
+
+        /* VIEW: UPLOAD */
+        #upload-view {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 650px;
+            background: var(--surface);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            transition: transform 0.3s ease;
+        }
+
+        .icon-container {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            color: white;
+            font-size: 32px;
+            box-shadow: 0 10px 15px -3px rgba(30, 58, 138, 0.3);
+            transform: rotate(-5deg);
+        }
+
+        h1.main-title {
+            font-size: 26px;
+            color: var(--text-main);
+            margin: 0 0 8px 0;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        h2.subtitle {
+            font-size: 16px;
+            color: var(--primary-light);
+            margin: 0;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .description {
+            color: var(--text-muted);
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 20px;
+            padding: 0 20px;
+            margin-top: 20px;
+        }
+
+        .options-panel {
+            background: rgba(59, 130, 246, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+            display: none;
+        }
+
+        .options-panel.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Outfit';
+            font-size: 14px;
+            box-sizing: border-box;
+            background-color: white;
+            color: black;
+            font-weight: bold;
+        }
+
+        .form-group input[readonly] {
+            background-color: white;
+            color: black;
+            font-weight: bold;
+            border-color: #cbd5e1;
+            cursor: default;
+        }
+
+        .upload-area {
+            position: relative;
+            border: 2px dashed var(--primary-light);
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            background: rgba(59, 130, 246, 0.03);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 25px;
+        }
+
+        .upload-area:hover {
+            background: rgba(59, 130, 246, 0.08);
+            border-color: var(--primary);
+            transform: scale(1.02);
+        }
+
+        input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .upload-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+            display: block;
+            opacity: 0.8;
+        }
+
+        .upload-text {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 16px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .upload-subtext {
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 400;
+        }
+
+        .generate-btn {
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            margin-bottom: 15px;
+        }
+
+        .generate-btn:hover {
+            box-shadow: 0 8px 20px rgba(30, 58, 138, 0.35);
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            filter: grayscale(1);
+        }
+
+        #loading {
+            display: none;
+            text-align: center;
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        /* VIEW: DASHBOARD */
+        #report-view {
+            display: none;
+            max-width: 1250px;
+            /* Expandido para alojar mejor las fuentes mayores */
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            color: #334e68;
+        }
+
+        .report-header {
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .report-header h1 {
+            text-transform: uppercase;
+            font-size: 28px;
+            /* Título informe más grande */
+            color: var(--primary);
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        .report-header h2 {
+            font-size: 22px;
+            color: #627d98;
+            margin: 5px 0 20px 0;
+            font-weight: bold;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+            background: var(--secondary);
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            /* Más grande en metadatos */
+        }
+
+        .meta-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .meta-label {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            background: #fff;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-value {
+            font-size: 40px;
+            /* Números más grandes */
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--text-main);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            /* Mayor legibilidad */
+            color: #627d98;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .stat-card.verde {
+            border-top: 5px solid #2ecc71;
+        }
+
+        .stat-card.amarillo {
+            border-top: 5px solid #f1c40f;
+        }
+
+        .stat-card.rojo {
+            border-top: 5px solid #e74c3c;
+        }
+
+        .stat-card.total {
+            border-top: 5px solid var(--primary);
+        }
+
+        .rankings-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .ranking-title {
+            font-size: 18px;
+            /* Título de tablas más grande */
+            font-weight: bold;
+            color: var(--primary);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border: 1px solid var(--border);
+            font-size: 15px;
+            /* Textos de tabla más amigables */
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--secondary);
+        }
+
+        .nota-azul {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .nota-roja {
+            color: var(--danger);
+            font-weight: bold;
+        }
+
+        .cat-verde {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .cat-amarillo {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .cat-rojo {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+        }
+
+        #error-card {
+            display: none;
+            background: #fee2e2;
+            border: 1px solid #ef4444;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            color: #b91c1c;
+            font-size: 13px;
+        }
+
+        @media print {
+            .actions {
+                display: none !important;
+            }
+
+            body {
+                padding: 0;
+                background: white;
+            }
+
+            #report-view {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                max-width: 100%;
+            }
+
+            @page {
+                size: A4 portrait;
+                margin: 10mm;
+            }
+        }
+
+        /* --- MODAL STYLES --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 95%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .btn-close {
+            background: #f1f5f9;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #64748b;
+        }
+
+        .btn-close:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .ans-card {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ans-card.bad {
+            border-left: 4px solid #ef4444;
+            background: #fef2f2;
+        }
+
+        .ans-card.ok {
+            border-left: 4px solid #2ecc71;
+            background: #f0fdf4;
+        }
+
+        .ans-q {
+            font-size: 15px;
+            font-weight: 500;
+            color: #334155;
+            max-width: 80%;
+        }
+
+        .ans-val {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .ans-val.bad {
+            color: #ef4444;
+            text-decoration: line-through;
+        }
+
+        .ans-val.ok {
+            color: #2ecc71;
+        }
+
+        .interactive-row {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .interactive-row:hover {
+            background-color: #e0e7ff !important;
+            transform: translateX(4px);
+        }
+
+        .interactive-row:hover .student-link {
+            color: #1d4ed8;
+        }
+
+        .student-link {
+            color: #2563eb;
+            text-decoration: underline;
+            font-weight: bold;
+            transition: color 0.2s ease;
+        }
+     body{background:white; margin:0}</style>
+</head>
+<body>
+<div id="report-view" style="display: block;">
+        
+
+        <div id="dashboard-content">
+            <div class="report-header">
+                <h1>Informe Plataforma Ensayos SIMCE Institucional</h1>
+                <h2>Liceo Integrado Libertador Simón Bolívar - 2 medio A</h2>
+            </div>
+
+            <div class="meta-grid" id="ui-metadata">
+                <div class="meta-item"><span class="meta-label">Ensayo:</span> Ensayo SIMCE N2 Lenguaje 2 Medio&nbsp;(1-31)</div>
+                <div class="meta-item"><span class="meta-label">Curso:</span> 2 medio A</div>
+                <div class="meta-item"><span class="meta-label">Fecha:</span> 26-05-2026</div>
+                <div class="meta-item"><span class="meta-label">Exigencia Prueba:</span> 60%</div>
+                <div class="meta-item"><span class="meta-label">Total Preguntas Oficiales:</span> 20 pts.</div>
+                <div class="meta-item"><span class="meta-label">Puntaje de Corte de Aprobación Mín.:</span> 12 pts.</div>
+            </div>
+
+            <section class="stats-container" id="ui-kpis">
+                <div class="stat-card total"><div class="stat-value">31</div><div class="stat-label">Total Estudiantes</div></div>
+                <div class="stat-card verde"><div class="stat-value">22</div><div class="stat-label">Logro Avanzado</div></div>
+                <div class="stat-card amarillo"><div class="stat-value">7</div><div class="stat-label">Logro Intermedio</div></div>
+                <div class="stat-card rojo"><div class="stat-value">2</div><div class="stat-label">Logro Inicial</div></div>
+            </section>
+
+            <section class="rankings-grid" id="ui-rankings">
+                <div><div class="ranking-title">🏆 Top 10 Puntajes Altos</div>
+                <table><thead><tr><th>Nombre</th><th style="text-align:center">Pts</th><th style="text-align:center">Nota</th><th style="text-align:center">SIMCE Aprox.</th></tr></thead><tbody><tr><td>SOFÍA CASTILLO</td><td style="text-align:center">19</td><td style="text-align:center" class="nota-azul">6,6</td><td style="text-align:center">381</td></tr><tr><td>JEAN PAUL ALEXANDER BANDA</td><td style="text-align:center">19</td><td style="text-align:center" class="nota-azul">6,6</td><td style="text-align:center">381</td></tr><tr><td>MARTIN CAVIERES</td><td style="text-align:center">18</td><td style="text-align:center" class="nota-azul">6,3</td><td style="text-align:center">363</td></tr><tr><td>MELINDA ACUÑA</td><td style="text-align:center">18</td><td style="text-align:center" class="nota-azul">6,3</td><td style="text-align:center">363</td></tr><tr><td>VALENTINA ORTEGA</td><td style="text-align:center">17</td><td style="text-align:center" class="nota-azul">5,9</td><td style="text-align:center">344</td></tr><tr><td>PABLO PAZ</td><td style="text-align:center">17</td><td style="text-align:center" class="nota-azul">5,9</td><td style="text-align:center">344</td></tr><tr><td>MATEO MONTENEGRO</td><td style="text-align:center">17</td><td style="text-align:center" class="nota-azul">5,9</td><td style="text-align:center">344</td></tr><tr><td>DANAE BELMAR</td><td style="text-align:center">17</td><td style="text-align:center" class="nota-azul">5,9</td><td style="text-align:center">344</td></tr><tr><td>EMILIA GONZÁLEZ</td><td style="text-align:center">16</td><td style="text-align:center" class="nota-azul">5,5</td><td style="text-align:center">325</td></tr><tr><td>MATÍAS IGNACIO FUENTES DÍ</td><td style="text-align:center">16</td><td style="text-align:center" class="nota-azul">5,5</td><td style="text-align:center">325</td></tr></tbody></table></div>
+
+                <div><div class="ranking-title">⚠️ Alumnos en Riesgo (Nota &lt; 4,0)</div>
+                    <table><thead><tr><th>Nombre</th><th style="text-align:center">Pts</th><th style="text-align:center">Nota</th><th style="text-align:center">SIMCE Aprox.</th></tr></thead><tbody><tr><td>ANDRESONN VOLMAR</td><td style="text-align:center">8</td><td style="text-align:center" class="nota-roja">3,3</td><td style="text-align:center">175</td></tr><tr><td>AMARILIS FROST</td><td style="text-align:center">11</td><td style="text-align:center" class="nota-roja">3,8</td><td style="text-align:center">231</td></tr></tbody></table></div>
+            </section>
+
+            <section>
+                <div class="ranking-title">📋 Resultados Detallados de Alumnos</div>
+                <div style="background-color: #eef2ff; border-left: 4px solid #4f46e5; padding: 12px 16px; margin-bottom: 15px; border-radius: 6px;">
+                    <strong style="color: #4f46e5; font-size: 16px;">💡 TIP:</strong> <span style="font-size: 16px; font-weight: bold; color: #334155;">Haz click en el nombre de cualquier
+                        alumno de la lista
+                        para ver el reporte detallado con las preguntas y alternativas exactas que marcó.</span>
+                </div>
+                <table id="ui-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th style="text-align:center">Puntos</th>
+                            <th style="text-align:center">Nota</th>
+                            <th style="text-align:center">Puntaje SIMCE aproximado</th>
+                            <th>Nivel de Logro</th>
+                        </tr>
+                    </thead>
+                    <tbody><tr class="interactive-row" onclick="openStudentModal(0)" title="Haz click para ver respuestas">
+                    <td class="student-link">SOFÍA CASTILLO</td>
+                    <td style="text-align:center">19</td>
+                    <td style="text-align:center" class="nota-azul">6,6</td>
+                    <td style="text-align:center; font-weight:bold;">381</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(1)" title="Haz click para ver respuestas">
+                    <td class="student-link">JEAN PAUL ALEXANDER BANDA CASTILLO</td>
+                    <td style="text-align:center">19</td>
+                    <td style="text-align:center" class="nota-azul">6,6</td>
+                    <td style="text-align:center; font-weight:bold;">381</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(2)" title="Haz click para ver respuestas">
+                    <td class="student-link">MARTIN CAVIERES</td>
+                    <td style="text-align:center">18</td>
+                    <td style="text-align:center" class="nota-azul">6,3</td>
+                    <td style="text-align:center; font-weight:bold;">363</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(3)" title="Haz click para ver respuestas">
+                    <td class="student-link">MELINDA ACUÑA</td>
+                    <td style="text-align:center">18</td>
+                    <td style="text-align:center" class="nota-azul">6,3</td>
+                    <td style="text-align:center; font-weight:bold;">363</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(4)" title="Haz click para ver respuestas">
+                    <td class="student-link">VALENTINA ORTEGA</td>
+                    <td style="text-align:center">17</td>
+                    <td style="text-align:center" class="nota-azul">5,9</td>
+                    <td style="text-align:center; font-weight:bold;">344</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(5)" title="Haz click para ver respuestas">
+                    <td class="student-link">PABLO PAZ</td>
+                    <td style="text-align:center">17</td>
+                    <td style="text-align:center" class="nota-azul">5,9</td>
+                    <td style="text-align:center; font-weight:bold;">344</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(6)" title="Haz click para ver respuestas">
+                    <td class="student-link">MATEO MONTENEGRO</td>
+                    <td style="text-align:center">17</td>
+                    <td style="text-align:center" class="nota-azul">5,9</td>
+                    <td style="text-align:center; font-weight:bold;">344</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(7)" title="Haz click para ver respuestas">
+                    <td class="student-link">DANAE BELMAR</td>
+                    <td style="text-align:center">17</td>
+                    <td style="text-align:center" class="nota-azul">5,9</td>
+                    <td style="text-align:center; font-weight:bold;">344</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(8)" title="Haz click para ver respuestas">
+                    <td class="student-link">EMILIA GONZÁLEZ</td>
+                    <td style="text-align:center">16</td>
+                    <td style="text-align:center" class="nota-azul">5,5</td>
+                    <td style="text-align:center; font-weight:bold;">325</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(9)" title="Haz click para ver respuestas">
+                    <td class="student-link">MATÍAS IGNACIO FUENTES DÍAZ</td>
+                    <td style="text-align:center">16</td>
+                    <td style="text-align:center" class="nota-azul">5,5</td>
+                    <td style="text-align:center; font-weight:bold;">325</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(10)" title="Haz click para ver respuestas">
+                    <td class="student-link">ANTHONY MARTINEZ</td>
+                    <td style="text-align:center">16</td>
+                    <td style="text-align:center" class="nota-azul">5,5</td>
+                    <td style="text-align:center; font-weight:bold;">325</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(11)" title="Haz click para ver respuestas">
+                    <td class="student-link">JEAN CARLOS ISAIAS CARTES PERALTA</td>
+                    <td style="text-align:center">16</td>
+                    <td style="text-align:center" class="nota-azul">5,5</td>
+                    <td style="text-align:center; font-weight:bold;">325</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(12)" title="Haz click para ver respuestas">
+                    <td class="student-link">MAILY MORA</td>
+                    <td style="text-align:center">16</td>
+                    <td style="text-align:center" class="nota-azul">5,5</td>
+                    <td style="text-align:center; font-weight:bold;">325</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(13)" title="Haz click para ver respuestas">
+                    <td class="student-link">AARON MICHEL DIAZ GARCIA</td>
+                    <td style="text-align:center">16</td>
+                    <td style="text-align:center" class="nota-azul">5,5</td>
+                    <td style="text-align:center; font-weight:bold;">325</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(14)" title="Haz click para ver respuestas">
+                    <td class="student-link">DANIEL LÓPEZ</td>
+                    <td style="text-align:center">15</td>
+                    <td style="text-align:center" class="nota-azul">5,1</td>
+                    <td style="text-align:center; font-weight:bold;">306</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(15)" title="Haz click para ver respuestas">
+                    <td class="student-link">JULIANA VASQUEZ</td>
+                    <td style="text-align:center">15</td>
+                    <td style="text-align:center" class="nota-azul">5,1</td>
+                    <td style="text-align:center; font-weight:bold;">306</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(16)" title="Haz click para ver respuestas">
+                    <td class="student-link">BRUNO VALLEJOS</td>
+                    <td style="text-align:center">15</td>
+                    <td style="text-align:center" class="nota-azul">5,1</td>
+                    <td style="text-align:center; font-weight:bold;">306</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(17)" title="Haz click para ver respuestas">
+                    <td class="student-link">ANTONIA ALEJANDRA ARANCIBIA ARRIAGADA</td>
+                    <td style="text-align:center">15</td>
+                    <td style="text-align:center" class="nota-azul">5,1</td>
+                    <td style="text-align:center; font-weight:bold;">306</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(18)" title="Haz click para ver respuestas">
+                    <td class="student-link">GABRIELA MALDONADO</td>
+                    <td style="text-align:center">15</td>
+                    <td style="text-align:center" class="nota-azul">5,1</td>
+                    <td style="text-align:center; font-weight:bold;">306</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(19)" title="Haz click para ver respuestas">
+                    <td class="student-link">FABIANA PUERTA</td>
+                    <td style="text-align:center">15</td>
+                    <td style="text-align:center" class="nota-azul">5,1</td>
+                    <td style="text-align:center; font-weight:bold;">306</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(20)" title="Haz click para ver respuestas">
+                    <td class="student-link">MAXIMILIANO JARA JOFRE</td>
+                    <td style="text-align:center">14</td>
+                    <td style="text-align:center" class="nota-azul">4,8</td>
+                    <td style="text-align:center; font-weight:bold;">288</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(21)" title="Haz click para ver respuestas">
+                    <td class="student-link">JESUS GUTIERREZ</td>
+                    <td style="text-align:center">14</td>
+                    <td style="text-align:center" class="nota-azul">4,8</td>
+                    <td style="text-align:center; font-weight:bold;">288</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(22)" title="Haz click para ver respuestas">
+                    <td class="student-link">AYLIN RUBIO</td>
+                    <td style="text-align:center">13</td>
+                    <td style="text-align:center" class="nota-azul">4,4</td>
+                    <td style="text-align:center; font-weight:bold;">269</td>
+                    <td style="text-align:center" class="cat-amarillo">Intermedio 🟡</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(23)" title="Haz click para ver respuestas">
+                    <td class="student-link">VALENTINA ESPINOZA</td>
+                    <td style="text-align:center">13</td>
+                    <td style="text-align:center" class="nota-azul">4,4</td>
+                    <td style="text-align:center; font-weight:bold;">269</td>
+                    <td style="text-align:center" class="cat-amarillo">Intermedio 🟡</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(24)" title="Haz click para ver respuestas">
+                    <td class="student-link">MARTINA BERNAL</td>
+                    <td style="text-align:center">13</td>
+                    <td style="text-align:center" class="nota-azul">4,4</td>
+                    <td style="text-align:center; font-weight:bold;">269</td>
+                    <td style="text-align:center" class="cat-amarillo">Intermedio 🟡</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(25)" title="Haz click para ver respuestas">
+                    <td class="student-link">ALEXANDER CORDERO</td>
+                    <td style="text-align:center">12</td>
+                    <td style="text-align:center" class="nota-azul">4,0</td>
+                    <td style="text-align:center; font-weight:bold;">250</td>
+                    <td style="text-align:center" class="cat-amarillo">Intermedio 🟡</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(26)" title="Haz click para ver respuestas">
+                    <td class="student-link">JAVIERA RUIZ</td>
+                    <td style="text-align:center">12</td>
+                    <td style="text-align:center" class="nota-azul">4,0</td>
+                    <td style="text-align:center; font-weight:bold;">250</td>
+                    <td style="text-align:center" class="cat-amarillo">Intermedio 🟡</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(27)" title="Haz click para ver respuestas">
+                    <td class="student-link">MARTIN ALAMOS</td>
+                    <td style="text-align:center">12</td>
+                    <td style="text-align:center" class="nota-azul">4,0</td>
+                    <td style="text-align:center; font-weight:bold;">250</td>
+                    <td style="text-align:center" class="cat-amarillo">Intermedio 🟡</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(28)" title="Haz click para ver respuestas">
+                    <td class="student-link">FELIPE GUZMÁN</td>
+                    <td style="text-align:center">12</td>
+                    <td style="text-align:center" class="nota-azul">4,0</td>
+                    <td style="text-align:center; font-weight:bold;">250</td>
+                    <td style="text-align:center" class="cat-amarillo">Intermedio 🟡</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(29)" title="Haz click para ver respuestas">
+                    <td class="student-link">AMARILIS FROST</td>
+                    <td style="text-align:center">11</td>
+                    <td style="text-align:center" class="nota-roja">3,8</td>
+                    <td style="text-align:center; font-weight:bold;">231</td>
+                    <td style="text-align:center" class="cat-rojo">Inicial 🔴</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(30)" title="Haz click para ver respuestas">
+                    <td class="student-link">ANDRESONN VOLMAR</td>
+                    <td style="text-align:center">8</td>
+                    <td style="text-align:center" class="nota-roja">3,3</td>
+                    <td style="text-align:center; font-weight:bold;">175</td>
+                    <td style="text-align:center" class="cat-rojo">Inicial 🔴</td>
+                </tr></tbody>
+                </table>
+            </section>
+
+            <!-- Sección de Preguntas Críticas (Ahora debajo de Alumnos) -->
+            <section id="ui-critical-questions">
+                <div style="grid-column: 1 / -1; margin-top:20px;">
+                    <div class="ranking-title">📈 Top Preguntas con Mayor Porcentaje de Error</div>
+                    <table id="table-critical-questions">
+                        <thead>
+                            <tr>
+                                <th>Pregunta / Contenido</th>
+                                <th style="text-align:center">Error %</th>
+                                <th style="text-align:center">Cantidad de Alumnos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">90%</td>
+                                <td style="text-align:center">28 alumnos</td>
+                            </tr><tr>
+                                <td>¿Qué simboliza la llegada de los gitanos a Macondo?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">52%</td>
+                                <td style="text-align:center">16 alumnos</td>
+                            </tr><tr>
+                                <td>¿Qué simbolizan los objetos perdidos que aparecen con el imán?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">52%</td>
+                                <td style="text-align:center">16 alumnos</td>
+                            </tr><tr>
+                                <td>¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">42%</td>
+                                <td style="text-align:center">13 alumnos</td>
+                            </tr><tr>
+                                <td>¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">42%</td>
+                                <td style="text-align:center">13 alumnos</td>
+                            </tr><tr>
+                                <td>¿Qué invitación implícita hace el fragmento al lector?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">39%</td>
+                                <td style="text-align:center">12 alumnos</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div></section>
+        </div>
+    </div>
+<div id="student-modal" class="modal-overlay" onclick="if(event.target === this) closeModal()" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h3 id="modal-name" style="margin:0; color:var(--primary); font-size:20px;">Nombre Alumno</h3>
+                    <div id="modal-stats" style="font-size:13px; color:#64748b; margin-top:4px;">Nota: 0.0 | Puntos: 0
+                    </div>
+                </div>
+                <button class="btn-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div style="font-size:14px; font-weight:bold; margin-bottom:15px; border-bottom:2px solid var(--border); padding-bottom:5px;">
+                    Detalle de Respuestas</div>
+                <div id="modal-answers-list"></div>
+            </div>
+        </div>
+    </div>
+
+                <script>
+                var masterStudents = [{"Nombre":"SOFÍA CASTILLO","Puntos":19,"Nota":6.6,"Simce":381,"Categoria":"Avanzado 🌟","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"a) El recuerdo es una metáfora de la soledad del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"b) La irrupción de lo desconocido y lo mágico.","puntaje":1},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"b) Remite a figuras bíblicas y alquimistas.","puntaje":1},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"c) La novedad y extrañeza del mundo para los personajes.","puntaje":1},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"b) Mediante la presentación de hechos extraordinarios como algo cotidiano.","puntaje":1},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"c) El pasado es fundamental para comprender el presente.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"c) La capacidad del pasado para irrumpir en el presente.","puntaje":1},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"b) A reflexionar sobre la naturaleza de la realidad y la ficción.","puntaje":1}}},{"Nombre":"JEAN PAUL ALEXANDER BANDA CASTILLO","Puntos":19,"Nota":6.6,"Simce":381,"Categoria":"Avanzado 🌟","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"a) El recuerdo es una metáfora de la soledad del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"b) La irrupción de lo desconocido y lo mágico.","puntaje":1},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"b) Remite a figuras bíblicas y alquimistas.","puntaje":1},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"c) La novedad y extrañeza del mundo para los personajes.","puntaje":1},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"b) Mediante la presentación de hechos extraordinarios como algo cotidiano.","puntaje":1},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"c) El pasado es fundamental para comprender el presente.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"c) La capacidad del pasado para irrumpir en el presente.","puntaje":1},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"b) A reflexionar sobre la naturaleza de la realidad y la ficción.","puntaje":1}}},{"Nombre":"MARTIN CAVIERES","Puntos":18,"Nota":6.3,"Simce":363,"Categoria":"Avanzado 🌟","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"b) El recuerdo contrasta con la realidad del presente del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"b) La irrupción de lo desconocido y lo mágico.","puntaje":1},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"c) Se asocia a héroes de la literatura medieval.","puntaje":0},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"c) La novedad y extrañeza del mundo para los personajes.","puntaje":1},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"b) Mediante la presentación de hechos extraordinarios como algo cotidiano.","puntaje":1},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"c) El pasado es fundamental para comprender el presente.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"c) La capacidad del pasado para irrumpir en el presente.","puntaje":1},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"b) A reflexionar sobre la naturaleza de la realidad y la ficción.","puntaje":1}}},{"Nombre":"MELINDA ACUÑA","Puntos":18,"Nota":6.3,"Simce":363,"Categoria":"Avanzado 🌟","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"a) El líder de la aldea.","puntaje":0},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"b) El recuerdo contrasta con la realidad del presente del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"b) La irrupción de lo desconocido y lo mágico.","puntaje":1},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"b) Remite a figuras bíblicas y alquimistas.","puntaje":1},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"c) La novedad y extrañeza del mundo para los personajes.","puntaje":1},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"b) Mediante la presentación de hechos extraordinarios como algo cotidiano.","puntaje":1},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"c) El pasado es fundamental para comprender el presente.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"c) La capacidad del pasado para irrumpir en el presente.","puntaje":1},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"b) A reflexionar sobre la naturaleza de la realidad y la ficción.","puntaje":1}}},{"Nombre":"VALENTINA ORTEGA","Puntos":17,"Nota":5.9,"Simce":344,"Categoria":"Avanzado 🌟","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"b) El recuerdo contrasta con la realidad del presente del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"b) La irrupción de lo desconocido y lo mágico.","puntaje":1},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"b) Remite a figuras bíblicas y alquimistas.","puntaje":1},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"c) Es una fuente de confusión y desorientación.","puntaje":0},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"c) La novedad y extrañeza del mundo para los personajes.","puntaje":1},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"b) Mediante la presentación de hechos extraordinarios como algo cotidiano.","puntaje":1},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"c) El pasado es fundamental para comprender el presente.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"a) La fragilidad de la memoria.","puntaje":0},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"b) A reflexionar sobre la naturaleza de la realidad y la ficción.","puntaje":1}}},{"Nombre":"PABLO PAZ","Puntos":17,"Nota":5.9,"Simce":344,"Categoria":"Avanzado 🌟","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"b) El recuerdo contrasta con la realidad del presente del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"b) La irrupción de lo desconocido y lo mágico.","puntaje":1},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"b) Remite a figuras bíblicas y alquimistas.","puntaje":1},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"c) Es una fuente de confusión y desorientación.","puntaje":0},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"c) La novedad y extrañeza del mundo para los personajes.","puntaje":1},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"b) Mediante la presentación de hechos extraordinarios como algo cotidiano.","puntaje":1},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"c) El pasado es fundamental para comprender el presente.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"a) La fragilidad de la memoria.","puntaje":0},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"b) A reflexionar sobre la naturaleza de la realidad y la ficción.","puntaje":1}}},{"Nombre":"MATEO MONTENEGRO","Puntos":17,"Nota":5.9,"Simce":344,"Categoria":"Avanzado 🌟","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"b) El recuerdo contrasta con la realidad del presente del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"a) La llegada de la modernidad.","puntaje":0},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"c) Se asocia a héroes de la literatura medieval.","puntaje":0},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"c) La novedad y extrañeza del mundo para los personajes.","puntaje":1},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"b) Mediante la presentación de hechos extraordinarios como algo cotidiano.","puntaje":1},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"c) El pasado es fundamental para comprender el presente.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"c) La capacidad del pasado para irrumpir en el presente.","puntaje":1},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"b) A reflexionar sobre la naturaleza de la realidad y la ficción.","puntaje":1}}},{"Nombre":"DANAE BELMAR","Puntos":17,"Nota":5.9,"Simce":344,"Categoria":"Avanzado 🌟","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"a) El recuerdo es una metáfora de la soledad del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"a) La llegada de la modernidad.","puntaje":0},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"b) Remite a figuras bíblicas y alquimistas.","puntaje":1},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"c) La novedad y extrañeza del mundo para los personajes.","puntaje":1},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"b) Mediante la presentación de hechos extraordinarios como algo cotidiano.","puntaje":1},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"c) El pasado es fundamental para comprender el presente.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"c) La capacidad del pasado para irrumpir en el presente.","puntaje":1},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"a) A cuestionar la veracidad de los hechos históricos.","puntaje":0}}},{"Nombre":"EMILIA GONZÁLEZ","Puntos":16,"Nota":5.5,"Simce":325,"Categoria":"Avanzado 🌟","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"a) El líder de la aldea.","puntaje":0},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"a) El recuerdo es una metáfora de la soledad del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"b) La irrupción de lo desconocido y lo mágico.","puntaje":1},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"a) Evoca personajes de la mitología griega.","puntaje":0},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"c) La novedad y extrañeza del mundo para los personajes.","puntaje":1},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"b) Mediante la presentación de hechos extraordinarios como algo cotidiano.","puntaje":1},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"c) El pasado es fundamental para comprender el presente.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"c) La capacidad del pasado para irrumpir en el presente.","puntaje":1},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"c) A valorar la importancia del progreso tecnológico.","puntaje":0}}},{"Nombre":"MATÍAS IGNACIO FUENTES DÍAZ","Puntos":16,"Nota":5.5,"Simce":325,"Categoria":"Avanzado 🌟","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"a) El recuerdo es una metáfora de la soledad del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"a) La llegada de la modernidad.","puntaje":0},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"b) Remite a figuras bíblicas y alquimistas.","puntaje":1},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"a) La falta de comunicación entre los habitantes de Macondo.","puntaje":0},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"b) Mediante la presentación de hechos extraordinarios como algo cotidiano.","puntaje":1},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"c) El pasado es fundamental para comprender el presente.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"b) La soledad y el aislamiento.","puntaje":0},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"c) La capacidad del pasado para irrumpir en el presente.","puntaje":1},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"b) A reflexionar sobre la naturaleza de la realidad y la ficción.","puntaje":1}}},{"Nombre":"ANTHONY MARTINEZ","Puntos":16,"Nota":5.5,"Simce":325,"Categoria":"Avanzado 🌟","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"b) El recuerdo contrasta con la realidad del presente del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"a) La llegada de la modernidad.","puntaje":0},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"a) Evoca personajes de la mitología griega.","puntaje":0},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"c) La novedad y extrañeza del mundo para los personajes.","puntaje":1},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"b) Mediante la presentación de hechos extraordinarios como algo cotidiano.","puntaje":1},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"c) El pasado es fundamental para comprender el presente.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"b) Narrador testigo.","puntaje":0},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"c) La capacidad del pasado para irrumpir en el presente.","puntaje":1},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"b) A reflexionar sobre la naturaleza de la realidad y la ficción.","puntaje":1}}},{"Nombre":"JEAN CARLOS ISAIAS CARTES PERALTA","Puntos":16,"Nota":5.5,"Simce":325,"Categoria":"Avanzado 🌟","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"a) En su infancia.","puntaje":0},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"b) El recuerdo contrasta con la realidad del presente del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"b) La irrupción de lo desconocido y lo mágico.","puntaje":1},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"b) Remite a figuras bíblicas y alquimistas.","puntaje":1},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"c) La novedad y extrañeza del mundo para los personajes.","puntaje":1},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"b) Mediante la presentación de hechos extraordinarios como algo cotidiano.","puntaje":1},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"b) El presente es una repetición del pasado.","puntaje":0},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"c) Ironiza sobre la ingenuidad de los habitantes de Macondo.","puntaje":0},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"c) La capacidad del pasado para irrumpir en el presente.","puntaje":1},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"b) A reflexionar sobre la naturaleza de la realidad y la ficción.","puntaje":1}}},{"Nombre":"MAILY MORA","Puntos":16,"Nota":5.5,"Simce":325,"Categoria":"Avanzado 🌟","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"a) Su avanzado desarrollo tecnológico.","puntaje":0},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"b) Aparatos eléctricos y electrónicos.","puntaje":0},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"b) El recuerdo contrasta con la realidad del presente del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"b) La irrupción de lo desconocido y lo mágico.","puntaje":1},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"b) Remite a figuras bíblicas y alquimistas.","puntaje":1},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"c) La novedad y extrañeza del mundo para los personajes.","puntaje":1},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"b) Mediante la presentación de hechos extraordinarios como algo cotidiano.","puntaje":1},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"d) El pasado y el presente son realidades separadas.","puntaje":0},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"c) La capacidad del pasado para irrumpir en el presente.","puntaje":1},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"b) A reflexionar sobre la naturaleza de la realidad y la ficción.","puntaje":1}}},{"Nombre":"AARON MICHEL DIAZ GARCIA","Puntos":16,"Nota":5.5,"Simce":325,"Categoria":"Avanzado 🌟","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"b) El recuerdo contrasta con la realidad del presente del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"b) La irrupción de lo desconocido y lo mágico.","puntaje":1},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"c) Se asocia a héroes de la literatura medieval.","puntaje":0},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"c) La novedad y extrañeza del mundo para los personajes.","puntaje":1},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"b) Mediante la presentación de hechos extraordinarios como algo cotidiano.","puntaje":1},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"c) El pasado es fundamental para comprender el presente.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"b) El poder de la tecnología para resolver problemas.","puntaje":0},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"d) A criticar la ingenuidad de las sociedades primitivas.","puntaje":0}}},{"Nombre":"DANIEL LÓPEZ","Puntos":15,"Nota":5.1,"Simce":306,"Categoria":"Avanzado 🌟","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"b) El recuerdo contrasta con la realidad del presente del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"b) La irrupción de lo desconocido y lo mágico.","puntaje":1},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"b) Remite a figuras bíblicas y alquimistas.","puntaje":1},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"a) Es un recurso para evadir el presente.","puntaje":0},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"c) La novedad y extrañeza del mundo para los personajes.","puntaje":1},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"c) Con el uso de un lenguaje poético y simbólico.","puntaje":0},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"d) El pasado y el presente son realidades separadas.","puntaje":0},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"c) La capacidad del pasado para irrumpir en el presente.","puntaje":1},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"c) A valorar la importancia del progreso tecnológico.","puntaje":0}}},{"Nombre":"JULIANA VASQUEZ","Puntos":15,"Nota":5.1,"Simce":306,"Categoria":"Avanzado 🌟","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"a) El recuerdo es una metáfora de la soledad del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"a) La llegada de la modernidad.","puntaje":0},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"b) Remite a figuras bíblicas y alquimistas.","puntaje":1},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"c) La novedad y extrañeza del mundo para los personajes.","puntaje":1},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"c) Con el uso de un lenguaje poético y simbólico.","puntaje":0},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"c) El pasado es fundamental para comprender el presente.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"b) El poder de la tecnología para resolver problemas.","puntaje":0},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"a) A cuestionar la veracidad de los hechos históricos.","puntaje":0}}},{"Nombre":"BRUNO VALLEJOS","Puntos":15,"Nota":5.1,"Simce":306,"Categoria":"Avanzado 🌟","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"b) El recuerdo contrasta con la realidad del presente del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"a) La llegada de la modernidad.","puntaje":0},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"b) Remite a figuras bíblicas y alquimistas.","puntaje":1},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"c) La novedad y extrañeza del mundo para los personajes.","puntaje":1},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"b) Mediante la presentación de hechos extraordinarios como algo cotidiano.","puntaje":1},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"d) El pasado y el presente son realidades separadas.","puntaje":0},"¿Cuál es el tema central del fragmento?":{"alternativa":"b) La soledad y el aislamiento.","puntaje":0},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"a) La fragilidad de la memoria.","puntaje":0},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"b) A reflexionar sobre la naturaleza de la realidad y la ficción.","puntaje":1}}},{"Nombre":"ANTONIA ALEJANDRA ARANCIBIA ARRIAGADA","Puntos":15,"Nota":5.1,"Simce":306,"Categoria":"Avanzado 🌟","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"b) Aparatos eléctricos y electrónicos.","puntaje":0},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"b) El recuerdo contrasta con la realidad del presente del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"a) La llegada de la modernidad.","puntaje":0},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"b) Remite a figuras bíblicas y alquimistas.","puntaje":1},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"c) La novedad y extrañeza del mundo para los personajes.","puntaje":1},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"b) Mediante la presentación de hechos extraordinarios como algo cotidiano.","puntaje":1},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"d) El pasado y el presente son realidades separadas.","puntaje":0},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"c) Ironiza sobre la ingenuidad de los habitantes de Macondo.","puntaje":0},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"c) La capacidad del pasado para irrumpir en el presente.","puntaje":1},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"b) A reflexionar sobre la naturaleza de la realidad y la ficción.","puntaje":1}}},{"Nombre":"GABRIELA MALDONADO","Puntos":15,"Nota":5.1,"Simce":306,"Categoria":"Avanzado 🌟","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"a) Su avanzado desarrollo tecnológico.","puntaje":0},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"c) El recuerdo explica el origen de la fascinación del coronel por la ciencia.","puntaje":1},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"a) La llegada de la modernidad.","puntaje":0},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"a) Evoca personajes de la mitología griega.","puntaje":0},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"c) La novedad y extrañeza del mundo para los personajes.","puntaje":1},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"b) Mediante la presentación de hechos extraordinarios como algo cotidiano.","puntaje":1},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"c) El pasado es fundamental para comprender el presente.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"b) El poder de la tecnología para resolver problemas.","puntaje":0},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"c) A valorar la importancia del progreso tecnológico.","puntaje":0}}},{"Nombre":"FABIANA PUERTA","Puntos":15,"Nota":5.1,"Simce":306,"Categoria":"Avanzado 🌟","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"b) El recuerdo contrasta con la realidad del presente del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"b) La irrupción de lo desconocido y lo mágico.","puntaje":1},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"b) Remite a figuras bíblicas y alquimistas.","puntaje":1},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"c) Es una fuente de confusión y desorientación.","puntaje":0},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"d) La ignorancia de los habitantes de Macondo.","puntaje":0},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"b) Mediante la presentación de hechos extraordinarios como algo cotidiano.","puntaje":1},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"c) El pasado es fundamental para comprender el presente.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"d) Narrador objetivo.","puntaje":0},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"a) La fragilidad de la memoria.","puntaje":0},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"b) A reflexionar sobre la naturaleza de la realidad y la ficción.","puntaje":1}}},{"Nombre":"MAXIMILIANO JARA JOFRE","Puntos":14,"Nota":4.8,"Simce":288,"Categoria":"Avanzado 🌟","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"b) El recuerdo contrasta con la realidad del presente del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"b) La irrupción de lo desconocido y lo mágico.","puntaje":1},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"d) Hace referencia a líderes de la independencia latinoamericana.","puntaje":0},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"c) La novedad y extrañeza del mundo para los personajes.","puntaje":1},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"b) Mediante la presentación de hechos extraordinarios como algo cotidiano.","puntaje":1},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"d) El pasado y el presente son realidades separadas.","puntaje":0},"¿Cuál es el tema central del fragmento?":{"alternativa":"b) La soledad y el aislamiento.","puntaje":0},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"c) Ironiza sobre la ingenuidad de los habitantes de Macondo.","puntaje":0},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"a) La fragilidad de la memoria.","puntaje":0},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"b) A reflexionar sobre la naturaleza de la realidad y la ficción.","puntaje":1}}},{"Nombre":"JESUS GUTIERREZ","Puntos":14,"Nota":4.8,"Simce":288,"Categoria":"Avanzado 🌟","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"b) El recuerdo contrasta con la realidad del presente del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"b) La irrupción de lo desconocido y lo mágico.","puntaje":1},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"b) Remite a figuras bíblicas y alquimistas.","puntaje":1},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"c) Es una fuente de confusión y desorientación.","puntaje":0},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"d) La ignorancia de los habitantes de Macondo.","puntaje":0},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"b) Mediante la presentación de hechos extraordinarios como algo cotidiano.","puntaje":1},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"c) El pasado es fundamental para comprender el presente.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"b) La soledad y el aislamiento.","puntaje":0},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"a) La fragilidad de la memoria.","puntaje":0},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"a) A cuestionar la veracidad de los hechos históricos.","puntaje":0}}},{"Nombre":"AYLIN RUBIO","Puntos":13,"Nota":4.4,"Simce":269,"Categoria":"Intermedio 🟡","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"a) En su infancia.","puntaje":0},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"d) Un centro comercial importante.","puntaje":0},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"b) El recuerdo contrasta con la realidad del presente del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"a) La llegada de la modernidad.","puntaje":0},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"d) Hace referencia a líderes de la independencia latinoamericana.","puntaje":0},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"c) La novedad y extrañeza del mundo para los personajes.","puntaje":1},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"b) Mediante la presentación de hechos extraordinarios como algo cotidiano.","puntaje":1},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"c) El pasado es fundamental para comprender el presente.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"b) El poder de la tecnología para resolver problemas.","puntaje":0},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"c) A valorar la importancia del progreso tecnológico.","puntaje":0}}},{"Nombre":"VALENTINA ESPINOZA","Puntos":13,"Nota":4.4,"Simce":269,"Categoria":"Intermedio 🟡","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"a) Una ciudad moderna y desarrollada.","puntaje":0},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"d) Su compleja estructura política.","puntaje":0},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"a) Alegría y curiosidad.","puntaje":0},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"b) El recuerdo contrasta con la realidad del presente del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"a) La llegada de la modernidad.","puntaje":0},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"a) Evoca personajes de la mitología griega.","puntaje":0},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"c) La novedad y extrañeza del mundo para los personajes.","puntaje":1},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"b) Mediante la presentación de hechos extraordinarios como algo cotidiano.","puntaje":1},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"d) El pasado y el presente son realidades separadas.","puntaje":0},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"c) La capacidad del pasado para irrumpir en el presente.","puntaje":1},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"b) A reflexionar sobre la naturaleza de la realidad y la ficción.","puntaje":1}}},{"Nombre":"MARTINA BERNAL","Puntos":13,"Nota":4.4,"Simce":269,"Categoria":"Intermedio 🟡","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"a) El recuerdo es una metáfora de la soledad del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"a) La llegada de la modernidad.","puntaje":0},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"b) Remite a figuras bíblicas y alquimistas.","puntaje":1},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"b) La pobreza del lenguaje de la época.","puntaje":0},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"a) A través de descripciones detalladas de la naturaleza.","puntaje":0},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"d) El pasado y el presente son realidades separadas.","puntaje":0},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"b) El poder de la tecnología para resolver problemas.","puntaje":0},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"c) A valorar la importancia del progreso tecnológico.","puntaje":0}}},{"Nombre":"ALEXANDER CORDERO","Puntos":12,"Nota":4,"Simce":250,"Categoria":"Intermedio 🟡","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"c) Un pueblo costero y bullicioso.","puntaje":0},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"c) El recuerdo explica el origen de la fascinación del coronel por la ciencia.","puntaje":1},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"c) La decadencia de la aldea.","puntaje":0},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"b) Remite a figuras bíblicas y alquimistas.","puntaje":1},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"d) Es irrelevante para el desarrollo de la trama.","puntaje":0},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"c) La novedad y extrañeza del mundo para los personajes.","puntaje":1},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"a) A través de descripciones detalladas de la naturaleza.","puntaje":0},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"a) El pasado es una carga que impide el progreso.","puntaje":0},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"b) Narrador testigo.","puntaje":0},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"c) Ironiza sobre la ingenuidad de los habitantes de Macondo.","puntaje":0},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"a) La fragilidad de la memoria.","puntaje":0},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"b) A reflexionar sobre la naturaleza de la realidad y la ficción.","puntaje":1}}},{"Nombre":"JAVIERA RUIZ","Puntos":12,"Nota":4,"Simce":250,"Categoria":"Intermedio 🟡","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"b) Aparatos eléctricos y electrónicos.","puntaje":0},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"a) El recuerdo es una metáfora de la soledad del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"a) La llegada de la modernidad.","puntaje":0},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"d) Hace referencia a líderes de la independencia latinoamericana.","puntaje":0},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"c) La novedad y extrañeza del mundo para los personajes.","puntaje":1},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"c) Con el uso de un lenguaje poético y simbólico.","puntaje":0},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"d) El pasado y el presente son realidades separadas.","puntaje":0},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"b) El poder de la tecnología para resolver problemas.","puntaje":0},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"a) A cuestionar la veracidad de los hechos históricos.","puntaje":0}}},{"Nombre":"MARTIN ALAMOS","Puntos":12,"Nota":4,"Simce":250,"Categoria":"Intermedio 🟡","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"a) El recuerdo es una metáfora de la soledad del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"a) La llegada de la modernidad.","puntaje":0},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"a) Evoca personajes de la mitología griega.","puntaje":0},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"b) La pobreza del lenguaje de la época.","puntaje":0},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"c) Con el uso de un lenguaje poético y simbólico.","puntaje":0},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"d) El pasado y el presente son realidades separadas.","puntaje":0},"¿Cuál es el tema central del fragmento?":{"alternativa":"b) La soledad y el aislamiento.","puntaje":0},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"c) Narrador omnisciente.","puntaje":1},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"c) La capacidad del pasado para irrumpir en el presente.","puntaje":1},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"a) A cuestionar la veracidad de los hechos históricos.","puntaje":0}}},{"Nombre":"FELIPE GUZMÁN","Puntos":12,"Nota":4,"Simce":250,"Categoria":"Intermedio 🟡","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"c) Frente a su pelotón de fusilamiento.","puntaje":1},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"c) Su reciente creación y falta de nombres.","puntaje":1},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"a) El recuerdo es una metáfora de la soledad del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"a) La llegada de la modernidad.","puntaje":0},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"a) Evoca personajes de la mitología griega.","puntaje":0},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"b) La pobreza del lenguaje de la época.","puntaje":0},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"c) Con el uso de un lenguaje poético y simbólico.","puntaje":0},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"c) El pasado es fundamental para comprender el presente.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"d) Narrador objetivo.","puntaje":0},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"b) El poder de la tecnología para resolver problemas.","puntaje":0},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"a) A cuestionar la veracidad de los hechos históricos.","puntaje":0}}},{"Nombre":"AMARILIS FROST","Puntos":11,"Nota":3.8,"Simce":231,"Categoria":"Inicial 🔴","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"b) En su vejez.","puntaje":0},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"b) Una aldea pequeña y primitiva.","puntaje":1},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"d) Su compleja estructura política.","puntaje":0},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"c) Una familia de gitanos.","puntaje":1},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"c) Nuevos inventos y maravillas tecnológicas.","puntaje":1},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"c) Los atraía con fuerza.","puntaje":1},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"c) El recuerdo explica el origen de la fascinación del coronel por la ciencia.","puntaje":1},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"a) La llegada de la modernidad.","puntaje":0},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"c) Se asocia a héroes de la literatura medieval.","puntaje":0},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"a) La falta de comunicación entre los habitantes de Macondo.","puntaje":0},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"b) Mediante la presentación de hechos extraordinarios como algo cotidiano.","puntaje":1},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"b) El presente es una repetición del pasado.","puntaje":0},"¿Cuál es el tema central del fragmento?":{"alternativa":"c) La memoria y el origen.","puntaje":1},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"a) Narrador protagonista.","puntaje":0},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"a) Minimiza la importancia del invento.","puntaje":0},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"b) El poder de la tecnología para resolver problemas.","puntaje":0},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"b) A reflexionar sobre la naturaleza de la realidad y la ficción.","puntaje":1}}},{"Nombre":"ANDRESONN VOLMAR","Puntos":8,"Nota":3.3,"Simce":175,"Categoria":"Inicial 🔴","Respuestas":{"¿En qué momento de su vida recuerda el coronel Aureliano Buendía la tarde en que conoció el hielo?":{"alternativa":"b) En su vejez.","puntaje":0},"¿Cómo describe el narrador a Macondo en sus inicios?":{"alternativa":"c) Un pueblo costero y bullicioso.","puntaje":0},"¿Qué característica resalta el narrador sobre el mundo en ese tiempo?":{"alternativa":"a) Su avanzado desarrollo tecnológico.","puntaje":0},"¿Quiénes visitaban Macondo cada año en marzo?":{"alternativa":"b) Misioneros europeos.","puntaje":0},"¿Qué tipo de inventos llevaban los gitanos a Macondo?":{"alternativa":"b) Aparatos eléctricos y electrónicos.","puntaje":0},"¿Quién era Melquíades?":{"alternativa":"b) Un gitano con conocimientos de alquimia.","puntaje":1},"¿Qué efecto tenía el imán de Melquíades en los objetos metálicos?":{"alternativa":"b) Los hacía levitar.","puntaje":0},"¿Qué sensación producía el imán en los habitantes de Macondo?":{"alternativa":"b) Miedo y asombro.","puntaje":1},"¿Qué relación se establece entre el recuerdo del coronel y la descripción de Macondo?":{"alternativa":"b) El recuerdo contrasta con la realidad del presente del coronel.","puntaje":0},"¿Qué simboliza la llegada de los gitanos a Macondo?":{"alternativa":"b) La irrupción de lo desconocido y lo mágico.","puntaje":1},"¿Cómo se relaciona el nombre de Melquíades con la tradición literaria?":{"alternativa":"b) Remite a figuras bíblicas y alquimistas.","puntaje":1},"¿Qué papel juega la memoria en la narrativa de García Márquez?":{"alternativa":"b) Es un elemento clave para comprender el pasado y el presente.","puntaje":1},"¿Qué sugiere la frase \"el mundo era tan reciente, que muchas cosas carecían de nombre\"?":{"alternativa":"b) La pobreza del lenguaje de la época.","puntaje":0},"¿Cómo se construye la atmósfera mágica en el fragmento?":{"alternativa":"b) Mediante la presentación de hechos extraordinarios como algo cotidiano.","puntaje":1},"¿Qué reflexión propone el fragmento sobre la relación entre el pasado y el presente?":{"alternativa":"b) El presente es una repetición del pasado.","puntaje":0},"¿Cuál es el tema central del fragmento?":{"alternativa":"b) La soledad y el aislamiento.","puntaje":0},"Qué tipo de narrador se presenta en el fragmento?":{"alternativa":"b) Narrador testigo.","puntaje":0},"¿Qué efecto produce el uso de la hipérbole en la descripción del imán?":{"alternativa":"b) Enfatiza el carácter mágico y extraordinario del invento.","puntaje":1},"¿Qué simbolizan los objetos perdidos que aparecen con el imán?":{"alternativa":"b) El poder de la tecnología para resolver problemas.","puntaje":0},"¿Qué invitación implícita hace el fragmento al lector?":{"alternativa":"b) A reflexionar sobre la naturaleza de la realidad y la ficción.","puntaje":1}}}];
+
+            function openStudentModal(idx) {
+                var s = masterStudents[idx];
+                if (!s) return;
+
+                document.getElementById('modal-name').textContent = s.Nombre;
+                document.getElementById('modal-stats').textContent =
+                    'Nota: ' + s.Nota.toFixed(1).replace('.', ',') +
+                    ' | Puntos: ' + s.Puntos +
+                    ' | Categoría: ' + s.Categoria;
+
+                var listHtml = '';
+                var respuestas = s.Respuestas || {};
+                var keys = Object.keys(respuestas);
+
+                for (var i = 0; i < keys.length; i++) {
+                    var qTitle = keys[i];
+                    var dataObj = respuestas[qTitle];
+                    var cleanQ = String(qTitle).trim();
+                    var userAlt = dataObj.alternativa;
+                    var userPts = dataObj.puntaje;
+                    var isError = (userPts === 0);
+                    var badgeClass = isError ? 'bad' : 'ok';
+                    var icon = isError ? '❌ No Acertó' : '✅ Acertó';
+                    var detailsMsg = isError
+                        ? '<span style="display:block;font-size:14px;color:#ef4444;margin-top:6px;font-weight:bold;">Alternativa Marcada: <span style="text-decoration:underline;">' + userAlt + '</span></span>'
+                        : '<span style="display:block;font-size:14px;color:#2ecc71;margin-top:6px;font-weight:bold;">Alternativa Marcada: ' + userAlt + '</span>';
+
+                    listHtml += '<div class="ans-card ' + badgeClass + '">' +
+                        '<div class="ans-q">' + cleanQ + detailsMsg + '</div>' +
+                        '<div class="ans-val ' + badgeClass + '">' + icon + '</div>' +
+                        '</div>';
+                }
+
+                if (!listHtml) listHtml = '<div style="color:gray;text-align:center;padding:20px;">No hay detalle de alternativas detectado.</div>';
+
+                document.getElementById('modal-answers-list').innerHTML = listHtml;
+                document.getElementById('student-modal').style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal() {
+                document.getElementById('student-modal').style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+            </script>
+</body>
+</html>

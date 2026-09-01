@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Reporte SIMCE (Ensayo SIMCE N1 Lengua y Literatura 4to básico A)</title>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
+            --secondary: #f8fafc;
+            --accent: #10b981;
+            --danger: #cb2431;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #e0e7ff 100%);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            font-size: 16px;
+            /* Aumentado de default a 16px para mejor legibilidad general */
+        }
+
+        /* VIEW: UPLOAD */
+        #upload-view {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 650px;
+            background: var(--surface);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            transition: transform 0.3s ease;
+        }
+
+        .icon-container {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            color: white;
+            font-size: 32px;
+            box-shadow: 0 10px 15px -3px rgba(30, 58, 138, 0.3);
+            transform: rotate(-5deg);
+        }
+
+        h1.main-title {
+            font-size: 26px;
+            color: var(--text-main);
+            margin: 0 0 8px 0;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        h2.subtitle {
+            font-size: 16px;
+            color: var(--primary-light);
+            margin: 0;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .description {
+            color: var(--text-muted);
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 20px;
+            padding: 0 20px;
+            margin-top: 20px;
+        }
+
+        .options-panel {
+            background: rgba(59, 130, 246, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+            display: none;
+        }
+
+        .options-panel.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Outfit';
+            font-size: 14px;
+            box-sizing: border-box;
+            background-color: white;
+            color: black;
+            font-weight: bold;
+        }
+
+        .form-group input[readonly] {
+            background-color: white;
+            color: black;
+            font-weight: bold;
+            border-color: #cbd5e1;
+            cursor: default;
+        }
+
+        .upload-area {
+            position: relative;
+            border: 2px dashed var(--primary-light);
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            background: rgba(59, 130, 246, 0.03);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 25px;
+        }
+
+        .upload-area:hover {
+            background: rgba(59, 130, 246, 0.08);
+            border-color: var(--primary);
+            transform: scale(1.02);
+        }
+
+        input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .upload-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+            display: block;
+            opacity: 0.8;
+        }
+
+        .upload-text {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 16px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .upload-subtext {
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 400;
+        }
+
+        .generate-btn {
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            margin-bottom: 15px;
+        }
+
+        .generate-btn:hover {
+            box-shadow: 0 8px 20px rgba(30, 58, 138, 0.35);
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            filter: grayscale(1);
+        }
+
+        #loading {
+            display: none;
+            text-align: center;
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        /* VIEW: DASHBOARD */
+        #report-view {
+            display: none;
+            max-width: 1250px;
+            /* Expandido para alojar mejor las fuentes mayores */
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            color: #334e68;
+        }
+
+        .report-header {
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .report-header h1 {
+            text-transform: uppercase;
+            font-size: 28px;
+            /* Título informe más grande */
+            color: var(--primary);
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        .report-header h2 {
+            font-size: 22px;
+            color: #627d98;
+            margin: 5px 0 20px 0;
+            font-weight: bold;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+            background: var(--secondary);
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            /* Más grande en metadatos */
+        }
+
+        .meta-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .meta-label {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            background: #fff;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-value {
+            font-size: 40px;
+            /* Números más grandes */
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--text-main);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            /* Mayor legibilidad */
+            color: #627d98;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .stat-card.verde {
+            border-top: 5px solid #2ecc71;
+        }
+
+        .stat-card.amarillo {
+            border-top: 5px solid #f1c40f;
+        }
+
+        .stat-card.rojo {
+            border-top: 5px solid #e74c3c;
+        }
+
+        .stat-card.total {
+            border-top: 5px solid var(--primary);
+        }
+
+        .rankings-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .ranking-title {
+            font-size: 18px;
+            /* Título de tablas más grande */
+            font-weight: bold;
+            color: var(--primary);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border: 1px solid var(--border);
+            font-size: 15px;
+            /* Textos de tabla más amigables */
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--secondary);
+        }
+
+        .nota-azul {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .nota-roja {
+            color: var(--danger);
+            font-weight: bold;
+        }
+
+        .cat-verde {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .cat-amarillo {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .cat-rojo {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+        }
+
+        #error-card {
+            display: none;
+            background: #fee2e2;
+            border: 1px solid #ef4444;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            color: #b91c1c;
+            font-size: 13px;
+        }
+
+        @media print {
+            .actions {
+                display: none !important;
+            }
+
+            body {
+                padding: 0;
+                background: white;
+            }
+
+            #report-view {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                max-width: 100%;
+            }
+
+            @page {
+                size: A4 portrait;
+                margin: 10mm;
+            }
+        }
+
+        /* --- MODAL STYLES --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 95%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .btn-close {
+            background: #f1f5f9;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #64748b;
+        }
+
+        .btn-close:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .ans-card {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ans-card.bad {
+            border-left: 4px solid #ef4444;
+            background: #fef2f2;
+        }
+
+        .ans-card.ok {
+            border-left: 4px solid #2ecc71;
+            background: #f0fdf4;
+        }
+
+        .ans-q {
+            font-size: 15px;
+            font-weight: 500;
+            color: #334155;
+            max-width: 80%;
+        }
+
+        .ans-val {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .ans-val.bad {
+            color: #ef4444;
+            text-decoration: line-through;
+        }
+
+        .ans-val.ok {
+            color: #2ecc71;
+        }
+
+        .interactive-row {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .interactive-row:hover {
+            background-color: #e0e7ff !important;
+            transform: translateX(4px);
+        }
+
+        .interactive-row:hover .student-link {
+            color: #1d4ed8;
+        }
+
+        .student-link {
+            color: #2563eb;
+            text-decoration: underline;
+            font-weight: bold;
+            transition: color 0.2s ease;
+        }
+     body{background:white; margin:0}</style>
+</head>
+<body>
+<div id="report-view" style="display: block;">
+        
+
+        <div id="dashboard-content">
+            <div class="report-header">
+                <h1>Informe Plataforma Ensayos SIMCE Institucional</h1>
+                <h2>Liceo Integrado Libertador Simón Bolívar - 4 básico A</h2>
+            </div>
+
+            <div class="meta-grid" id="ui-metadata">
+                <div class="meta-item"><span class="meta-label">Ensayo:</span> Ensayo SIMCE N1 Lengua y Literatura 4to básico&nbsp;A</div>
+                <div class="meta-item"><span class="meta-label">Curso:</span> 4 básico A</div>
+                <div class="meta-item"><span class="meta-label">Fecha:</span> 13-05-2026</div>
+                <div class="meta-item"><span class="meta-label">Exigencia Prueba:</span> 60%</div>
+                <div class="meta-item"><span class="meta-label">Total Preguntas Oficiales:</span> 30 pts.</div>
+                <div class="meta-item"><span class="meta-label">Puntaje de Corte de Aprobación Mín.:</span> 18 pts.</div>
+            </div>
+
+            <section class="stats-container" id="ui-kpis">
+                <div class="stat-card total"><div class="stat-value">31</div><div class="stat-label">Total Estudiantes</div></div>
+                <div class="stat-card verde"><div class="stat-value">17</div><div class="stat-label">Logro Avanzado</div></div>
+                <div class="stat-card amarillo"><div class="stat-value">4</div><div class="stat-label">Logro Intermedio</div></div>
+                <div class="stat-card rojo"><div class="stat-value">10</div><div class="stat-label">Logro Inicial</div></div>
+            </section>
+
+            <section class="rankings-grid" id="ui-rankings">
+                <div><div class="ranking-title">🏆 Top 10 Puntajes Altos</div>
+                <table><thead><tr><th>Nombre</th><th style="text-align:center">Pts</th><th style="text-align:center">Nota</th><th style="text-align:center">SIMCE Aprox.</th></tr></thead><tbody><tr><td>MATIAS FERNANDO MADARIAGA</td><td style="text-align:center">27</td><td style="text-align:center" class="nota-azul">6,3</td><td style="text-align:center">363</td></tr><tr><td>DYLAN ORTEGA</td><td style="text-align:center">26</td><td style="text-align:center" class="nota-azul">6,0</td><td style="text-align:center">350</td></tr><tr><td>PASCAL UVERLINDA LUCERO N</td><td style="text-align:center">26</td><td style="text-align:center" class="nota-azul">6,0</td><td style="text-align:center">350</td></tr><tr><td>SIMÓN ANTONIO KOPP GARRID</td><td style="text-align:center">25</td><td style="text-align:center" class="nota-azul">5,8</td><td style="text-align:center">338</td></tr><tr><td>MARIA ISABEL TRINIDAD FIC</td><td style="text-align:center">25</td><td style="text-align:center" class="nota-azul">5,8</td><td style="text-align:center">338</td></tr><tr><td>PASCAL NOEMI AYALA MUÑOZ</td><td style="text-align:center">24</td><td style="text-align:center" class="nota-azul">5,5</td><td style="text-align:center">325</td></tr><tr><td>SOFIA ASTUDILLO GUTIERREZ</td><td style="text-align:center">24</td><td style="text-align:center" class="nota-azul">5,5</td><td style="text-align:center">325</td></tr><tr><td>JEAN ROBERT NAVARRO CASTR</td><td style="text-align:center">23</td><td style="text-align:center" class="nota-azul">5,3</td><td style="text-align:center">313</td></tr><tr><td>AGUSTINA INGNASIA AZUA CA</td><td style="text-align:center">23</td><td style="text-align:center" class="nota-azul">5,3</td><td style="text-align:center">313</td></tr><tr><td>JULIETA PASCAL OBRIEN SER</td><td style="text-align:center">23</td><td style="text-align:center" class="nota-azul">5,3</td><td style="text-align:center">313</td></tr></tbody></table></div>
+
+                <div><div class="ranking-title">⚠️ Alumnos en Riesgo (Nota &lt; 4,0)</div>
+                    <table><thead><tr><th>Nombre</th><th style="text-align:center">Pts</th><th style="text-align:center">Nota</th><th style="text-align:center">SIMCE Aprox.</th></tr></thead><tbody><tr><td>ANAHIS PASCALGARIDO FARIA</td><td style="text-align:center">6</td><td style="text-align:center" class="nota-roja">2,7</td><td style="text-align:center">100</td></tr><tr><td>JONATHAN JEAN PAUL CASTRO</td><td style="text-align:center">7</td><td style="text-align:center" class="nota-roja">2,8</td><td style="text-align:center">113</td></tr><tr><td>MILAGROS VASQUEZ LEHUY</td><td style="text-align:center">9</td><td style="text-align:center" class="nota-roja">3,0</td><td style="text-align:center">138</td></tr><tr><td>RYAN VIDELA</td><td style="text-align:center">10</td><td style="text-align:center" class="nota-roja">3,1</td><td style="text-align:center">150</td></tr><tr><td>YEICOB JESUS ANDRES CAROC</td><td style="text-align:center">11</td><td style="text-align:center" class="nota-roja">3,2</td><td style="text-align:center">163</td></tr><tr><td>AISHA ANAHIS PIZARRO ALCA</td><td style="text-align:center">12</td><td style="text-align:center" class="nota-roja">3,3</td><td style="text-align:center">175</td></tr><tr><td>ABRIL HIDALGO VITORIA</td><td style="text-align:center">14</td><td style="text-align:center" class="nota-roja">3,6</td><td style="text-align:center">200</td></tr><tr><td>DAVID MOISES RONDON CORRE</td><td style="text-align:center">14</td><td style="text-align:center" class="nota-roja">3,6</td><td style="text-align:center">200</td></tr><tr><td>MONSERRAT    RALLEN MARTE</td><td style="text-align:center">15</td><td style="text-align:center" class="nota-roja">3,7</td><td style="text-align:center">213</td></tr><tr><td>DERECK ALEXANDER RODRIGUE</td><td style="text-align:center">17</td><td style="text-align:center" class="nota-roja">3,9</td><td style="text-align:center">238</td></tr></tbody></table></div>
+            </section>
+
+            <section>
+                <div class="ranking-title">📋 Resultados Detallados de Alumnos</div>
+                <div style="background-color: #eef2ff; border-left: 4px solid #4f46e5; padding: 12px 16px; margin-bottom: 15px; border-radius: 6px;">
+                    <strong style="color: #4f46e5; font-size: 16px;">💡 TIP:</strong> <span style="font-size: 16px; font-weight: bold; color: #334155;">Haz click en el nombre de cualquier
+                        alumno de la lista
+                        para ver el reporte detallado con las preguntas y alternativas exactas que marcó.</span>
+                </div>
+                <table id="ui-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th style="text-align:center">Puntos</th>
+                            <th style="text-align:center">Nota</th>
+                            <th style="text-align:center">Puntaje SIMCE aproximado</th>
+                            <th>Nivel de Logro</th>
+                        </tr>
+                    </thead>
+                    <tbody><tr class="interactive-row" onclick="openStudentModal(0)" title="Haz click para ver respuestas">
+                    <td class="student-link">MATIAS FERNANDO MADARIAGA GUZMÁN</td>
+                    <td style="text-align:center">27</td>
+                    <td style="text-align:center" class="nota-azul">6,3</td>
+                    <td style="text-align:center; font-weight:bold;">363</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(1)" title="Haz click para ver respuestas">
+                    <td class="student-link">DYLAN ORTEGA</td>
+                    <td style="text-align:center">26</td>
+                    <td style="text-align:center" class="nota-azul">6,0</td>
+                    <td style="text-align:center; font-weight:bold;">350</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(2)" title="Haz click para ver respuestas">
+                    <td class="student-link">PASCAL UVERLINDA LUCERO NORAMBUENA.</td>
+                    <td style="text-align:center">26</td>
+                    <td style="text-align:center" class="nota-azul">6,0</td>
+                    <td style="text-align:center; font-weight:bold;">350</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(3)" title="Haz click para ver respuestas">
+                    <td class="student-link">SIMÓN ANTONIO KOPP GARRIDO</td>
+                    <td style="text-align:center">25</td>
+                    <td style="text-align:center" class="nota-azul">5,8</td>
+                    <td style="text-align:center; font-weight:bold;">338</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(4)" title="Haz click para ver respuestas">
+                    <td class="student-link">MARIA ISABEL TRINIDAD FICA UBAL</td>
+                    <td style="text-align:center">25</td>
+                    <td style="text-align:center" class="nota-azul">5,8</td>
+                    <td style="text-align:center; font-weight:bold;">338</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(5)" title="Haz click para ver respuestas">
+                    <td class="student-link">PASCAL NOEMI AYALA MUÑOZ</td>
+                    <td style="text-align:center">24</td>
+                    <td style="text-align:center" class="nota-azul">5,5</td>
+                    <td style="text-align:center; font-weight:bold;">325</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(6)" title="Haz click para ver respuestas">
+                    <td class="student-link">SOFIA ASTUDILLO GUTIERREZ ESTHER</td>
+                    <td style="text-align:center">24</td>
+                    <td style="text-align:center" class="nota-azul">5,5</td>
+                    <td style="text-align:center; font-weight:bold;">325</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(7)" title="Haz click para ver respuestas">
+                    <td class="student-link">JEAN ROBERT NAVARRO CASTRO</td>
+                    <td style="text-align:center">23</td>
+                    <td style="text-align:center" class="nota-azul">5,3</td>
+                    <td style="text-align:center; font-weight:bold;">313</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(8)" title="Haz click para ver respuestas">
+                    <td class="student-link">AGUSTINA INGNASIA AZUA CAVIERES</td>
+                    <td style="text-align:center">23</td>
+                    <td style="text-align:center" class="nota-azul">5,3</td>
+                    <td style="text-align:center; font-weight:bold;">313</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(9)" title="Haz click para ver respuestas">
+                    <td class="student-link">JULIETA PASCAL OBRIEN SERRANO</td>
+                    <td style="text-align:center">23</td>
+                    <td style="text-align:center" class="nota-azul">5,3</td>
+                    <td style="text-align:center; font-weight:bold;">313</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(10)" title="Haz click para ver respuestas">
+                    <td class="student-link">GENESIS SANTANA</td>
+                    <td style="text-align:center">23</td>
+                    <td style="text-align:center" class="nota-azul">5,3</td>
+                    <td style="text-align:center; font-weight:bold;">313</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(11)" title="Haz click para ver respuestas">
+                    <td class="student-link">ANTHONELLA YULIET TORO GONZALES.</td>
+                    <td style="text-align:center">23</td>
+                    <td style="text-align:center" class="nota-azul">5,3</td>
+                    <td style="text-align:center; font-weight:bold;">313</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(12)" title="Haz click para ver respuestas">
+                    <td class="student-link">MATEO LEON VILLABLANCA PINO</td>
+                    <td style="text-align:center">21</td>
+                    <td style="text-align:center" class="nota-azul">4,8</td>
+                    <td style="text-align:center; font-weight:bold;">288</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(13)" title="Haz click para ver respuestas">
+                    <td class="student-link">LUCAS AMARO ARIAS OLGUIN</td>
+                    <td style="text-align:center">21</td>
+                    <td style="text-align:center" class="nota-azul">4,8</td>
+                    <td style="text-align:center; font-weight:bold;">288</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(14)" title="Haz click para ver respuestas">
+                    <td class="student-link">CASTRO PELAYO TOMAS EDUARDO</td>
+                    <td style="text-align:center">21</td>
+                    <td style="text-align:center" class="nota-azul">4,8</td>
+                    <td style="text-align:center; font-weight:bold;">288</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(15)" title="Haz click para ver respuestas">
+                    <td class="student-link">CAMILA ANTONIA ZUÑIGA MARTINES</td>
+                    <td style="text-align:center">21</td>
+                    <td style="text-align:center" class="nota-azul">4,8</td>
+                    <td style="text-align:center; font-weight:bold;">288</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(16)" title="Haz click para ver respuestas">
+                    <td class="student-link">ANAIS BELEN SEVERO DIAZ</td>
+                    <td style="text-align:center">21</td>
+                    <td style="text-align:center" class="nota-azul">4,8</td>
+                    <td style="text-align:center; font-weight:bold;">288</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(17)" title="Haz click para ver respuestas">
+                    <td class="student-link">NATHALY EVELYN CHACON PERNIA</td>
+                    <td style="text-align:center">20</td>
+                    <td style="text-align:center" class="nota-azul">4,5</td>
+                    <td style="text-align:center; font-weight:bold;">275</td>
+                    <td style="text-align:center" class="cat-amarillo">Intermedio 🟡</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(18)" title="Haz click para ver respuestas">
+                    <td class="student-link">ANTONELLA IGNACIA VALDES SANSHEZ</td>
+                    <td style="text-align:center">19</td>
+                    <td style="text-align:center" class="nota-azul">4,3</td>
+                    <td style="text-align:center; font-weight:bold;">263</td>
+                    <td style="text-align:center" class="cat-amarillo">Intermedio 🟡</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(19)" title="Haz click para ver respuestas">
+                    <td class="student-link">AARON ISAIAS PINO VELIZ</td>
+                    <td style="text-align:center">19</td>
+                    <td style="text-align:center" class="nota-azul">4,3</td>
+                    <td style="text-align:center; font-weight:bold;">263</td>
+                    <td style="text-align:center" class="cat-amarillo">Intermedio 🟡</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(20)" title="Haz click para ver respuestas">
+                    <td class="student-link">JAVIERA  ESTEFANIA   VILLARROEL  AGHILERA</td>
+                    <td style="text-align:center">18</td>
+                    <td style="text-align:center" class="nota-azul">4,0</td>
+                    <td style="text-align:center; font-weight:bold;">250</td>
+                    <td style="text-align:center" class="cat-amarillo">Intermedio 🟡</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(21)" title="Haz click para ver respuestas">
+                    <td class="student-link">DERECK ALEXANDER RODRIGUEZ PICO</td>
+                    <td style="text-align:center">17</td>
+                    <td style="text-align:center" class="nota-roja">3,9</td>
+                    <td style="text-align:center; font-weight:bold;">238</td>
+                    <td style="text-align:center" class="cat-rojo">Inicial 🔴</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(22)" title="Haz click para ver respuestas">
+                    <td class="student-link">MONSERRAT    RALLEN MARTEL   CARASCO</td>
+                    <td style="text-align:center">15</td>
+                    <td style="text-align:center" class="nota-roja">3,7</td>
+                    <td style="text-align:center; font-weight:bold;">213</td>
+                    <td style="text-align:center" class="cat-rojo">Inicial 🔴</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(23)" title="Haz click para ver respuestas">
+                    <td class="student-link">DAVID MOISES RONDON CORREA</td>
+                    <td style="text-align:center">14</td>
+                    <td style="text-align:center" class="nota-roja">3,6</td>
+                    <td style="text-align:center; font-weight:bold;">200</td>
+                    <td style="text-align:center" class="cat-rojo">Inicial 🔴</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(24)" title="Haz click para ver respuestas">
+                    <td class="student-link">ABRIL HIDALGO VITORIA</td>
+                    <td style="text-align:center">14</td>
+                    <td style="text-align:center" class="nota-roja">3,6</td>
+                    <td style="text-align:center; font-weight:bold;">200</td>
+                    <td style="text-align:center" class="cat-rojo">Inicial 🔴</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(25)" title="Haz click para ver respuestas">
+                    <td class="student-link">AISHA ANAHIS PIZARRO ALCAINO</td>
+                    <td style="text-align:center">12</td>
+                    <td style="text-align:center" class="nota-roja">3,3</td>
+                    <td style="text-align:center; font-weight:bold;">175</td>
+                    <td style="text-align:center" class="cat-rojo">Inicial 🔴</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(26)" title="Haz click para ver respuestas">
+                    <td class="student-link">YEICOB JESUS ANDRES CAROCA ESPINOSA</td>
+                    <td style="text-align:center">11</td>
+                    <td style="text-align:center" class="nota-roja">3,2</td>
+                    <td style="text-align:center; font-weight:bold;">163</td>
+                    <td style="text-align:center" class="cat-rojo">Inicial 🔴</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(27)" title="Haz click para ver respuestas">
+                    <td class="student-link">RYAN VIDELA</td>
+                    <td style="text-align:center">10</td>
+                    <td style="text-align:center" class="nota-roja">3,1</td>
+                    <td style="text-align:center; font-weight:bold;">150</td>
+                    <td style="text-align:center" class="cat-rojo">Inicial 🔴</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(28)" title="Haz click para ver respuestas">
+                    <td class="student-link">MILAGROS VASQUEZ LEHUY</td>
+                    <td style="text-align:center">9</td>
+                    <td style="text-align:center" class="nota-roja">3,0</td>
+                    <td style="text-align:center; font-weight:bold;">138</td>
+                    <td style="text-align:center" class="cat-rojo">Inicial 🔴</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(29)" title="Haz click para ver respuestas">
+                    <td class="student-link">JONATHAN JEAN PAUL CASTRO OLGUIN</td>
+                    <td style="text-align:center">7</td>
+                    <td style="text-align:center" class="nota-roja">2,8</td>
+                    <td style="text-align:center; font-weight:bold;">113</td>
+                    <td style="text-align:center" class="cat-rojo">Inicial 🔴</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(30)" title="Haz click para ver respuestas">
+                    <td class="student-link">ANAHIS PASCALGARIDO FARIAS</td>
+                    <td style="text-align:center">6</td>
+                    <td style="text-align:center" class="nota-roja">2,7</td>
+                    <td style="text-align:center; font-weight:bold;">100</td>
+                    <td style="text-align:center" class="cat-rojo">Inicial 🔴</td>
+                </tr></tbody>
+                </table>
+            </section>
+
+            <!-- Sección de Preguntas Críticas (Ahora debajo de Alumnos) -->
+            <section id="ui-critical-questions">
+                <div style="grid-column: 1 / -1; margin-top:20px;">
+                    <div class="ranking-title">📈 Top Preguntas con Mayor Porcentaje de Error</div>
+                    <table id="table-critical-questions">
+                        <thead>
+                            <tr>
+                                <th>Pregunta / Contenido</th>
+                                <th style="text-align:center">Error %</th>
+                                <th style="text-align:center">Cantidad de Alumnos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>¿Qué te parece más sorprendente de la historia del Ratón Pérez?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">87%</td>
+                                <td style="text-align:center">27 alumnos</td>
+                            </tr><tr>
+                                <td>¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">71%</td>
+                                <td style="text-align:center">22 alumnos</td>
+                            </tr><tr>
+                                <td>¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">71%</td>
+                                <td style="text-align:center">22 alumnos</td>
+                            </tr><tr>
+                                <td>¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">58%</td>
+                                <td style="text-align:center">18 alumnos</td>
+                            </tr><tr>
+                                <td>¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">58%</td>
+                                <td style="text-align:center">18 alumnos</td>
+                            </tr><tr>
+                                <td>¿Cuál es la función principal de la clorofila en las hojas?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">55%</td>
+                                <td style="text-align:center">17 alumnos</td>
+                            </tr><tr>
+                                <td>¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">55%</td>
+                                <td style="text-align:center">17 alumnos</td>
+                            </tr><tr>
+                                <td>¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">55%</td>
+                                <td style="text-align:center">17 alumnos</td>
+                            </tr><tr>
+                                <td>¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">48%</td>
+                                <td style="text-align:center">15 alumnos</td>
+                            </tr><tr>
+                                <td>¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">48%</td>
+                                <td style="text-align:center">15 alumnos</td>
+                            </tr><tr>
+                                <td>¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">45%</td>
+                                <td style="text-align:center">14 alumnos</td>
+                            </tr><tr>
+                                <td>¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">45%</td>
+                                <td style="text-align:center">14 alumnos</td>
+                            </tr><tr>
+                                <td>¿Qué sucede finalmente con las hojas después de que cambian de color?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">42%</td>
+                                <td style="text-align:center">13 alumnos</td>
+                            </tr><tr>
+                                <td>¿Qué sucede con la producción de clorofila en otoño?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">35%</td>
+                                <td style="text-align:center">11 alumnos</td>
+                            </tr><tr>
+                                <td>¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">35%</td>
+                                <td style="text-align:center">11 alumnos</td>
+                            </tr><tr>
+                                <td>¿Qué factores influyen en la intensidad de los colores otoñales?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">32%</td>
+                                <td style="text-align:center">10 alumnos</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div></section>
+        </div>
+    </div>
+<div id="student-modal" class="modal-overlay" onclick="if(event.target === this) closeModal()" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h3 id="modal-name" style="margin:0; color:var(--primary); font-size:20px;">Nombre Alumno</h3>
+                    <div id="modal-stats" style="font-size:13px; color:#64748b; margin-top:4px;">Nota: 0.0 | Puntos: 0
+                    </div>
+                </div>
+                <button class="btn-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div style="font-size:14px; font-weight:bold; margin-bottom:15px; border-bottom:2px solid var(--border); padding-bottom:5px;">
+                    Detalle de Respuestas</div>
+                <div id="modal-answers-list"></div>
+            </div>
+        </div>
+    </div>
+
+                <script>
+                var masterStudents = [{"Nombre":"MATIAS FERNANDO MADARIAGA GUZMÁN","Puntos":27,"Nota":6.3,"Simce":363,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una pequeña puerta sellada.","puntaje":1},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que formaba parte de una comunidad mundial.","puntaje":1},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Almacenar agua para el invierno.","puntaje":0},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Disminuye porque hay menos luz solar.","puntaje":1},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La especie del árbol, la luz solar, la temperatura y el agua.","puntaje":1},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días soleados y noches frías.","puntaje":1},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Dejan de producir alimento, se secan y caen.","puntaje":1},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les permite conservar energía cuando no hay condiciones para la\r\nfotosíntesis.","puntaje":1},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que ciertas condiciones climáticas favorecen la producción o la visibilidad de otros\r\npigmentos.","puntaje":1},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos se preparan para un periodo diferente (el Ratón Pérez descubre una\r\nnueva realidad, los árboles para el invierno).","puntaje":1},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"No tienen ninguna relación entre sí.\r\nPreguntas de reflexión sobre ambos textos:","puntaje":0},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que exista una ciudad secreta de ratones Pérez.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los árboles puedan sobrevivir al frío y la falta de luz.","puntaje":1},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"La curiosidad puede llevar a descubrimientos maravillosos.","puntaje":1},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Detrás del armario de la habitación de Martín.","puntaje":1},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba muy bien cerrada y difícil de abrir.","puntaje":1},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Sorprendido y parte de algo más grande.","puntaje":1},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería muy difícil porque no habría suficiente luz solar para el proceso.","puntaje":1},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Se vuelven visibles cuando la clorofila desaparece.","puntaje":1},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para cortar el suministro de agua y nutrientes a la hoja.","puntaje":1},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"Ambos revelan que hay más de lo que vemos a simple vista.","puntaje":1}}},{"Nombre":"DYLAN ORTEGA","Puntos":26,"Nota":6,"Simce":350,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una pequeña puerta sellada.","puntaje":1},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que formaba parte de una comunidad mundial.","puntaje":1},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Producir su alimento mediante la fotosíntesis.","puntaje":1},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Disminuye porque hay menos luz solar.","puntaje":1},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La especie del árbol, la luz solar, la temperatura y el agua.","puntaje":1},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días nublados y noches frías.","puntaje":0},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Dejan de producir alimento, se secan y caen.","puntaje":1},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les permite conservar energía cuando no hay condiciones para la\r\nfotosíntesis.","puntaje":1},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que ciertas condiciones climáticas favorecen la producción o la visibilidad de otros\r\npigmentos.","puntaje":1},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos se preparan para un periodo diferente (el Ratón Pérez descubre una\r\nnueva realidad, los árboles para el invierno).","puntaje":1},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"Ambas impulsan a la exploración y al descubrimiento de una explicación.","puntaje":1},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que exista una ciudad secreta de ratones Pérez.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los árboles puedan sobrevivir al frío y la falta de luz.","puntaje":1},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"La curiosidad puede llevar a descubrimientos maravillosos.","puntaje":1},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Detrás del armario de la habitación de Martín.","puntaje":1},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que tenía un dibujo de un sello.","puntaje":0},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Sorprendido y parte de algo más grande.","puntaje":1},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería muy difícil porque no habría suficiente luz solar para el proceso.","puntaje":1},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Ayudan a la fotosíntesis.","puntaje":0},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para cortar el suministro de agua y nutrientes a la hoja.","puntaje":1},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"Ambos revelan que hay más de lo que vemos a simple vista.","puntaje":1}}},{"Nombre":"PASCAL UVERLINDA LUCERO NORAMBUENA.","Puntos":26,"Nota":6,"Simce":350,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una pequeña puerta sellada.","puntaje":1},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que formaba parte de una comunidad mundial.","puntaje":1},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Producir su alimento mediante la fotosíntesis.","puntaje":1},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Disminuye porque hay menos luz solar.","puntaje":1},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La especie del árbol, la luz solar, la temperatura y el agua.","puntaje":1},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días soleados y noches frías.","puntaje":1},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Dejan de producir alimento, se secan y caen.","puntaje":1},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les permite conservar energía cuando no hay condiciones para la\r\nfotosíntesis.","puntaje":1},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que el frío intenso daña las hojas.","puntaje":0},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos se preparan para un periodo diferente (el Ratón Pérez descubre una\r\nnueva realidad, los árboles para el invierno).","puntaje":1},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"Ambas impulsan a la exploración y al descubrimiento de una explicación.","puntaje":1},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que exista una ciudad secreta de ratones Pérez.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los árboles puedan sobrevivir al frío y la falta de luz.","puntaje":1},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"La curiosidad puede llevar a descubrimientos maravillosos.","puntaje":1},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Detrás del armario de la habitación de Martín.","puntaje":1},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba muy bien cerrada y difícil de abrir.","puntaje":1},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Sorprendido y parte de algo más grande.","puntaje":1},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería muy difícil porque no habría suficiente luz solar para el proceso.","puntaje":1},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Se vuelven visibles cuando la clorofila desaparece.","puntaje":1},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para que la hoja cambie de color.","puntaje":0},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"Ambos son misterios que los niños intentan resolver.","puntaje":0}}},{"Nombre":"SIMÓN ANTONIO KOPP GARRIDO","Puntos":25,"Nota":5.8,"Simce":338,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una pequeña puerta sellada.","puntaje":1},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que formaba parte de una comunidad mundial.","puntaje":1},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Producir su alimento mediante la fotosíntesis.","puntaje":1},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Disminuye porque hay menos luz solar.","puntaje":1},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La especie del árbol, la luz solar, la temperatura y el agua.","puntaje":1},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días soleados y noches frías.","puntaje":1},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Dejan de producir alimento, se secan y caen.","puntaje":1},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les permite conservar energía cuando no hay condiciones para la\r\nfotosíntesis.","puntaje":1},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que ciertas condiciones climáticas favorecen la producción o la visibilidad de otros\r\npigmentos.","puntaje":1},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos se preparan para un periodo diferente (el Ratón Pérez descubre una\r\nnueva realidad, los árboles para el invierno).","puntaje":1},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"No tienen ninguna relación entre sí.\r\nPreguntas de reflexión sobre ambos textos:","puntaje":0},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que Martín no se dé cuenta de nada.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los árboles puedan sobrevivir al frío y la falta de luz.","puntaje":1},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"Los secretos siempre deben permanecer ocultos.","puntaje":0},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Detrás del armario de la habitación de Martín.","puntaje":1},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba muy bien cerrada y difícil de abrir.","puntaje":1},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Sorprendido y parte de algo más grande.","puntaje":1},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería muy difícil porque no habría suficiente luz solar para el proceso.","puntaje":1},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Ayudan a la fotosíntesis.","puntaje":0},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para cortar el suministro de agua y nutrientes a la hoja.","puntaje":1},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"No existe una conexión real entre ellos.","puntaje":0}}},{"Nombre":"MARIA ISABEL TRINIDAD FICA UBAL","Puntos":25,"Nota":5.8,"Simce":338,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una pequeña puerta sellada.","puntaje":1},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que formaba parte de una comunidad mundial.","puntaje":1},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Protegerlas del frío.","puntaje":0},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Disminuye porque hay menos luz solar.","puntaje":1},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La especie del árbol, la luz solar, la temperatura y el agua.","puntaje":1},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días soleados y noches frías.","puntaje":1},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Dejan de producir alimento, se secan y caen.","puntaje":1},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les permite conservar energía cuando no hay condiciones para la\r\nfotosíntesis.","puntaje":1},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que ciertas condiciones climáticas favorecen la producción o la visibilidad de otros\r\npigmentos.","puntaje":1},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos realizan una tarea importante de forma secreta.","puntaje":0},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"Ambas impulsan a la exploración y al descubrimiento de una explicación.","puntaje":1},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que cambie dientes por monedas.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los árboles puedan sobrevivir al frío y la falta de luz.","puntaje":1},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"La curiosidad puede llevar a descubrimientos maravillosos.","puntaje":1},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Detrás del armario de la habitación de Martín.","puntaje":1},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba decorada con sellos.","puntaje":0},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Sorprendido y parte de algo más grande.","puntaje":1},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería muy difícil porque no habría suficiente luz solar para el proceso.","puntaje":1},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Se vuelven visibles cuando la clorofila desaparece.","puntaje":1},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para proteger al árbol de los insectos.","puntaje":0},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"Ambos revelan que hay más de lo que vemos a simple vista.","puntaje":1}}},{"Nombre":"PASCAL NOEMI AYALA MUÑOZ","Puntos":24,"Nota":5.5,"Simce":325,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una pequeña puerta sellada.","puntaje":1},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que formaba parte de una comunidad mundial.","puntaje":1},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Producir su alimento mediante la fotosíntesis.","puntaje":1},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Disminuye porque hay menos luz solar.","puntaje":1},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La especie del árbol, la luz solar, la temperatura y el agua.","puntaje":1},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días nublados y noches frías.","puntaje":0},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Dejan de producir alimento, se secan y caen.","puntaje":1},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les da espacio para que crezcan nuevas hojas.","puntaje":0},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que la luz del sol destruye los pigmentos verdes.","puntaje":0},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos se preparan para un periodo diferente (el Ratón Pérez descubre una\r\nnueva realidad, los árboles para el invierno).","puntaje":1},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"Ambas impulsan a la exploración y al descubrimiento de una explicación.","puntaje":1},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que exista una ciudad secreta de ratones Pérez.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los árboles puedan sobrevivir al frío y la falta de luz.","puntaje":1},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"La curiosidad puede llevar a descubrimientos maravillosos.","puntaje":1},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Detrás del armario de la habitación de Martín.","puntaje":1},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba muy bien cerrada y difícil de abrir.","puntaje":1},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Sorprendido y parte de algo más grande.","puntaje":1},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería más eficiente porque tendrían más tiempo para producir alimento.","puntaje":0},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Se vuelven visibles cuando la clorofila desaparece.","puntaje":1},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para cortar el suministro de agua y nutrientes a la hoja.","puntaje":1},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"No existe una conexión real entre ellos.","puntaje":0}}},{"Nombre":"SOFIA ASTUDILLO GUTIERREZ ESTHER","Puntos":24,"Nota":5.5,"Simce":325,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una pequeña puerta sellada.","puntaje":1},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"De vuelta a la habitación de Martín.","puntaje":0},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que formaba parte de una comunidad mundial.","puntaje":1},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Producir su alimento mediante la fotosíntesis.","puntaje":1},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Se transforma en otros pigmentos.","puntaje":0},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La especie del árbol, la luz solar, la temperatura y el agua.","puntaje":1},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días soleados y noches frías.","puntaje":1},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Dejan de producir alimento, se secan y caen.","puntaje":1},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les permite conservar energía cuando no hay condiciones para la\r\nfotosíntesis.","puntaje":1},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que los árboles solo cambian de color en climas fríos.\r\nPreguntas que relacionan ambos textos:","puntaje":0},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos se preparan para un periodo diferente (el Ratón Pérez descubre una\r\nnueva realidad, los árboles para el invierno).","puntaje":1},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"Ambas impulsan a la exploración y al descubrimiento de una explicación.","puntaje":1},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que exista una ciudad secreta de ratones Pérez.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los árboles puedan sobrevivir al frío y la falta de luz.","puntaje":1},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"Los secretos siempre deben permanecer ocultos.","puntaje":0},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Detrás del armario de la habitación de Martín.","puntaje":1},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba muy bien cerrada y difícil de abrir.","puntaje":1},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Sorprendido y parte de algo más grande.","puntaje":1},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería muy difícil porque no habría suficiente luz solar para el proceso.","puntaje":1},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Se vuelven visibles cuando la clorofila desaparece.","puntaje":1},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para proteger al árbol de los insectos.","puntaje":0},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"Ambos revelan que hay más de lo que vemos a simple vista.","puntaje":1}}},{"Nombre":"JEAN ROBERT NAVARRO CASTRO","Puntos":23,"Nota":5.3,"Simce":313,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una pequeña puerta sellada.","puntaje":1},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que formaba parte de una comunidad mundial.","puntaje":1},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Darles un olor agradable.","puntaje":0},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Disminuye porque hay menos luz solar.","puntaje":1},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La especie del árbol, la luz solar, la temperatura y el agua.","puntaje":1},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días soleados y noches frías.","puntaje":1},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Dejan de producir alimento, se secan y caen.","puntaje":1},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les da espacio para que crezcan nuevas hojas.","puntaje":0},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que la luz del sol destruye los pigmentos verdes.","puntaje":0},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos realizan una tarea importante de forma secreta.","puntaje":0},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"Ambas impulsan a la exploración y al descubrimiento de una explicación.","puntaje":1},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que exista una ciudad secreta de ratones Pérez.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los árboles puedan sobrevivir al frío y la falta de luz.","puntaje":1},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"La curiosidad puede llevar a descubrimientos maravillosos.","puntaje":1},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Detrás del armario de la habitación de Martín.","puntaje":1},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba muy bien cerrada y difícil de abrir.","puntaje":1},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Sorprendido y parte de algo más grande.","puntaje":1},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería más eficiente porque tendrían más tiempo para producir alimento.","puntaje":0},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Protegen la hoja del sol.","puntaje":0},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para cortar el suministro de agua y nutrientes a la hoja.","puntaje":1},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"Ambos revelan que hay más de lo que vemos a simple vista.","puntaje":1}}},{"Nombre":"AGUSTINA INGNASIA AZUA CAVIERES","Puntos":23,"Nota":5.3,"Simce":313,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una pequeña puerta sellada.","puntaje":1},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que formaba parte de una comunidad mundial.","puntaje":1},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Producir su alimento mediante la fotosíntesis.","puntaje":1},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Disminuye porque hay menos luz solar.","puntaje":1},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La especie del árbol, la luz solar, la temperatura y el agua.","puntaje":1},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días soleados y noches frías.","puntaje":1},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Dejan de producir alimento, se secan y caen.","puntaje":1},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les da espacio para que crezcan nuevas hojas.","puntaje":0},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que ciertas condiciones climáticas favorecen la producción o la visibilidad de otros\r\npigmentos.","puntaje":1},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos realizan una tarea importante de forma secreta.","puntaje":0},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"Ambas impulsan a la exploración y al descubrimiento de una explicación.","puntaje":1},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que exista una ciudad secreta de ratones Pérez.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los árboles puedan sobrevivir al frío y la falta de luz.","puntaje":1},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"La curiosidad puede llevar a descubrimientos maravillosos.","puntaje":1},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Detrás del armario de la habitación de Martín.","puntaje":1},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba muy bien cerrada y difícil de abrir.","puntaje":1},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Asustado y confundido.","puntaje":0},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería muy difícil porque no habría suficiente luz solar para el proceso.","puntaje":1},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Protegen la hoja del sol.","puntaje":0},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para que la hoja cambie de color.","puntaje":0},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"No existe una conexión real entre ellos.","puntaje":0}}},{"Nombre":"JULIETA PASCAL OBRIEN SERRANO","Puntos":23,"Nota":5.3,"Simce":313,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una pequeña puerta sellada.","puntaje":1},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que era el único que lo hacía.","puntaje":0},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Producir su alimento mediante la fotosíntesis.","puntaje":1},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Disminuye porque hay menos luz solar.","puntaje":1},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La especie del árbol, la luz solar, la temperatura y el agua.","puntaje":1},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días lluviosos y noches cálidas.","puntaje":0},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Dejan de producir alimento, se secan y caen.","puntaje":1},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les da espacio para que crezcan nuevas hojas.","puntaje":0},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que la luz del sol destruye los pigmentos verdes.","puntaje":0},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos se preparan para un periodo diferente (el Ratón Pérez descubre una\r\nnueva realidad, los árboles para el invierno).","puntaje":1},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"Ambas impulsan a la exploración y al descubrimiento de una explicación.","puntaje":1},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que exista una ciudad secreta de ratones Pérez.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los árboles puedan sobrevivir al frío y la falta de luz.","puntaje":1},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"La curiosidad puede llevar a descubrimientos maravillosos.","puntaje":1},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Detrás del armario de la habitación de Martín.","puntaje":1},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba muy bien cerrada y difícil de abrir.","puntaje":1},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Sorprendido y parte de algo más grande.","puntaje":1},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería más eficiente porque tendrían más tiempo para producir alimento.","puntaje":0},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Se vuelven visibles cuando la clorofila desaparece.","puntaje":1},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para proteger al árbol de los insectos.","puntaje":0},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"Ambos revelan que hay más de lo que vemos a simple vista.","puntaje":1}}},{"Nombre":"GENESIS SANTANA","Puntos":23,"Nota":5.3,"Simce":313,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una pequeña puerta sellada.","puntaje":1},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que formaba parte de una comunidad mundial.","puntaje":1},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Producir su alimento mediante la fotosíntesis.","puntaje":1},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Se transforma en otros pigmentos.","puntaje":0},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La especie del árbol, la luz solar, la temperatura y el agua.","puntaje":1},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días soleados y noches frías.","puntaje":1},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Dejan de producir alimento, se secan y caen.","puntaje":1},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les permite conservar energía cuando no hay condiciones para la\r\nfotosíntesis.","puntaje":1},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que los árboles solo cambian de color en climas fríos.\r\nPreguntas que relacionan ambos textos:","puntaje":0},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos realizan una tarea importante de forma secreta.","puntaje":0},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"Ambas impulsan a la exploración y al descubrimiento de una explicación.","puntaje":1},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que cambie dientes por monedas.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los árboles puedan sobrevivir al frío y la falta de luz.","puntaje":1},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"La curiosidad puede llevar a descubrimientos maravillosos.","puntaje":1},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Detrás del armario de la habitación de Martín.","puntaje":1},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba muy bien cerrada y difícil de abrir.","puntaje":1},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Sorprendido y parte de algo más grande.","puntaje":1},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería muy difícil porque no habría suficiente luz solar para el proceso.","puntaje":1},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Ayudan a la fotosíntesis.","puntaje":0},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para que la hoja se caiga más rápido.","puntaje":0},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"Ambos son misterios que los niños intentan resolver.","puntaje":0}}},{"Nombre":"ANTHONELLA YULIET TORO GONZALES.","Puntos":23,"Nota":5.3,"Simce":313,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una pequeña puerta sellada.","puntaje":1},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que formaba parte de una comunidad mundial.","puntaje":1},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Protegerlas del frío.","puntaje":0},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Disminuye porque hay menos luz solar.","puntaje":1},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La especie del árbol, la luz solar, la temperatura y el agua.","puntaje":1},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días nublados y noches frías.","puntaje":0},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Se vuelven verdes otra vez.","puntaje":0},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les permite conservar energía cuando no hay condiciones para la\r\nfotosíntesis.","puntaje":1},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que ciertas condiciones climáticas favorecen la producción o la visibilidad de otros\r\npigmentos.","puntaje":1},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos se preparan para un periodo diferente (el Ratón Pérez descubre una\r\nnueva realidad, los árboles para el invierno).","puntaje":1},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"No tienen ninguna relación entre sí.\r\nPreguntas de reflexión sobre ambos textos:","puntaje":0},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que Martín no se dé cuenta de nada.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los árboles puedan sobrevivir al frío y la falta de luz.","puntaje":1},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"La curiosidad puede llevar a descubrimientos maravillosos.","puntaje":1},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Detrás del armario de la habitación de Martín.","puntaje":1},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba muy bien cerrada y difícil de abrir.","puntaje":1},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Sorprendido y parte de algo más grande.","puntaje":1},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería muy difícil porque no habría suficiente luz solar para el proceso.","puntaje":1},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Se vuelven visibles cuando la clorofila desaparece.","puntaje":1},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para proteger al árbol de los insectos.","puntaje":0},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"No existe una conexión real entre ellos.","puntaje":0}}},{"Nombre":"MATEO LEON VILLABLANCA PINO","Puntos":21,"Nota":4.8,"Simce":288,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una pequeña puerta sellada.","puntaje":1},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que formaba parte de una comunidad mundial.","puntaje":1},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Antocianina.","puntaje":0},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Darles un olor agradable.","puntaje":0},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Disminuye porque hay menos luz solar.","puntaje":1},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La especie del árbol, la luz solar, la temperatura y el agua.","puntaje":1},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días calurosos y noches templadas.","puntaje":0},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Dejan de producir alimento, se secan y caen.","puntaje":1},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les permite conservar energía cuando no hay condiciones para la\r\nfotosíntesis.","puntaje":1},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que la luz del sol destruye los pigmentos verdes.","puntaje":0},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos se preparan para un periodo diferente (el Ratón Pérez descubre una\r\nnueva realidad, los árboles para el invierno).","puntaje":1},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"No tienen ninguna relación entre sí.\r\nPreguntas de reflexión sobre ambos textos:","puntaje":0},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que exista una ciudad secreta de ratones Pérez.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los árboles puedan sobrevivir al frío y la falta de luz.","puntaje":1},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"La curiosidad puede llevar a descubrimientos maravillosos.","puntaje":1},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"En el jardín de Martín.","puntaje":0},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba muy bien cerrada y difícil de abrir.","puntaje":1},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Sorprendido y parte de algo más grande.","puntaje":1},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería muy difícil porque no habría suficiente luz solar para el proceso.","puntaje":1},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Atraen a los insectos.","puntaje":0},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para que la hoja cambie de color.","puntaje":0},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"Ambos revelan que hay más de lo que vemos a simple vista.","puntaje":1}}},{"Nombre":"LUCAS AMARO ARIAS OLGUIN","Puntos":21,"Nota":4.8,"Simce":288,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una pequeña puerta sellada.","puntaje":1},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que formaba parte de una comunidad mundial.","puntaje":1},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Almacenar agua para el invierno.","puntaje":0},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Disminuye porque hay menos luz solar.","puntaje":1},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Verde oscuro y azul.","puntaje":0},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La especie del árbol, la luz solar, la temperatura y el agua.","puntaje":1},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días calurosos y noches templadas.","puntaje":0},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Se vuelven verdes otra vez.","puntaje":0},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les permite conservar energía cuando no hay condiciones para la\r\nfotosíntesis.","puntaje":1},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que ciertas condiciones climáticas favorecen la producción o la visibilidad de otros\r\npigmentos.","puntaje":1},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos se preparan para un periodo diferente (el Ratón Pérez descubre una\r\nnueva realidad, los árboles para el invierno).","puntaje":1},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"Ambas impulsan a la exploración y al descubrimiento de una explicación.","puntaje":1},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que exista una ciudad secreta de ratones Pérez.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los árboles puedan sobrevivir al frío y la falta de luz.","puntaje":1},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"Es peligroso explorar lugares desconocidos.","puntaje":0},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Detrás del armario de la habitación de Martín.","puntaje":1},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba decorada con sellos.","puntaje":0},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Sorprendido y parte de algo más grande.","puntaje":1},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería muy difícil porque no habría suficiente luz solar para el proceso.","puntaje":1},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Se vuelven visibles cuando la clorofila desaparece.","puntaje":1},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para proteger al árbol de los insectos.","puntaje":0},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"No existe una conexión real entre ellos.","puntaje":0}}},{"Nombre":"CASTRO PELAYO TOMAS EDUARDO","Puntos":21,"Nota":4.8,"Simce":288,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una pequeña puerta sellada.","puntaje":1},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una cueva oscura y fría.","puntaje":0},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que formaba parte de una comunidad mundial.","puntaje":1},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Producir su alimento mediante la fotosíntesis.","puntaje":1},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Disminuye porque hay menos luz solar.","puntaje":1},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La especie del árbol, la luz solar, la temperatura y el agua.","puntaje":1},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días soleados y noches frías.","puntaje":1},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Se vuelven verdes otra vez.","puntaje":0},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les permite moverse a lugares más cálidos.","puntaje":0},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que la luz del sol destruye los pigmentos verdes.","puntaje":0},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos realizan una tarea importante de forma secreta.","puntaje":0},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"Ambas son preguntas sin respuesta.","puntaje":0},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que cambie dientes por monedas.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los árboles puedan sobrevivir al frío y la falta de luz.","puntaje":1},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"La curiosidad puede llevar a descubrimientos maravillosos.","puntaje":1},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Detrás del armario de la habitación de Martín.","puntaje":1},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba muy bien cerrada y difícil de abrir.","puntaje":1},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Sorprendido y parte de algo más grande.","puntaje":1},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería muy difícil porque no habría suficiente luz solar para el proceso.","puntaje":1},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Ayudan a la fotosíntesis.","puntaje":0},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para cortar el suministro de agua y nutrientes a la hoja.","puntaje":1},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"Ambos son misterios que los niños intentan resolver.","puntaje":0}}},{"Nombre":"CAMILA ANTONIA ZUÑIGA MARTINES","Puntos":21,"Nota":4.8,"Simce":288,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una pequeña puerta sellada.","puntaje":1},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que era el único que lo hacía.","puntaje":0},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón egoísta que solo pensaba en sí mismo.","puntaje":0},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Producir su alimento mediante la fotosíntesis.","puntaje":1},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Disminuye porque hay menos luz solar.","puntaje":1},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La especie del árbol, la luz solar, la temperatura y el agua.","puntaje":1},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días nublados y noches frías.","puntaje":0},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Dejan de producir alimento, se secan y caen.","puntaje":1},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les permite conservar energía cuando no hay condiciones para la\r\nfotosíntesis.","puntaje":1},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que los árboles solo cambian de color en climas fríos.\r\nPreguntas que relacionan ambos textos:","puntaje":0},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos se preparan para un periodo diferente (el Ratón Pérez descubre una\r\nnueva realidad, los árboles para el invierno).","puntaje":1},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"Ambas son preguntas sin respuesta.","puntaje":0},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que exista una ciudad secreta de ratones Pérez.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los animales tengan dónde esconderse.","puntaje":0},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"Los secretos siempre deben permanecer ocultos.","puntaje":0},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Detrás del armario de la habitación de Martín.","puntaje":1},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba muy bien cerrada y difícil de abrir.","puntaje":1},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Sorprendido y parte de algo más grande.","puntaje":1},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería muy difícil porque no habría suficiente luz solar para el proceso.","puntaje":1},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Se vuelven visibles cuando la clorofila desaparece.","puntaje":1},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para cortar el suministro de agua y nutrientes a la hoja.","puntaje":1},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"No existe una conexión real entre ellos.","puntaje":0}}},{"Nombre":"ANAIS BELEN SEVERO DIAZ","Puntos":21,"Nota":4.8,"Simce":288,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una pequeña puerta sellada.","puntaje":1},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que era el único que lo hacía.","puntaje":0},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Darles un olor agradable.","puntaje":0},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Aumenta debido al frío.","puntaje":0},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La especie del árbol, la luz solar, la temperatura y el agua.","puntaje":1},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días soleados y noches frías.","puntaje":1},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Dejan de producir alimento, se secan y caen.","puntaje":1},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les permite conservar energía cuando no hay condiciones para la\r\nfotosíntesis.","puntaje":1},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que ciertas condiciones climáticas favorecen la producción o la visibilidad de otros\r\npigmentos.","puntaje":1},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos se preparan para un periodo diferente (el Ratón Pérez descubre una\r\nnueva realidad, los árboles para el invierno).","puntaje":1},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"Ambas son preocupaciones típicas de los niños.","puntaje":0},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que exista una ciudad secreta de ratones Pérez.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los árboles puedan sobrevivir al frío y la falta de luz.","puntaje":1},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"Los secretos siempre deben permanecer ocultos.","puntaje":0},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Detrás del armario de la habitación de Martín.","puntaje":1},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba muy bien cerrada y difícil de abrir.","puntaje":1},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Sorprendido y parte de algo más grande.","puntaje":1},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería muy difícil porque no habría suficiente luz solar para el proceso.","puntaje":1},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Protegen la hoja del sol.","puntaje":0},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para que la hoja cambie de color.","puntaje":0},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"No existe una conexión real entre ellos.","puntaje":0}}},{"Nombre":"NATHALY EVELYN CHACON PERNIA","Puntos":20,"Nota":4.5,"Simce":275,"Categoria":"Intermedio 🟡","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una pequeña puerta sellada.","puntaje":1},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que formaba parte de una comunidad mundial.","puntaje":1},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Carotenoide.","puntaje":0},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Producir su alimento mediante la fotosíntesis.","puntaje":1},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Disminuye porque hay menos luz solar.","puntaje":1},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"El tamaño de las hojas y la edad del árbol.","puntaje":0},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días lluviosos y noches cálidas.","puntaje":0},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Se vuelven verdes otra vez.","puntaje":0},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les permite conservar energía cuando no hay condiciones para la\r\nfotosíntesis.","puntaje":1},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que el frío intenso daña las hojas.","puntaje":0},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos interactúan directamente con los niños.","puntaje":0},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"Ambas impulsan a la exploración y al descubrimiento de una explicación.","puntaje":1},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que cambie dientes por monedas.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los niños tengan hojas para jugar.","puntaje":0},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"La curiosidad puede llevar a descubrimientos maravillosos.","puntaje":1},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Detrás del armario de la habitación de Martín.","puntaje":1},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba muy bien cerrada y difícil de abrir.","puntaje":1},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Sorprendido y parte de algo más grande.","puntaje":1},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Haría que los árboles crecieran más rápido.","puntaje":0},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Se vuelven visibles cuando la clorofila desaparece.","puntaje":1},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para que la hoja cambie de color.","puntaje":0},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"Ambos revelan que hay más de lo que vemos a simple vista.","puntaje":1}}},{"Nombre":"ANTONELLA IGNACIA VALDES SANSHEZ","Puntos":19,"Nota":4.3,"Simce":263,"Categoria":"Intermedio 🟡","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una pequeña puerta sellada.","puntaje":1},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que formaba parte de una comunidad mundial.","puntaje":1},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Almacenar agua para el invierno.","puntaje":0},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Se transforma en otros pigmentos.","puntaje":0},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La especie del árbol, la luz solar, la temperatura y el agua.","puntaje":1},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días soleados y noches frías.","puntaje":1},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Dejan de producir alimento, se secan y caen.","puntaje":1},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les da espacio para que crezcan nuevas hojas.","puntaje":0},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que los árboles solo cambian de color en climas fríos.\r\nPreguntas que relacionan ambos textos:","puntaje":0},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos se preparan para un periodo diferente (el Ratón Pérez descubre una\r\nnueva realidad, los árboles para el invierno).","puntaje":1},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"No tienen ninguna relación entre sí.\r\nPreguntas de reflexión sobre ambos textos:","puntaje":0},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que exista una ciudad secreta de ratones Pérez.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los árboles puedan sobrevivir al frío y la falta de luz.","puntaje":1},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"Los secretos siempre deben permanecer ocultos.","puntaje":0},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"En el jardín de Martín.","puntaje":0},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba muy bien cerrada y difícil de abrir.","puntaje":1},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Sorprendido y parte de algo más grande.","puntaje":1},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Haría que los árboles crecieran más rápido.","puntaje":0},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Se vuelven visibles cuando la clorofila desaparece.","puntaje":1},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para que la hoja se caiga más rápido.","puntaje":0},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"Ambos son ejemplos de magia y fantasía.","puntaje":0}}},{"Nombre":"AARON ISAIAS PINO VELIZ","Puntos":19,"Nota":4.3,"Simce":263,"Categoria":"Intermedio 🟡","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una pequeña puerta sellada.","puntaje":1},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que formaba parte de una comunidad mundial.","puntaje":1},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón muy miedoso y dudó en entrar.","puntaje":0},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Producir su alimento mediante la fotosíntesis.","puntaje":1},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Disminuye porque hay menos luz solar.","puntaje":1},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Solo el color marrón.","puntaje":0},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"El tamaño de las hojas y la edad del árbol.","puntaje":0},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días nublados y noches frías.","puntaje":0},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Se vuelven verdes otra vez.","puntaje":0},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les da espacio para que crezcan nuevas hojas.","puntaje":0},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que el frío intenso daña las hojas.","puntaje":0},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos realizan una tarea importante de forma secreta.","puntaje":0},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"Ambas son preocupaciones típicas de los niños.","puntaje":0},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que viva detrás de un armario.","puntaje":1},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que el paisaje se vea más bonito.","puntaje":0},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"La curiosidad puede llevar a descubrimientos maravillosos.","puntaje":1},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Detrás del armario de la habitación de Martín.","puntaje":1},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba muy bien cerrada y difícil de abrir.","puntaje":1},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Sorprendido y parte de algo más grande.","puntaje":1},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería muy difícil porque no habría suficiente luz solar para el proceso.","puntaje":1},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Se vuelven visibles cuando la clorofila desaparece.","puntaje":1},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para que la hoja se caiga más rápido.","puntaje":0},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"Ambos revelan que hay más de lo que vemos a simple vista.","puntaje":1}}},{"Nombre":"JAVIERA  ESTEFANIA   VILLARROEL  AGHILERA","Puntos":18,"Nota":4,"Simce":250,"Categoria":"Intermedio 🟡","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una pequeña puerta sellada.","puntaje":1},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que formaba parte de una comunidad mundial.","puntaje":1},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Protegerlas del frío.","puntaje":0},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Se transforma en otros pigmentos.","puntaje":0},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La cantidad de lluvia y la altitud del lugar.","puntaje":0},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días soleados y noches frías.","puntaje":1},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Se transforman en flores.","puntaje":0},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les permite conservar energía cuando no hay condiciones para la\r\nfotosíntesis.","puntaje":1},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que la luz del sol destruye los pigmentos verdes.","puntaje":0},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos se preparan para un periodo diferente (el Ratón Pérez descubre una\r\nnueva realidad, los árboles para el invierno).","puntaje":1},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"Ambas son preguntas sin respuesta.","puntaje":0},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que cambie dientes por monedas.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los árboles puedan sobrevivir al frío y la falta de luz.","puntaje":1},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"Siempre hay que seguir las reglas.","puntaje":0},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"En el jardín de Martín.","puntaje":0},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba muy bien cerrada y difícil de abrir.","puntaje":1},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Sorprendido y parte de algo más grande.","puntaje":1},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería muy difícil porque no habría suficiente luz solar para el proceso.","puntaje":1},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Ayudan a la fotosíntesis.","puntaje":0},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para que la hoja cambie de color.","puntaje":0},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"Ambos son misterios que los niños intentan resolver.","puntaje":0}}},{"Nombre":"DERECK ALEXANDER RODRIGUEZ PICO","Puntos":17,"Nota":3.9,"Simce":238,"Categoria":"Inicial 🔴","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una pequeña puerta sellada.","puntaje":1},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Otro rincón de la casa.","puntaje":0},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que formaba parte de una comunidad mundial.","puntaje":1},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Se llevó todos los juguetes de Martín.","puntaje":0},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Producir su alimento mediante la fotosíntesis.","puntaje":1},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Se transforma en otros pigmentos.","puntaje":0},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La especie del árbol, la luz solar, la temperatura y el agua.","puntaje":1},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días calurosos y noches templadas.","puntaje":0},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Dejan de producir alimento, se secan y caen.","puntaje":1},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les da espacio para que crezcan nuevas hojas.","puntaje":0},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que el frío intenso daña las hojas.","puntaje":0},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos interactúan directamente con los niños.","puntaje":0},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"Ambas son preguntas sin respuesta.","puntaje":0},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que exista una ciudad secreta de ratones Pérez.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los niños tengan hojas para jugar.","puntaje":0},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"La curiosidad puede llevar a descubrimientos maravillosos.","puntaje":1},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Detrás del armario de la habitación de Martín.","puntaje":1},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que era transparente como un sello.","puntaje":0},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Enojado por no haberlo sabido antes.","puntaje":0},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería muy difícil porque no habría suficiente luz solar para el proceso.","puntaje":1},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Protegen la hoja del sol.","puntaje":0},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para cortar el suministro de agua y nutrientes a la hoja.","puntaje":1},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"Ambos revelan que hay más de lo que vemos a simple vista.","puntaje":1}}},{"Nombre":"MONSERRAT    RALLEN MARTEL   CARASCO","Puntos":15,"Nota":3.7,"Simce":213,"Categoria":"Inicial 🔴","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una moneda brillante ya puesta.","puntaje":0},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que formaba parte de una comunidad mundial.","puntaje":1},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Darles un olor agradable.","puntaje":0},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Disminuye porque hay menos luz solar.","puntaje":1},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"El tamaño de las hojas y la edad del árbol.","puntaje":0},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días nublados y noches frías.","puntaje":0},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Dejan de producir alimento, se secan y caen.","puntaje":1},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les permite moverse a lugares más cálidos.","puntaje":0},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que el frío intenso daña las hojas.","puntaje":0},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos realizan una tarea importante de forma secreta.","puntaje":0},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"Ambas son preguntas sin respuesta.","puntaje":0},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que viva detrás de un armario.","puntaje":1},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que el paisaje se vea más bonito.","puntaje":0},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"La curiosidad puede llevar a descubrimientos maravillosos.","puntaje":1},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Debajo de la cama de Martín.","puntaje":0},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba decorada con sellos.","puntaje":0},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Asustado y confundido.","puntaje":0},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"No se vería afectada porque la clorofila siempre funciona.","puntaje":0},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Atraen a los insectos.","puntaje":0},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para que la hoja se caiga más rápido.","puntaje":0},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"Ambos revelan que hay más de lo que vemos a simple vista.","puntaje":1}}},{"Nombre":"DAVID MOISES RONDON CORREA","Puntos":14,"Nota":3.6,"Simce":200,"Categoria":"Inicial 🔴","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una pequeña puerta sellada.","puntaje":1},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que los niños no valoraban su esfuerzo.","puntaje":0},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un dolor agudo.","puntaje":0},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Protegerlas del frío.","puntaje":0},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Disminuye porque hay menos luz solar.","puntaje":1},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La especie del árbol, la luz solar, la temperatura y el agua.","puntaje":1},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días soleados y noches frías.","puntaje":1},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Se vuelven verdes otra vez.","puntaje":0},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les permite moverse a lugares más cálidos.","puntaje":0},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que el frío intenso daña las hojas.","puntaje":0},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos cambian de color.","puntaje":0},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"No tienen ninguna relación entre sí.\r\nPreguntas de reflexión sobre ambos textos:","puntaje":0},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que cambie dientes por monedas.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que el paisaje se vea más bonito.","puntaje":0},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"Los secretos siempre deben permanecer ocultos.","puntaje":0},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Debajo de la cama de Martín.","puntaje":0},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba muy bien cerrada y difícil de abrir.","puntaje":1},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Triste y solo.","puntaje":0},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería más eficiente porque tendrían más tiempo para producir alimento.","puntaje":0},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Ayudan a la fotosíntesis.","puntaje":0},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para cortar el suministro de agua y nutrientes a la hoja.","puntaje":1},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"Ambos son misterios que los niños intentan resolver.","puntaje":0}}},{"Nombre":"ABRIL HIDALGO VITORIA","Puntos":14,"Nota":3.6,"Simce":200,"Categoria":"Inicial 🔴","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una moneda brillante ya puesta.","puntaje":0},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Otro rincón de la casa.","puntaje":0},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que formaba parte de una comunidad mundial.","puntaje":1},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Protegerlas del frío.","puntaje":0},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Aumenta debido al frío.","puntaje":0},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La presencia de otros árboles alrededor.","puntaje":0},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días lluviosos y noches cálidas.","puntaje":0},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Crecen más grandes y fuertes.","puntaje":0},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les permite conservar energía cuando no hay condiciones para la\r\nfotosíntesis.","puntaje":1},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que la luz del sol destruye los pigmentos verdes.","puntaje":0},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos cambian de color.","puntaje":0},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"No tienen ninguna relación entre sí.\r\nPreguntas de reflexión sobre ambos textos:","puntaje":0},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que cambie dientes por monedas.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los animales tengan dónde esconderse.","puntaje":0},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"Los secretos siempre deben permanecer ocultos.","puntaje":0},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Detrás del armario de la habitación de Martín.","puntaje":1},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba muy bien cerrada y difícil de abrir.","puntaje":1},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Sorprendido y parte de algo más grande.","puntaje":1},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería más eficiente porque tendrían más tiempo para producir alimento.","puntaje":0},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Atraen a los insectos.","puntaje":0},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para proteger al árbol de los insectos.","puntaje":0},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"Ambos revelan que hay más de lo que vemos a simple vista.","puntaje":1}}},{"Nombre":"AISHA ANAHIS PIZARRO ALCAINO","Puntos":12,"Nota":3.3,"Simce":175,"Categoria":"Inicial 🔴","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una moneda brillante ya puesta.","puntaje":0},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"De vuelta a la habitación de Martín.","puntaje":0},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que formaba parte de una comunidad mundial.","puntaje":1},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón tuvo miedo de la puerta.","puntaje":0},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Carotenoide.","puntaje":0},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Producir su alimento mediante la fotosíntesis.","puntaje":1},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Se transforma en otros pigmentos.","puntaje":0},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La presencia de otros árboles alrededor.","puntaje":0},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días nublados y noches frías.","puntaje":0},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Se vuelven verdes otra vez.","puntaje":0},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les permite moverse a lugares más cálidos.","puntaje":0},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que los árboles solo cambian de color en climas fríos.\r\nPreguntas que relacionan ambos textos:","puntaje":0},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos interactúan directamente con los niños.","puntaje":0},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"No tienen ninguna relación entre sí.\r\nPreguntas de reflexión sobre ambos textos:","puntaje":0},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que cambie dientes por monedas.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los árboles puedan sobrevivir al frío y la falta de luz.","puntaje":1},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"Los secretos siempre deben permanecer ocultos.","puntaje":0},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Detrás del armario de la habitación de Martín.","puntaje":1},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que era transparente como un sello.","puntaje":0},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Sorprendido y parte de algo más grande.","puntaje":1},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería más eficiente porque tendrían más tiempo para producir alimento.","puntaje":0},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Protegen la hoja del sol.","puntaje":0},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para proteger al árbol de los insectos.","puntaje":0},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"Ambos revelan que hay más de lo que vemos a simple vista.","puntaje":1}}},{"Nombre":"YEICOB JESUS ANDRES CAROCA ESPINOSA","Puntos":11,"Nota":3.2,"Simce":163,"Categoria":"Inicial 🔴","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Limpiar las habitaciones de los niños.","puntaje":0},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una moneda brillante ya puesta.","puntaje":0},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"De vuelta a la habitación de Martín.","puntaje":0},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que los niños no valoraban su esfuerzo.","puntaje":0},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un dolor agudo.","puntaje":0},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Almacenar agua para el invierno.","puntaje":0},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Disminuye porque hay menos luz solar.","puntaje":1},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La cantidad de lluvia y la altitud del lugar.","puntaje":0},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días calurosos y noches templadas.","puntaje":0},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Crecen más grandes y fuertes.","puntaje":0},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les ayuda a atraer a los animales.","puntaje":0},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que los árboles solo cambian de color en climas fríos.\r\nPreguntas que relacionan ambos textos:","puntaje":0},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos se preparan para un periodo diferente (el Ratón Pérez descubre una\r\nnueva realidad, los árboles para el invierno).","puntaje":1},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"Ambas son preguntas sin respuesta.","puntaje":0},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que viva detrás de un armario.","puntaje":1},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los árboles puedan sobrevivir al frío y la falta de luz.","puntaje":1},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"Es peligroso explorar lugares desconocidos.","puntaje":0},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Debajo de la cama de Martín.","puntaje":0},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que tenía un dibujo de un sello.","puntaje":0},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Triste y solo.","puntaje":0},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería más eficiente porque tendrían más tiempo para producir alimento.","puntaje":0},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Se vuelven visibles cuando la clorofila desaparece.","puntaje":1},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para que la hoja cambie de color.","puntaje":0},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"No existe una conexión real entre ellos.","puntaje":0}}},{"Nombre":"RYAN VIDELA","Puntos":10,"Nota":3.1,"Simce":150,"Categoria":"Inicial 🔴","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una moneda brillante ya puesta.","puntaje":0},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Un largo túnel iluminado.","puntaje":1},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que era un trabajo muy peligroso.","puntaje":0},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Le contó a Martín sobre la ciudad subterránea.","puntaje":0},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón obediente que siempre seguía las reglas.","puntaje":0},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Antocianina.","puntaje":0},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Protegerlas del frío.","puntaje":0},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Disminuye porque hay menos luz solar.","puntaje":1},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Solo el color marrón.","puntaje":0},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"El tamaño de las hojas y la edad del árbol.","puntaje":0},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días nublados y noches frías.","puntaje":0},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Se transforman en flores.","puntaje":0},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les permite moverse a lugares más cálidos.","puntaje":0},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que la luz del sol destruye los pigmentos verdes.","puntaje":0},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos se preparan para un periodo diferente (el Ratón Pérez descubre una\r\nnueva realidad, los árboles para el invierno).","puntaje":1},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"Ambas impulsan a la exploración y al descubrimiento de una explicación.","puntaje":1},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que cambie dientes por monedas.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los niños tengan hojas para jugar.","puntaje":0},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"La curiosidad puede llevar a descubrimientos maravillosos.","puntaje":1},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"En la almohada de Martín.","puntaje":0},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba decorada con sellos.","puntaje":0},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Triste y solo.","puntaje":0},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería más eficiente porque tendrían más tiempo para producir alimento.","puntaje":0},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Ayudan a la fotosíntesis.","puntaje":0},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para que la hoja se caiga más rápido.","puntaje":0},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"Ambos revelan que hay más de lo que vemos a simple vista.","puntaje":1}}},{"Nombre":"MILAGROS VASQUEZ LEHUY","Puntos":9,"Nota":3,"Simce":138,"Categoria":"Inicial 🔴","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Un niño que no estaba dormido.","puntaje":0},"¿Qué había detrás de la puerta secreta?":{"alternativa":"La habitación de otros niños.","puntaje":0},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una ciudad subterránea de ratones Pérez.","puntaje":1},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Leían cuentos a los dientes perdidos.","puntaje":0},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que los niños no valoraban su esfuerzo.","puntaje":0},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Se llevó todos los juguetes de Martín.","puntaje":0},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Clorofila.","puntaje":1},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Almacenar agua para el invierno.","puntaje":0},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Se transforma en otros pigmentos.","puntaje":0},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Amarillo, naranja, rojo y morado.","puntaje":1},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La cantidad de lluvia y la altitud del lugar.","puntaje":0},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días calurosos y noches templadas.","puntaje":0},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Crecen más grandes y fuertes.","puntaje":0},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les da espacio para que crezcan nuevas hojas.","puntaje":0},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que la luz del sol destruye los pigmentos verdes.","puntaje":0},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos cambian de color.","puntaje":0},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"Ambas son preguntas sin respuesta.","puntaje":0},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que Martín no se dé cuenta de nada.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los animales tengan dónde esconderse.","puntaje":0},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"Es peligroso explorar lugares desconocidos.","puntaje":0},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Detrás del armario de la habitación de Martín.","puntaje":1},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba muy bien cerrada y difícil de abrir.","puntaje":1},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Sorprendido y parte de algo más grande.","puntaje":1},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Haría que los árboles crecieran más rápido.","puntaje":0},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Protegen la hoja del sol.","puntaje":0},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para que la hoja se caiga más rápido.","puntaje":0},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"Ambos son ejemplos de magia y fantasía.","puntaje":0}}},{"Nombre":"JONATHAN JEAN PAUL CASTRO OLGUIN","Puntos":7,"Nota":2.8,"Simce":113,"Categoria":"Inicial 🔴","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Asustar a los niños que no se lavaban los dientes.","puntaje":0},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una moneda brillante ya puesta.","puntaje":0},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Otro rincón de la casa.","puntaje":0},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"A una cueva oscura y fría.","puntaje":0},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Leían cuentos a los dientes perdidos.","puntaje":0},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que era un trabajo muy peligroso.","puntaje":0},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Se llevó todos los juguetes de Martín.","puntaje":0},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un dolor agudo.","puntaje":0},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón egoísta que solo pensaba en sí mismo.","puntaje":0},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Antocianina.","puntaje":0},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Protegerlas del frío.","puntaje":0},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Aumenta debido al frío.","puntaje":0},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Solo el color marrón.","puntaje":0},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"La especie del árbol, la luz solar, la temperatura y el agua.","puntaje":1},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días calurosos y noches templadas.","puntaje":0},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Dejan de producir alimento, se secan y caen.","puntaje":1},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les permite conservar energía cuando no hay condiciones para la\r\nfotosíntesis.","puntaje":1},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que la luz del sol destruye los pigmentos verdes.","puntaje":0},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos cambian de color.","puntaje":0},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"Ambas impulsan a la exploración y al descubrimiento de una explicación.","puntaje":1},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que viva detrás de un armario.","puntaje":1},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los niños tengan hojas para jugar.","puntaje":0},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"Los secretos siempre deben permanecer ocultos.","puntaje":0},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"En el jardín de Martín.","puntaje":0},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que estaba muy bien cerrada y difícil de abrir.","puntaje":1},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Asustado y confundido.","puntaje":0},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"No se vería afectada porque la clorofila siempre funciona.","puntaje":0},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Se vuelven visibles cuando la clorofila desaparece.","puntaje":1},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para proteger al árbol de los insectos.","puntaje":0},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"Ambos son misterios que los niños intentan resolver.","puntaje":0}}},{"Nombre":"ANAHIS PASCALGARIDO FARIAS","Puntos":6,"Nota":2.7,"Simce":100,"Categoria":"Inicial 🔴","Respuestas":{"¿Cuál era la misión principal del Ratón Pérez?":{"alternativa":"Cambiar dientes de leche por monedas.","puntaje":1},"¿Qué encontró el Ratón Pérez en lugar de volver por su camino habitual?":{"alternativa":"Una moneda brillante ya puesta.","puntaje":0},"¿Qué había detrás de la puerta secreta?":{"alternativa":"Otro rincón de la casa.","puntaje":0},"¿A dónde llevó el túnel al Ratón Pérez?":{"alternativa":"De vuelta a la habitación de Martín.","puntaje":0},"¿Qué hacían los otros ratones Pérez en la ciudad subterránea?":{"alternativa":"Limpiaban, clasificaban los dientes y guardaban las monedas.","puntaje":1},"¿Qué aprendió el Ratón Pérez sobre su trabajo?":{"alternativa":"Que era un trabajo muy peligroso.","puntaje":0},"¿Qué hizo el Ratón Pérez antes de que Martín despertara?":{"alternativa":"Dejó una moneda bajo la almohada de Martín.","puntaje":1},"¿Qué significa la frase \"La curiosidad picó al Ratón Pérez\"?":{"alternativa":"Que el ratón sintió un fuerte deseo de saber más.","puntaje":1},"¿Qué se puede inferir sobre la personalidad del Ratón Pérez a partir de su decisión de explorar la puerta secreta?":{"alternativa":"Era un ratón curioso y aventurero.","puntaje":1},"¿Qué pigmento da el color verde a las hojas en primavera y verano?":{"alternativa":"Melanina.","puntaje":0},"¿Cuál es la función principal de la clorofila en las hojas?":{"alternativa":"Darles un olor agradable.","puntaje":0},"¿Qué sucede con la producción de clorofila en otoño?":{"alternativa":"Se mantiene igual que en verano.","puntaje":0},"¿Qué pigmentos se vuelven visibles cuando la clorofila se descompone?":{"alternativa":"Verde oscuro y azul.","puntaje":0},"¿Qué factores influyen en la intensidad de los colores otoñales?":{"alternativa":"El tamaño de las hojas y la edad del árbol.","puntaje":0},"¿Qué tipo de clima tiende a producir los colores otoñales más brillantes?":{"alternativa":"Días nublados y noches frías.","puntaje":0},"¿Qué sucede finalmente con las hojas después de que cambian de color?":{"alternativa":"Se vuelven verdes otra vez.","puntaje":0},"¿Por qué es una adaptación para los árboles que las hojas se caigan en invierno?":{"alternativa":"Les permite moverse a lugares más cálidos.","puntaje":0},"¿Qué indica el hecho de que los colores otoñales sean más brillantes en otoños con días soleados y noches frías?":{"alternativa":"Que ciertas condiciones climáticas favorecen la producción o la visibilidad de otros\r\npigmentos.","puntaje":1},"¿Qué tienen en común el Ratón Pérez y los árboles en otoño respecto a los cambios que experimentan?":{"alternativa":"Ambos interactúan directamente con los niños.","puntaje":0},"¿Cómo se relaciona la curiosidad del Ratón Pérez con la pregunta de por qué cambian las hojas?":{"alternativa":"No tienen ninguna relación entre sí.\r\nPreguntas de reflexión sobre ambos textos:","puntaje":0},"¿Qué te parece más sorprendente de la historia del Ratón Pérez?":{"alternativa":"Que cambie dientes por monedas.","puntaje":0},"¿Por qué crees que es importante que los árboles pierdan sus hojas en invierno?":{"alternativa":"Para que los animales tengan dónde esconderse.","puntaje":0},"¿Qué enseñanza podrías obtener de la actitud del Ratón Pérez al explorar la puerta secreta?":{"alternativa":"Siempre hay que seguir las reglas.","puntaje":0},"¿Dónde vivía el Ratón Pérez?":{"alternativa":"Debajo de la cama de Martín.","puntaje":0},"¿Qué significa que la puerta secreta parecía \"sellada\"?":{"alternativa":"Que tenía un dibujo de un sello.","puntaje":0},"¿Cómo se sintió el Ratón Pérez al descubrir la ciudad subterránea?":{"alternativa":"Enojado por no haberlo sabido antes.","puntaje":0},"¿Qué pasaría con la fotosíntesis si los árboles tuvieran hojas verdes todo el año en lugares con inviernos fríos y poca luz solar?":{"alternativa":"Sería más eficiente porque tendrían más tiempo para producir alimento.","puntaje":0},"¿Qué función cumplen los colores amarillo y naranja en las hojas de otoño?":{"alternativa":"Atraen a los insectos.","puntaje":0},"¿Por qué los árboles forman una capa especial en la base de la hoja antes de que caiga?":{"alternativa":"Para que la hoja cambie de color.","puntaje":0},"¿Qué conexión puedes establecer entre la idea de un mundo secreto (la ciudad del Ratón Pérez) y los procesos ocultos de la naturaleza (el cambio de color de las hojas)?":{"alternativa":"No existe una conexión real entre ellos.","puntaje":0}}}];
+
+            function openStudentModal(idx) {
+                var s = masterStudents[idx];
+                if (!s) return;
+
+                document.getElementById('modal-name').textContent = s.Nombre;
+                document.getElementById('modal-stats').textContent =
+                    'Nota: ' + s.Nota.toFixed(1).replace('.', ',') +
+                    ' | Puntos: ' + s.Puntos +
+                    ' | Categoría: ' + s.Categoria;
+
+                var listHtml = '';
+                var respuestas = s.Respuestas || {};
+                var keys = Object.keys(respuestas);
+
+                for (var i = 0; i < keys.length; i++) {
+                    var qTitle = keys[i];
+                    var dataObj = respuestas[qTitle];
+                    var cleanQ = String(qTitle).trim();
+                    var userAlt = dataObj.alternativa;
+                    var userPts = dataObj.puntaje;
+                    var isError = (userPts === 0);
+                    var badgeClass = isError ? 'bad' : 'ok';
+                    var icon = isError ? '❌ No Acertó' : '✅ Acertó';
+                    var detailsMsg = isError
+                        ? '<span style="display:block;font-size:14px;color:#ef4444;margin-top:6px;font-weight:bold;">Alternativa Marcada: <span style="text-decoration:underline;">' + userAlt + '</span></span>'
+                        : '<span style="display:block;font-size:14px;color:#2ecc71;margin-top:6px;font-weight:bold;">Alternativa Marcada: ' + userAlt + '</span>';
+
+                    listHtml += '<div class="ans-card ' + badgeClass + '">' +
+                        '<div class="ans-q">' + cleanQ + detailsMsg + '</div>' +
+                        '<div class="ans-val ' + badgeClass + '">' + icon + '</div>' +
+                        '</div>';
+                }
+
+                if (!listHtml) listHtml = '<div style="color:gray;text-align:center;padding:20px;">No hay detalle de alternativas detectado.</div>';
+
+                document.getElementById('modal-answers-list').innerHTML = listHtml;
+                document.getElementById('student-modal').style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal() {
+                document.getElementById('student-modal').style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+            </script>
+</body>
+</html>
