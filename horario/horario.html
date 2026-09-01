@@ -5,6 +5,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <!-- Prevención de caché -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Reservas de Laboratorios · Responsive</title>
     <style>
         /* === RESET Y BASE 100% RESPONSIVE === */
@@ -1294,7 +1298,69 @@
     </style>
 </head>
 
-<body>
+<body style="overflow: hidden;">
+    <!-- OVERLAY DE LOGIN INICIAL -->
+    <div id="initial-login-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px); z-index: 999999; display: flex; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 2.5rem; border-radius: 24px; width: 90%; max-width: 400px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <h2 style="margin-top: 0; color: #0f172a; font-family: 'Segoe UI', sans-serif; font-weight: 700; font-size: 1.6rem;">Acceso Restringido</h2>
+                <p style="color: #64748b; font-size: 0.95rem; margin-top: 0.5rem;">Ingrese sus credenciales para continuar</p>
+            </div>
+            <form id="initial-login-form" onsubmit="event.preventDefault(); verifyInitialLogin();">
+                <div style="margin-bottom: 1.2rem;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #334155; font-family: 'Segoe UI', sans-serif;">Usuario</label>
+                    <input type="text" id="initial-login-user" required style="width: 100%; padding: 0.9rem 1rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: border-color 0.2s;" autocomplete="off" placeholder="Ingrese usuario">
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #334155; font-family: 'Segoe UI', sans-serif;">Contraseña</label>
+                    <input type="password" id="initial-login-pass" required style="width: 100%; padding: 0.9rem 1rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: border-color 0.2s;" autocomplete="off" placeholder="Ingrese contraseña">
+                </div>
+                <p id="initial-login-error" style="color: #ef4444; font-size: 0.9rem; margin-bottom: 1rem; text-align: center; display: none; font-weight: 600; background: #fee2e2; padding: 0.6rem; border-radius: 8px;">Credenciales incorrectas</p>
+                <button type="submit" style="width: 100%; padding: 1rem; background: #3b82f6; color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 1.05rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.4);">Ingresar al Sistema</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        // Bloquear clic derecho
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // Bloquear atajos de teclado para desarrolladores
+        document.addEventListener('keydown', function(event) {
+            if (
+                event.key === 'F12' || 
+                (event.ctrlKey && event.shiftKey && (event.key === 'I' || event.key === 'J' || event.key === 'C')) || 
+                (event.ctrlKey && event.key === 'U') || 
+                (event.metaKey && event.altKey && (event.key === 'I' || event.key === 'J' || event.key === 'C')) ||
+                (event.metaKey && event.key === 'U')
+            ) {
+                event.preventDefault();
+            }
+        });
+
+        // Lógica de Login
+        function verifyInitialLogin() {
+            const user = document.getElementById('initial-login-user').value;
+            const pass = document.getElementById('initial-login-pass').value;
+            
+            if (user === 'profesores' && pass === 'lsb2124') {
+                document.getElementById('initial-login-overlay').style.display = 'none';
+                document.body.style.overflow = ''; // Restaurar scroll
+            } else {
+                const errorEl = document.getElementById('initial-login-error');
+                errorEl.style.display = 'block';
+                document.getElementById('initial-login-pass').value = '';
+                document.getElementById('initial-login-pass').focus();
+                
+                errorEl.animate([
+                    { transform: 'translateX(-5px)' },
+                    { transform: 'translateX(5px)' },
+                    { transform: 'translateX(-5px)' },
+                    { transform: 'translateX(5px)' },
+                    { transform: 'translateX(0)' }
+                ], { duration: 400 });
+            }
+        }
+    </script>
     <div class="app-container">
         <!-- SIDEBAR -->
         <aside class="sidebar">
@@ -1668,7 +1734,7 @@
                         if (b.dateStr && b.dateStr.includes('T')) b.dateStr = b.dateStr.split('T')[0];
                         return b;
                     });
-                    updateStatus('Conectado a Google Sheets ✓', 'status-ok');
+                    updateStatus('Conectado a Base de Datos ✓', 'status-ok');
                 } else throw new Error('Formato incorrecto');
             } catch (e) {
                 updateStatus('Error de conexión', 'status-error');
