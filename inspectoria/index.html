@@ -1,0 +1,1929 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>plataforma inspectoria</title>
+    <!-- SheetJS para Excel -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"
+        onerror="document.write('<script defer src=\'js/vendor/xlsx.full.min.js\'><\\/script>')"></script>
+    <!-- jsPDF para generar PDF -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+        onerror="document.write('<script defer src=\'js/vendor/jspdf.umd.min.js\'><\\/script>')"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"
+        onerror="document.write('<script defer src=\'js/vendor/jspdf.plugin.autotable.min.js\'><\\/script>')"></script>
+    <!-- html2canvas para capturar tablas -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+        onerror="document.write('<script defer src=\'js/vendor/html2canvas.min.js\'><\\/script>')"></script>
+    <!-- Chart.js para gráficos del Dashboard -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"
+        onerror="document.write('<script defer src=\'js/vendor/chart.umd.min.js\'><\\/script>')"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css?v=3.6">
+    <style>
+        /* Modo Lectura (Bloqueo Temporal) */
+        body.lockdown-mode button:not(#btnGuardarConfig):not([onclick^="toggleSidebar"]):not(.mobile-toggle):not([onclick^="exportToExcel"]):not([onclick^="imprimir"]):not([onclick^="generar"]),
+        body.lockdown-mode .input-inasistencia {
+            display: none !important;
+        }
+        
+        body.lockdown-mode input:not(#configAnioLectivo):not(#configFechaInicioUso):not([id^="config"]):not([id^="reporteFecha"]):not([id^="filtro"]):not([type="date"]), 
+        body.lockdown-mode select:not(#asistenciaFiltro):not([id^="filtro"]) {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        
+        #lockdownBanner {
+            display: none;
+            background: var(--warning); 
+            color: #854d0e; 
+            text-align: center; 
+            padding: 12px; 
+            font-weight: 600; 
+            font-size: 0.95rem;
+            position: sticky; 
+            top: 0; 
+            z-index: 9999; 
+            width: 100%; 
+            border-bottom: 2px solid #ca8a04;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+        body.lockdown-mode #lockdownBanner {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand sidebar-logo-container">
+                <img src="insignia.jpg" alt="Insignia" class="sidebar-logo-img">
+                <h1 class="sidebar-title">Liceo Simón Bolívar</h1>
+                <small class="sidebar-subtitle">Plataforma
+                    Inspectoría</small>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a class="active" data-panel="dashboard"><i class="fas fa-chart-pie"></i> Dashboard</a></li>
+
+                <li class="sidebar-divider">
+                    <span class="sidebar-category">Gestión Académica</span>
+                </li>
+                <li><a data-panel="cursos"><i class="fas fa-school"></i> Cursos</a></li>
+                <li><a data-panel="alumnos"><i class="fas fa-user-graduate"></i> Alumnos</a></li>
+
+                <li class="sidebar-divider">
+                    <span class="sidebar-category">Control de Asistencia</span>
+                </li>
+                <li><a data-panel="asistencia"><i class="fas fa-clipboard-check"></i> Asistencia</a></li>
+                <li><a data-panel="reporte-diario"><i class="fas fa-file-alt"></i> Reporte Diario</a></li>
+                <li style="display: none;"><a data-panel="planilla-alertas"><i class="fas fa-exclamation-triangle"></i> Planilla Alertas</a>
+                </li>
+                <li><a data-panel="alumnos-riesgo"><i class="fas fa-exclamation-circle text-danger"></i> Alumnos en
+                        Riesgo</a></li>
+
+                <li class="sidebar-divider">
+                    <span class="sidebar-category">Comunicación y Reportes</span>
+                </li>
+                <li><a data-panel="comunicacion"><i class="fas fa-phone-alt"></i> Comunicación <span class="badge"
+                            id="pendientesBadge">0</span></a></li>
+                <li><a data-panel="informes"><i class="fas fa-file-pdf"></i> Informes Generales</a></li>
+
+                <li class="sidebar-divider">
+                    <span class="sidebar-category">Módulo Asist. Social</span>
+                </li>
+                <li><a data-panel="asistente-social"><i class="fas fa-home"></i> Asistente Social</a></li>
+                <li><a data-panel="informes-asistente"><i class="fas fa-file-invoice"></i> Informes Asist. Social</a>
+                </li>
+                <li><a data-panel="licencias-justificaciones"><i class="fas fa-file-medical"></i> Licencias y
+                        Justif.</a></li>
+                <li><a data-panel="inasistencia-injustificada"><i class="fas fa-user-times"></i> Inasistencia sin
+                        Justif. <span class="badge" id="badgeInasistencias"
+                            style="display:none; background-color: #ef4444; color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; margin-left: 5px;">0</span></a>
+                </li>
+                <li><a data-panel="informes-licencias"><i class="fas fa-file-pdf"></i> Informes Licencias y Justif.</a>
+                </li>
+                <li><a data-panel="subir-evidencias"><i class="fas fa-cloud-upload-alt"></i> Subir Evidencias</a></li>
+
+                <li class="sidebar-divider">
+                    <span class="sidebar-category">Administración</span>
+                </li>
+                <li><a data-panel="configuracion"><i class="fas fa-cogs"></i> Configuración</a></li>
+                <li><a data-panel="mantencion"><i class="fas fa-tools"></i> Mantención BD</a></li>
+                <li class="d-none-important"><a data-panel="bitacora"><i class="fas fa-book"></i> Bitácora de
+                        Novedades</a></li>
+            </ul>
+        </aside>
+
+        <!-- ===== MAIN CONTENT ===== -->
+        <main class="main-content">
+            <div id="lockdownBanner"></div>
+
+            <!-- ===== TOPBAR ===== -->
+            <div class="topbar">
+                <div class="topbar-left">
+                    <button class="mobile-toggle" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2 id="pageTitle">Dashboard</h2>
+                    <p id="pageSubtitle">Vista general del sistema</p>
+                </div>
+                <div class="topbar-right">
+                    <span id="dbStatusIndicator" class="badge-status sync-icon"><i class="fas fa-sync fa-spin"></i>
+                        Conectando...</span>
+                    <span class="text-sm text-gray-500">
+                        <i class="fas fa-calendar-alt"></i> <span id="fechaActual"></span>
+                    </span>
+                    <div class="user">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Crect width='36' height='36' rx='18' fill='%23dbeafe'/%3E%3Ctext x='18' y='22' text-anchor='middle' font-size='16' fill='%232563eb' font-family='Arial' font-weight='bold'%3EA%3C/text%3E%3C/svg%3E"
+                            alt="Avatar">
+                        <span>Inspector General</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==========================================================
+            PANEL: DASHBOARD
+            ========================================================== -->
+            <div id="panel-dashboard" class="panel active">
+                <div id="dashAvisoFechaInicio"></div>
+                <div class="stats-grid" id="statsGrid"></div>
+                <div id="asistenciaAlertasOlvido"></div>
+
+                <div class="dashboard-grid">
+
+                    <!-- Widget 4: Ausentismo por Curso (Barras) -->
+                    <div class="card mb-0">
+                        <div class="card-header">
+                            <h3><i class="fas fa-school text-danger"></i> Ausentismo por Curso (Hoy)</h3>
+                        </div>
+                        <div class="card-body" id="dashAusentismoCursos" class="scrollable-350">
+                            <p class="text-muted">Calculando ausentismo...</p>
+                        </div>
+                    </div>
+
+                    <!-- Widget 3: Tendencia Semanal (Línea) — Reemplaza Novedades ocultas -->
+                    <div class="card mb-0">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-line text-info"></i> Tendencia de Asistencia</h3>
+                            <span class="text-muted">Últimos 5 días hábiles</span>
+                        </div>
+                        <div class="card-body" id="dashTendenciaSemanal">
+                            <div class="chart-container-line">
+                                <canvas id="chartTendenciaSemanal"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Widget 6: Semáforo de Asistencia por Curso (Barras) -->
+                    <div class="card mb-0">
+                        <div class="card-header">
+                            <h3><i class="fas fa-traffic-light text-warning"></i> Semáforo de Asistencia (Mensual)</h3>
+                        </div>
+                        <div class="card-body" id="dashSemaforoAsistencia" class="scrollable-350">
+                            <p class="text-muted">Calculando metas...</p>
+                        </div>
+                    </div>
+
+                    <!-- Widget 1: Resumen de Asistencia (Donut) -->
+                    <div class="card mb-0">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-pie text-primary"></i> Asistencia del Día</h3>
+                            <span class="text-muted" id="fechaResumen"></span>
+                        </div>
+                        <div class="card-body" id="resumenDia">
+                            <p class="text-muted">Cargando...</p>
+                        </div>
+                    </div>
+
+                    <!-- Widget 2.5: Alertas Consecutivas -->
+                    <div class="card mb-0">
+                        <div class="card-header" style="background-color: #fee2e2;">
+                            <h3 style="color: #991b1b;"><i class="fas fa-bell"></i> Alerta Temprana</h3>
+                            <span class="text-muted" style="color: #b91c1c !important;">Ausencias Consecutivas</span>
+                        </div>
+                        <div class="card-body" id="dashAlertasConsecutivas" class="scrollable-300">
+                            <p class="text-muted">Calculando inasistencias recientes...</p>
+                        </div>
+                    </div>
+
+                    <!-- Widget 2: Alumnos en Riesgo -->
+                    <div class="card mb-0">
+                        <div class="card-header">
+                            <h3><i class="fas fa-exclamation-triangle text-danger"></i> Alumnos en
+                                Riesgo</h3>
+                            <span class="text-muted">Asistencia < Config (Anual)</span>
+                        </div>
+                        <div class="card-body" id="dashAlumnosRiesgo" class="scrollable-300">
+                            <p class="text-muted">Calculando faltas anuales...</p>
+                        </div>
+                    </div>
+
+                    <!-- Widget 5: Contacto de Apoderados (Donut) -->
+                    <div class="card mb-0">
+                        <div class="card-header">
+                            <h3><i class="fas fa-phone-alt text-success"></i> Contacto de Apoderados</h3>
+                        </div>
+                        <div class="card-body" id="dashContactoProgreso" class="scrollable-350">
+                            <p class="text-muted">Calculando progreso...</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ==========================================================
+            PANEL: CURSOS (igual que antes)
+            ========================================================== -->
+            <div id="panel-cursos" class="panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-school text-primary"></i> Gestión de Cursos</h3>
+                        <div class="flex gap-2 flex-wrap">
+                            <button class="btn btn-primary offline-restrict" onclick="abrirModalCurso()">
+                                <i class="fas fa-plus"></i> Nuevo Curso
+                            </button>
+                            <button class="btn btn-primary offline-restrict" onclick="abrirModalExcelMasivo()"><i
+                                    class="fas fa-file-excel"></i> Importar Cursos y Alumnos (Excel)</button>
+                            <button class="btn btn-info offline-restrict" onclick="abrirModalExcel()"><i
+                                    class="fas fa-file-excel"></i> Importar a Curso</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Nombre</th>
+                                        <th>Nivel</th>
+                                        <th>Alumnos</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaCursos"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==========================================================
+            PANEL: ALUMNOS
+            ========================================================== -->
+            <!-- PANEL ALUMNOS EN RIESGO -->
+            <div id="panel-alumnos-riesgo" class="panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-exclamation-circle text-danger"></i> Alumnos en Riesgo (Asistencia < <span id="lblRiesgoUmbralPanel">85</span>%)</h3>
+                                <div class="flex gap-2">
+                                    <button class="btn btn-success" onclick="imprimirAlumnosRiesgo()"><i
+                                            class="fas fa-print"></i> Imprimir / PDF</button>
+                                </div>
+                    </div>
+                    <div class="panel-filter-bar">
+                        <select id="filtroRiesgoCurso" onchange="renderizarTablaAlumnosRiesgo()" class="form-control">
+                            <option value="">Todos los cursos</option>
+                        </select>
+                        <select id="filtroRiesgoMes" onchange="renderizarTablaAlumnosRiesgo()" class="form-control">
+                            <option value="todos">Todos los meses (Anual)</option>
+                            <option value="0">Enero</option>
+                            <option value="1">Febrero</option>
+                            <option value="2">Marzo</option>
+                            <option value="3">Abril</option>
+                            <option value="4">Mayo</option>
+                            <option value="5">Junio</option>
+                            <option value="6">Julio</option>
+                            <option value="7">Agosto</option>
+                            <option value="8">Septiembre</option>
+                            <option value="9">Octubre</option>
+                            <option value="10">Noviembre</option>
+                            <option value="11">Diciembre</option>
+                        </select>
+                        <input type="text" id="filtroRiesgoAlumno" placeholder="🔍 Buscar por nombre..."
+                            oninput="renderizarTablaAlumnosRiesgo()" class="flex-1 min-w-200 form-control">
+                        <button class="btn btn-outline" onclick="limpiarFiltrosRiesgo()"><i class="fas fa-eraser"></i>
+                            Limpiar</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>RUT</th>
+                                        <th class="min-w-230">Nombre</th>
+                                        <th>Curso</th>
+                                        <th>Días Totales</th>
+                                        <th>Días Ausente</th>
+                                        <th>% Asistencia</th>
+                                        <th>Nivel Riesgo</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaAlumnosRiesgoBody">
+                                    <!-- Dinámico -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="panel-alumnos" class="panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-user-graduate text-primary"></i> Gestión de Alumnos</h3>
+                        <div class="flex gap-2 flex-wrap">
+                            <select id="filtroCursoAlumnos" onchange="cargarAlumnos()" class="form-control-sm">
+                                <option value="">Todos los cursos</option>
+                            </select>
+                            <button id="btnReasignarLista" class="btn btn-warning offline-restrict" onclick="reasignarNumerosLista()" style="display: none;"><i class="fas fa-sort-numeric-down"></i> Reordenar N°</button>
+                            <button class="btn btn-success offline-restrict" onclick="abrirModalAlumno()"><i
+                                    class="fas fa-plus"></i>
+                                Nuevo</button>
+                            <button class="btn btn-primary" onclick="imprimirListadoAlumnos()"><i
+                                    class="fas fa-print"></i>
+                                Imprimir</button>
+                            <button class="btn btn-danger" onclick="descargarPDFListadoAlumnos()"><i
+                                    class="fas fa-file-pdf"></i>
+                                PDF</button>
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>N° de Lista</th>
+                                        <th>RUT</th>
+                                        <th>Nombre</th>
+                                        <th>Curso</th>
+                                        <th>Apoderado</th>
+                                        <th>Teléfono</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tablaAlumnos"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==========================================================
+            PANEL: ASISTENCIA
+            ========================================================== -->
+            <div id="panel-asistencia" class="panel">
+                <div class="card">
+                    <div class="card-header flex-wrap gap-2" style="justify-content: space-between; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <h3><i class="fas fa-clipboard-check text-primary"></i> Registrar Asistencia</h3>
+                            <button class="btn btn-outline btn-sm" onclick="fetchHistoryFull()" title="Descargar datos de todo el año (Tarda unos segundos)" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: #fff;">
+                                <i class="fas fa-cloud-download-alt"></i> Cargar Historial Antiguo
+                            </button>
+                        </div>
+                        <div style="display: flex; gap: 5px; background: #f3f4f6; padding: 4px; border-radius: 8px;">
+                            <button id="btnVistaRapida" class="btn btn-primary" onclick="setVistaAsistencia('rapida')" style="padding: 0.4rem 1rem; border-radius: 6px;"><i class="fas fa-th-large"></i> Vista Rápida (Módulos)</button>
+                            <button id="btnVistaClasica" class="btn btn-outline" onclick="setVistaAsistencia('clasica')" style="padding: 0.4rem 1rem; border-radius: 6px; background: white; border-color: transparent;"><i class="fas fa-list"></i> Vista Clásica</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-row-asistencia">
+                            <div class="form-group mb-0">
+                                <label>Filtrar por Curso</label>
+                                <select id="asistenciaFiltro" onchange="cargarListaAsistencia()"
+                                    class="form-control-sm w-full">
+                                    <option value="">[Mostrar todos los cursos]</option>
+                                </select>
+                            </div>
+                            <div class="form-group mb-0">
+                                <label>Fecha</label>
+                                <input type="date" id="asistenciaFecha" onchange="cargarListaAsistencia()"
+                                    class="w-full">
+                            </div>
+                            <div class="form-group mb-0">
+                                <button type="button" id="btnSuspenderClases" class="btn btn-danger"
+                                    onclick="toggleDiaSinClases()" class="btn-sync-submit">
+                                    <i class="fas fa-calendar-times"></i> Suspender Clases
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- CONTENEDOR VISTA CLÁSICA -->
+                        <div id="asistenciaListaContainer" style="display: none;">
+                            <div class="empty-state"><i class="fas fa-calendar"></i>
+                                <p>Cargando cursos...</p>
+                            </div>
+                        </div>
+
+                        <!-- CONTENEDOR VISTA RÁPIDA (MÓDULOS) -->
+                        <div id="asistenciaRapidaContainer" style="margin-top: 20px;">
+                            <div class="empty-state"><i class="fas fa-hand-pointer"></i>
+                                <p>Seleccione un curso específico y una fecha para usar la vista rápida.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==========================================================
+            PANEL: REPORTE DIARIO CONSOLIDADO
+            ========================================================== -->
+            <div id="panel-reporte-diario" class="panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-file-alt text-info"></i> Reporte Diario Consolidado -
+                            Inspectoría</h3>
+                        <div class="flex gap-2">
+                            <input type="date" id="reporteFecha" class="form-control-sm">
+                            <button class="btn btn-outline" onclick="limpiarFiltrosReporteDiario()" title="Limpiar Filtros"><i class="fas fa-eraser"></i> Limpiar</button>
+                            <button class="btn btn-primary" onclick="generarReporteDiario()"><i class="fas fa-sync"></i>
+                                Generar</button>
+                            <button class="btn btn-success" onclick="imprimirReporteDiario()"><i
+                                    class="fas fa-print"></i> Imprimir</button>
+                            <button class="btn btn-danger" onclick="exportarReporteDiarioPDF()"><i
+                                    class="fas fa-file-pdf"></i> PDF</button>
+                        </div>
+                    </div>
+                    <div class="card-body" id="reporteDiarioContainer">
+                        <div class="empty-state"><i class="fas fa-file-alt"></i>
+                            <p>Seleccione una fecha y presione "Generar"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==========================================================
+            PANEL: INFORMES PDF / SEMANALES
+            ========================================================== -->
+            <div id="panel-informes" class="panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-file-contract text-danger"></i> Generador de Informes</h3>
+                        <div class="flex gap-2">
+                            <button class="btn btn-success" onclick="imprimirInforme()"><i class="fas fa-print"></i>
+                                Imprimir / Guardar PDF</button>
+                        </div>
+                    </div>
+                    <div class="panel-filter-bar">
+                        <select id="filtroTipoInforme" onchange="cambiarFiltroInforme()" class="form-control">
+                            <option value="">-- Seleccione tipo de informe --</option>
+                            <option value="curso">📄 Informe por Curso (Profesor Jefe)</option>
+                            <option value="alumno">👤 Informe por Alumno (Hoja de Vida)</option>
+                            <option value="directivo">🏢 Reporte Directivo Consolidado</option>
+                            <option value="sat">🚨 Sistema Alerta Temprana (Deserción)</option>
+                            <option value="correlacion">📈 Correlación Académica (Grilla Asistencia)</option>
+                        </select>
+
+                        <select id="filtroInformeCurso" class="form-control d-none">
+                            <option value="">Seleccione curso...</option>
+                        </select>
+
+                        <div id="filtroInformeAlumnoWrapper" class="d-none flex-1 min-w-250 items-center gap-2">
+                            <input list="listaEstudiantesInforme" id="filtroInformeAlumno"
+                                placeholder="🔍 Escriba nombre o RUT del alumno..." class="flex-1 form-control"
+                                autocomplete="off">
+                            <datalist id="listaEstudiantesInforme"></datalist>
+                        </div>
+                        <select id="filtroInformeMes" class="form-control d-none">
+                            <option value="todos">Todos los meses (Anual)</option>
+                            <option value="2">Marzo</option>
+                            <option value="3">Abril</option>
+                            <option value="4">Mayo</option>
+                            <option value="5">Junio</option>
+                            <option value="6">Julio</option>
+                            <option value="7">Agosto</option>
+                            <option value="8">Septiembre</option>
+                            <option value="9">Octubre</option>
+                            <option value="10">Noviembre</option>
+                            <option value="11">Diciembre</option>
+                        </select>
+
+                        <div class="flex gap-2 ml-2">
+                            <button class="btn btn-outline" onclick="limpiarFiltrosInformesGeneral()" title="Limpiar Filtros"><i class="fas fa-eraser"></i> Limpiar</button>
+                            <button class="btn btn-primary" onclick="generarInformeDinamico()"><i class="fas fa-sync"></i>
+                                Generar</button>
+                        </div>
+                    </div>
+                    <div class="card-body" id="informeSemanalContainer">
+                        <div class="empty-state"><i class="fas fa-file-alt"></i>
+                            <p>Seleccione los filtros y presione "Generar"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==========================================================
+            PANEL: PLANILLA DE SEGUIMIENTO DE ALERTAS POR CURSO
+            ========================================================== -->
+            <div id="panel-planilla-alertas" class="panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-exclamation-triangle text-warning"></i> Planilla de
+                            Seguimiento de Alertas</h3>
+                        <div class="flex gap-2">
+                            <select id="planillaCurso" onchange="cargarPlanillaAlertas()" class="form-control-sm">
+                                <option value="">Todos los cursos</option>
+                            </select>
+                            <button class="btn btn-primary" onclick="cargarPlanillaAlertas(true)"><i
+                                    class="fas fa-sync"></i> Actualizar</button>
+                            <button class="btn btn-success" onclick="imprimirPlanillaAlertas()"><i
+                                    class="fas fa-print"></i> Imprimir</button>
+                        </div>
+                    </div>
+                    <div class="card-body" id="planillaAlertasContainer">
+                        <div class="empty-state"><i class="fas fa-exclamation-triangle"></i>
+                            <p>No hay alertas registradas</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==========================================================
+            PANEL: COMUNICACIÓN
+            ========================================================== -->
+            <div id="panel-comunicacion" class="panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-phone-alt text-primary"></i> Comunicaciones Pendientes
+                        </h3>
+                        <button class="btn btn-success" onclick="abrirModalComunicacion()" class="d-none"><i
+                                class="fas fa-plus"></i>
+                            Nueva</button>
+                    </div>
+                    <div class="card-body" id="comunicacionesContainer"></div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-history"></i> Historial</h3>
+                    </div>
+                    <div class="panel-filter-bar">
+                        <select id="historialFiltroMes" onchange="cargarComunicaciones()"
+                            class="form-control min-w-160 text-gray-700 font-medium">
+                            <option value="">Todos los meses</option>
+                        </select>
+                        <input type="text" id="historialFiltroTexto"
+                            placeholder="🔍 Buscar por estudiante, apoderado, motivo, medio..."
+                            oninput="cargarComunicaciones()" class="flex-1 min-w-200 form-control">
+                        <button class="btn btn-outline" onclick="limpiarFiltrosHistorial()"><i
+                                class="fas fa-eraser"></i> Limpiar</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th class="min-w-230">Estudiante</th>
+                                        <th>Apoderado</th>
+                                        <th>Motivo</th>
+                                        <th>Medio</th>
+                                        <th>Responsable</th>
+                                        <th>Nota</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="historialComunicaciones"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==========================================================
+            PANEL: BITÁCORA DE LLAMADAS
+            ========================================================== -->
+            <div id="panel-bitacora" class="panel d-none-important">
+                <div class="card">
+                    <div class="card-header flex-wrap gap-2" style="justify-content: space-between; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <h3><i class="fas fa-book text-info"></i> Bitácora de Novedades</h3>
+                            <button class="btn btn-outline btn-sm" onclick="fetchHistoryFull()" title="Descargar datos de todo el año (Tarda unos segundos)" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; background: #fff;">
+                                <i class="fas fa-cloud-download-alt"></i> Cargar Historial Antiguo
+                            </button>
+                        </div>
+                        <div class="flex gap-2 flex-wrap">
+                            <button class="btn btn-primary" onclick="abrirModalBitacora()"><i class="fas fa-plus"></i>
+                                Nueva Entrada</button>
+                            <button class="btn btn-danger" onclick="imprimirHojaVida()"><i class="fas fa-file-pdf"></i>
+                                Hoja de Vida</button>
+                        </div>
+                    </div>
+                    <div class="panel-filter-bar">
+                        <select id="bitacoraFiltroMes" onchange="cargarBitacora()"
+                            class="form-control min-w-160 text-gray-700 font-medium">
+                            <option value="">Todos los meses</option>
+                        </select>
+                        <input type="text" id="bitacoraFiltroTexto" placeholder="🔍 Buscar por nombre..."
+                            oninput="cargarBitacora()" class="flex-1 min-w-200 form-control">
+                        <select id="bitacoraFiltroCategoria" onchange="cargarBitacora()" class="form-control">
+                            <option value="">Todas las categorías</option>
+                            <option value="Salud">Salud / Accidente</option>
+                            <option value="Retiro">Retiro Anticipado</option>
+                            <option value="Citacion">Citación Apoderado</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                        <button class="btn btn-outline" onclick="limpiarFiltrosBitacora()"><i class="fas fa-eraser"></i>
+                            Limpiar</button>
+                    </div>
+                    <div class="card-body" id="bitacoraContainer">
+                        <div class="empty-state"><i class="fas fa-book"></i>
+                            <p>No hay registros en la bitácora</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==========================================================
+            PANEL: ASISTENTE SOCIAL
+            ========================================================== -->
+            <div id="panel-asistente-social" class="panel">
+                <div class="card">
+                    <div class="card-header flex-wrap gap-2">
+                        <h3><i class="fas fa-home text-primary"></i> Módulo Asistente Social (Inasistencias)</h3>
+                        <div class="flex gap-2 flex-wrap">
+                            <button class="btn btn-danger" onclick="imprimirAsistenteSocial()"><i
+                                    class="fas fa-print"></i> Imprimir / PDF</button>
+                            <button class="btn btn-success" onclick="descargarExcelAsistenteSocial()"><i
+                                    class="fas fa-file-excel"></i> EXCEL</button>
+                            <button class="btn btn-primary" onclick="abrirModalAsistenteSocial()"><i
+                                    class="fas fa-plus"></i> Agregar Intervención (Asistente Social)</button>
+                        </div>
+                    </div>
+                    <div class="panel-filter-bar">
+                        <input type="date" id="filtroAsistSocialFecha" class="form-control text-gray-700">
+                        <select id="filtroAsistSocialCurso" class="form-control min-w-160 text-gray-700 font-medium">
+                            <option value="">Todos los cursos</option>
+                        </select>
+                        <input type="text" id="filtroAsistSocialNombre"
+                            placeholder="🔍 Buscar por nombre de estudiante..." class="flex-1 min-w-200 form-control">
+                        <button class="btn btn-primary" onclick="cargarAsistenteSocial()"><i class="fas fa-search"></i>
+                            Buscar</button>
+                        <button class="btn btn-outline" onclick="limpiarFiltrosAsistSocial()"><i
+                                class="fas fa-eraser"></i> Limpiar</button>
+                    </div>
+                    <div class="card-body">
+                        <!-- LEYENDA DE ESTADOS -->
+                        <div class="alert-box">
+                            <strong><i class="fas fa-info-circle text-gray-500"></i> Estados:</strong>
+                            <span class="flex items-center gap-1">🔴 Abierto (Requiere acción)</span>
+                            <span class="flex items-center gap-1">🟡 En Proceso (Gestión iniciada)</span>
+                            <span class="flex items-center gap-1">🔵 En Seguimiento (Monitoreo)</span>
+                            <span class="flex items-center gap-1">🟢 Cerrado (Caso resuelto)</span>
+                        </div>
+                        <div class="table-responsive">
+                            <table id="tablaAsistenteSocial">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th class="min-w-230">Estudiante</th>
+                                        <th>Curso</th>
+                                        <th>Tipo Intervención</th>
+                                        <th>Motivo Inasistencia</th>
+                                        <th>Acuerdos / Compromisos</th>
+                                        <th>Responsable</th>
+                                        <th>Estado</th>
+                                        <th class="text-center">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Renderizado por JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==========================================================
+            PANEL: INFORMES ASISTENTE SOCIAL
+            ========================================================== -->
+            <div id="panel-informes-asistente" class="panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-file-invoice text-danger"></i> Generador de Informes (Asist. Social)</h3>
+                        <div class="flex gap-2">
+                            <button class="btn btn-primary" onclick="imprimirInformeAsistente()"><i
+                                    class="fas fa-print"></i> Imprimir / Guardar PDF</button>
+                            <button class="btn btn-success" onclick="generarInformeAsistente('excel')"><i
+                                    class="fas fa-file-excel"></i> Descargar EXCEL</button>
+                        </div>
+                    </div>
+                    <div class="panel-filter-bar">
+                        <select id="filtroTipoInformeAsist" onchange="cambiarFiltroInformeAsist()" class="form-control">
+                            <option value="">-- Seleccione tipo de informe --</option>
+                            <option value="alumno">👤 Informe por Alumno</option>
+                            <option value="curso">📄 Consolidado por Curso</option>
+                            <option value="abiertos">🚨 Alerta de Casos Abiertos</option>
+                            <option value="acuerdos">🤝 Acuerdos y Compromisos</option>
+                        </select>
+
+                        <select id="filtroInformeAsistCurso" onchange="actualizarDatalistAsist()"
+                            class="form-control d-none">
+                            <option value="">Seleccione curso...</option>
+                        </select>
+
+                        <div id="filtroInformeAsistAlumnoWrapper" class="d-none flex-1 min-w-250 items-center gap-2">
+                            <input list="listaEstudiantesInformeAsist" id="filtroInformeAsistAlumno"
+                                placeholder="🔍 Escriba nombre del alumno..." class="flex-1 form-control"
+                                autocomplete="off">
+                            <datalist id="listaEstudiantesInformeAsist"></datalist>
+                        </div>
+
+                        <div class="flex gap-2 ml-2">
+                            <button class="btn btn-outline" onclick="limpiarFiltrosInformesAsistente()" title="Limpiar Filtros"><i class="fas fa-eraser"></i> Limpiar</button>
+                            <button class="btn btn-primary" onclick="visualizarInformeAsist()" id="btnVisInformeAsist"><i
+                                    class="fas fa-sync"></i> Generar</button>
+                        </div>
+                    </div>
+                    <div class="card-body" id="informeAsistContainer">
+                        <div class="empty-state"><i class="fas fa-file-alt"></i>
+                            <p>Seleccione los filtros y presione "Generar"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==========================================================
+            PANEL: LICENCIAS Y JUSTIFICACIONES
+            ========================================================== -->
+            <div id="panel-licencias-justificaciones" class="panel">
+                <div class="panel-header"
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+                    <h2><i class="fas fa-file-medical text-primary" style="color: #8b5cf6;"></i> Licencias Médicas y
+                        Justificaciones</h2>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                        <input type="month" id="mesLicencias" class="form-control"
+                            onchange="renderizarGrillaLicencias()" style="min-width: 150px;">
+                        <select id="cursoLicencias" class="form-control" onchange="renderizarGrillaLicencias()"
+                            style="min-width: 150px;">
+                            <option value="">Todos los cursos</option>
+                        </select>
+                        <button class="btn btn-outline" onclick="limpiarFiltrosGrillaLicencias()"
+                            style="margin-right: 10px;" title="Limpiar"><i class="fas fa-eraser"></i> Limpiar</button>
+                        <button class="btn btn-primary" onclick="renderizarGrillaLicencias()"
+                            style="background-color: #8b5cf6; border-color: #8b5cf6;">
+                            <i class="fas fa-sync-alt"></i> Actualizar
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card" style="width: 100%; margin: 0 auto;">
+                    <div class="card-body">
+                        <div style="display: flex; gap: 15px; margin-bottom: 15px; flex-wrap: wrap; font-size: 13px;">
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <div
+                                    style="width: 15px; height: 15px; background-color: #4ade80; border: 1px solid #22c55e;">
+                                </div> L - Licencia Médica
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <div
+                                    style="width: 15px; height: 15px; background-color: #fde047; border: 1px solid #eab308;">
+                                </div> J - Justificación
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <div
+                                    style="width: 15px; height: 15px; background-color: #ef4444; border: 1px solid #dc2626;">
+                                </div> S - Suspensión
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <div
+                                    style="width: 15px; height: 15px; background-color: #f97316; border: 1px solid #ea580c;">
+                                </div> CP - Carpeta Pedagógica
+                            </div>
+                        </div>
+                        <div style="overflow-x: auto;">
+                            <div id="contenedorGrillaLicencias" style="min-height: 200px;">
+                                <div class="empty-state">
+                                    <i class="fas fa-table text-muted"
+                                        style="font-size: 3rem; margin-bottom: 1rem; color: #ccc;"></i>
+                                    <p>Seleccione un mes y presione Actualizar.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==========================================================
+            PANEL: INASISTENCIA SIN JUSTIFICACIÓN
+            ========================================================== -->
+            <div id="panel-inasistencia-injustificada" class="panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-user-times text-danger"></i> Inasistencias sin Justificación</h2>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn" onclick="imprimirInasistenciasInjustificadas()"
+                                style="background-color: #3b82f6; color: white; border: none; font-weight: 600;"><i
+                                    class="fas fa-print"></i> Imprimir / Guardar PDF</button>
+                            <button class="btn" onclick="exportarInasistenciasExcel()"
+                                style="background-color: #16a34a; color: white; border: none; font-weight: 600;"><i
+                                    class="fas fa-file-excel"></i> Descargar EXCEL</button>
+                            <button class="btn btn-primary" onclick="mostrarPanel('licencias-justificaciones')"
+                                style="background-color: #8b5cf6; border-color: #8b5cf6; font-weight: 600;"><i
+                                    class="fas fa-plus"></i> Ir a Justificar</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted mb-4">Muestra los estudiantes que tienen registro de inasistencia (ausente)
+                            sin una justificación o licencia asociada.</p>
+
+                        <div class="panel-filter-bar"
+                            style="margin-bottom: 15px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <input type="date" id="filtroInasistenciaFecha" class="form-control" style="width: auto;"
+                                onchange="renderizarInasistenciasInjustificadas()" title="Filtrar por fecha">
+                            <select id="filtroInasistenciaCurso" class="form-control"
+                                style="width: auto; min-width: 180px;"
+                                onchange="renderizarInasistenciasInjustificadas()">
+                                <option value="">Todos los cursos</option>
+                            </select>
+                            <input type="text" id="filtroInasistenciaEstudiante" class="form-control"
+                                style="width: 250px;" placeholder="Buscar por estudiante..."
+                                oninput="renderizarInasistenciasInjustificadas()">
+                            <button class="btn btn-outline"
+                                onclick="document.getElementById('filtroInasistenciaFecha').value=''; document.getElementById('filtroInasistenciaCurso').value=''; document.getElementById('filtroInasistenciaEstudiante').value=''; renderizarInasistenciasInjustificadas();"
+                                title="Limpiar Filtros">
+                                <i class="fas fa-eraser"></i> Limpiar
+                            </button>
+                        </div>
+
+                        <div style="overflow-x: auto;">
+                            <table class="table table-striped" id="tablaInasistenciasInjustificadas">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha de Inasistencia</th>
+                                        <th>Curso</th>
+                                        <th>Estudiante</th>
+                                        <th style="text-align: center;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dynamic Content -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==========================================================
+            PANEL: INFORMES DE LICENCIAS Y JUSTIFICACIONES
+            ========================================================== -->
+            <div id="panel-informes-licencias" class="panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-file-pdf text-primary" style="color: #8b5cf6;"></i> Generador de Informes
+                            (Licencias y Justif.)</h3>
+                        <div class="flex gap-2">
+                            <button class="btn btn-primary" onclick="imprimirInformeLicencias()" id="btnImprimirLic"
+                                style="display: none;"><i class="fas fa-print"></i> Imprimir / Guardar PDF</button>
+                        </div>
+                    </div>
+
+                    <div class="panel-filter-bar">
+                        <select id="filtroTipoInformeLic" onchange="cambiarFiltroInformeLic()" class="form-control">
+                            <option value="">-- Seleccione tipo de informe --</option>
+                            <option value="curso">📄 Consolidado por Curso</option>
+                            <option value="alumno">👤 Historial por Alumno</option>
+                            <option value="licencia">🟩 Licencias Médicas (L)</option>
+                            <option value="justificacion">🟨 Justificaciones (J)</option>
+                            <option value="suspension">🟥 Suspensiones (S)</option>
+                            <option value="carpeta">🟧 Carpetas Pedagógicas (CP)</option>
+                        </select>
+
+                        <select id="filtroInformeLicCurso" class="form-control d-none">
+                            <option value="">Seleccione curso...</option>
+                        </select>
+
+                        <div id="filtroInformeLicAlumnoWrapper" class="d-none flex-1 min-w-250 items-center gap-2"
+                            style="display: none;">
+                            <input list="listaEstudiantesInformeLic" id="filtroInformeLicAlumno" class="form-control"
+                                placeholder="Escriba el nombre del alumno..." style="flex: 1;">
+                            <datalist id="listaEstudiantesInformeLic"></datalist>
+                        </div>
+
+                        <div class="flex gap-2 ml-2">
+                            <button class="btn btn-outline" onclick="limpiarFiltrosInformesLicencias()"
+                                title="Limpiar Filtros"><i class="fas fa-eraser"></i> Limpiar</button>
+                            <button class="btn btn-primary" onclick="generarInformeLicencias()"><i
+                                    class="fas fa-sync-alt"></i> Generar</button>
+                        </div>
+                    </div>
+
+                    <div class="card-body" id="areaImpresionInformesLicencias">
+                        <div id="informeLicEmptyState" class="empty-state">
+                            <i class="fas fa-file-alt"></i>
+                            <p>Seleccione los filtros y presione "Generar"</p>
+                        </div>
+
+                        <div id="informeLicContainer" style="display: none;">
+                            <div class="print-header" style="display: none; text-align: center; margin-bottom: 20px;">
+                                <h2 style="margin: 0;" id="printTitleLicencias">Reporte de Licencias y Justificaciones
+                                </h2>
+                                <p style="margin: 5px 0; color: #666;" id="printSubtitleLicencias">Generado el: <span
+                                        class="fecha-hoy-print"></span></p>
+                            </div>
+                            <div class="table-responsive" id="contenedorTablaLicencias">
+                                <table class="table table-striped" id="tablaInformesLicencias">
+                                    <thead>
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>Curso</th>
+                                            <th>Estudiante</th>
+                                            <th>Tipo de Registro</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Dinámico -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- NUEVO DASHBOARD: Solo para Consolidado por Curso -->
+                            <div id="dashboardLicenciasCurso" style="display: none;">
+                                <!-- Cards and graphs will be injected here via JS -->
+                            </div>
+
+                            <!-- DASHBOARD ALUMNO: Solo para Historial de Alumno -->
+                            <div id="dashboardLicenciasAlumno" style="display: none;">
+                                <!-- Cards and graphs for individual student will be injected here via JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==========================================================
+            PANEL: SUBIR EVIDENCIAS
+            ========================================================== -->
+            <div id="panel-subir-evidencias" class="panel">
+                <div class="panel-header"
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+                    <h2><i class="fas fa-folder-open text-primary" style="color: #8b5cf6;"></i> Explorador de Archivos
+                    </h2>
+                    <div
+                        style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; flex: 1; justify-content: flex-end;">
+                        <select id="filtroCursoDrive" onchange="filtrarArchivosDrive()" class="form-control"
+                            style="min-width: 180px; max-width: 250px;">
+                            <option value="">Todos los cursos</option>
+                        </select>
+                        <input type="text" id="buscadorArchivosDrive" placeholder="🔍 Buscar por nombre de alumno..."
+                            oninput="filtrarArchivosDrive()" class="form-control"
+                            style="min-width: 220px; max-width: 350px; flex: 1;">
+                        <button class="btn btn-outline" onclick="limpiarFiltrosDrive()"
+                            style="border-color: #cbd5e1; color: #64748b; padding: 8px 12px;" title="Limpiar Filtros">
+                            <i class="fas fa-times"></i> Limpiar
+                        </button>
+                        <button class="btn btn-outline" onclick="cargarExploradorArchivos()"
+                            style="border-color: #8b5cf6; color: #8b5cf6;">
+                            <i class="fas fa-sync-alt"></i> Actualizar
+                        </button>
+                        <button class="btn btn-primary" onclick="abrirModalSubirEvidencia()"
+                            style="background-color: #8b5cf6; border-color: #8b5cf6;">
+                            <i class="fas fa-cloud-upload-alt"></i> Subir Evidencia
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card" style="width: 100%; margin: 0 auto;">
+                    <div class="card-body" id="contenedorCarpetas"
+                        style="max-height: 600px; overflow-y: auto; background: #f9f9f9; border-radius: 8px;">
+                        <div class="empty-state">
+                            <i class="fas fa-folder text-muted"
+                                style="font-size: 3rem; margin-bottom: 1rem; color: #ccc;"></i>
+                            <p>Haz clic en "Actualizar" para ver los archivos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==========================================================
+            PANEL: COMPROBANTES
+            ========================================================== -->
+            <div id="panel-comprobantes" class="panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-receipt text-success"></i> Comprobantes de Mensajería</h3>
+                        <button class="btn btn-primary" onclick="generarComprobante()"><i class="fas fa-plus"></i> Nuevo
+                            Comprobante</button>
+                    </div>
+                    <div class="panel-filter-bar">
+                        <input type="text" id="comprobantesFiltroTexto"
+                            placeholder="🔍 Buscar por asunto, destinatario o estudiante..."
+                            oninput="cargarComprobantes()" class="flex-1 min-w-200 form-control">
+                        <select id="comprobantesFiltroEstado" onchange="cargarComprobantes()" class="form-control">
+                            <option value="">Todos los estados</option>
+                            <option value="Entregado">✅ Entregado</option>
+                            <option value="Pendiente de firma">⏳ Pendiente de firma</option>
+                            <option value="Devuelto firmado">📝 Devuelto firmado</option>
+                        </select>
+                    </div>
+                    <div class="card-body" id="comprobantesContainer">
+                        <div class="empty-state"><i class="fas fa-receipt"></i>
+                            <p>No hay comprobantes registrados</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==========================================================
+            PANEL: MANTENCION
+            ========================================================== -->
+            <div id="panel-mantencion" class="panel">
+                <div class="card border-top-danger">
+                    <div class="card-header">
+                        <h3><i class="fas fa-tools text-danger"></i> Mantención y Limpieza de Datos
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="grid-300">
+
+                            <!-- Card: Borrar Curso Individual -->
+                            <div class="card-alert">
+                                <div>
+                                    <h4 class="mb-1 text-gray-800"><i class="fas fa-school mr-2"></i> Eliminar Curso
+                                        Individual</h4>
+                                    <p class="text-sm text-gray-600 mb-2">Elimina
+                                        un curso específico y todos sus alumnos y registros asociados (asistencia,
+                                        comunicaciones, bitácora).</p>
+                                    <div class="form-group">
+                                        <label for="mantencionCursoSelect">Seleccionar Curso</label>
+                                        <select id="mantencionCursoSelect" class="w-full form-control">
+                                            <option value="">Cargando cursos...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button class="btn btn-danger offline-restrict" onclick="mantencionEliminarCurso()"
+                                    class="mt-2 w-full"><i class="fas fa-trash-alt"></i> Eliminar
+                                    Curso</button>
+                            </div>
+
+                            <!-- Card: Borrar Alumno Individual -->
+                            <div class="card-alert">
+                                <div>
+                                    <h4 class="mb-1 text-gray-800"><i class="fas fa-user-graduate mr-2"></i> Eliminar
+                                        Alumno
+                                        Individual</h4>
+                                    <p class="text-sm text-gray-600 mb-2">Busca y
+                                        elimina un alumno específico y todo su historial de asistencia, bitácora y
+                                        comunicaciones.</p>
+                                    <div class="form-group">
+                                        <label for="mantencionAlumnoCursoSelect">Filtrar por Curso</label>
+                                        <select id="mantencionAlumnoCursoSelect"
+                                            onchange="mantencionFiltrarAlumnosPorCurso()"
+                                            class="w-full form-control mb-1">
+                                            <option value="">Seleccione curso...</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mantencionAlumnoSelect">Seleccionar Alumno</label>
+                                        <select id="mantencionAlumnoSelect" class="w-full form-control">
+                                            <option value="">Seleccione primero un curso...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button class="btn btn-danger offline-restrict" onclick="mantencionEliminarAlumno()"
+                                    class="mt-2 w-full"><i class="fas fa-trash-alt"></i> Eliminar
+                                    Alumno</button>
+                            </div>
+
+                            <!-- Card: Acciones Masivas -->
+                            <div class="card-alert-single">
+                                <div>
+                                    <h4 class="mb-1 text-gray-800"><i class="fas fa-users-cog mr-2"></i> Acciones
+                                        Masivas
+                                    </h4>
+                                    <p class="text-sm text-gray-600 mb-2">
+                                        Operaciones para vaciar alumnos por curso o eliminar todos los cursos del
+                                        sistema.</p>
+
+                                    <div class="form-group mb-2">
+                                        <label for="mantencionVaciarCursoSelect">Vaciar Alumnos de un Curso</label>
+                                        <select id="mantencionVaciarCursoSelect" class="w-full form-control mb-1">
+                                            <option value="">Seleccione curso...</option>
+                                        </select>
+                                        <button class="btn btn-warning offline-restrict"
+                                            onclick="mantencionEliminarAlumnosDeCurso()" class="btn-block-warning"><i
+                                                class="fas fa-user-slash"></i> Borrar Alumnos del Curso</button>
+                                    </div>
+                                </div>
+                                <div class="mt-2 pt-4 border-t">
+                                    <button class="btn btn-warning offline-restrict"
+                                        onclick="mantencionEliminarTodosCursos()" class="btn-block-warning"><i
+                                            class="fas fa-school-slash"></i> Borrar Todos los Cursos</button>
+                                </div>
+                            </div>
+
+                            <!-- Card: Borrar Carpetas de Drive -->
+                            <div class="card-alert-single" style="margin-bottom: 20px;">
+                                <div>
+                                    <h4 class="mb-1 text-gray-800"><i class="fas fa-folder-minus mr-2 text-warning"></i>
+                                        Vaciar Google Drive (Evidencias)</h4>
+                                    <p class="text-sm text-gray-600 mb-2">
+                                        Elimina todas las carpetas de alumnos y archivos sueltos en Google Drive. Esta
+                                        opción es ideal para realizar la limpieza a final de año escolar.
+                                    </p>
+                                </div>
+                                <div class="mt-2 pt-4 border-t">
+                                    <button class="btn btn-warning offline-restrict"
+                                        onclick="mantencionEliminarCarpetasDrive()" class="btn-block-warning"><i
+                                            class="fas fa-trash-alt"></i> Borrar Todo de Google Drive</button>
+                                </div>
+                            </div>
+
+                            <!-- Card: Borrar Toda la Base de Datos -->
+                            <div class="card-danger">
+                                <div>
+                                    <h4 class="mb-1 text-danger-dark"><i class="fas fa-exclamation-triangle mr-2"></i>
+                                        Reinicio
+                                        Escolar (Borrar Toda la Base de Datos)</h4>
+                                    <p class="text-sm text-danger-darker mb-2">
+                                        <strong>¡ATENCIÓN!</strong> Esta acción eliminará permanentemente toda la
+                                        información de la Base de Datos en la nube y local:
+                                        <em>Cursos, Alumnos, Alertas de Comunicación, Historial de Comunicaciones,
+                                            Bitácora y Comprobantes</em>.
+                                        Use esta opción únicamente para iniciar un nuevo año escolar desde cero.
+                                    </p>
+                                </div>
+                                <button class="btn btn-danger offline-restrict" onclick="mantencionReiniciarBaseDatos()"
+                                    class="btn-block-danger"><i class="fas fa-trash-alt"></i> BORRAR TODA LA BASE DE
+                                    DATOS</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==========================================================
+            PANEL: CONFIGURACIÓN
+            ========================================================== -->
+            <div id="panel-configuracion" class="panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-cogs text-primary"></i> Configuración Global</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="formConfiguracion" onsubmit="guardarConfiguracion(event)">
+                            <div class="grid-2">
+                                <div class="form-group">
+                                    <label>Alerta de Riesgo Anual Crítico (Rojo) %</label>
+                                    <input type="number" id="configRiesgoCritico" min="0" max="100" required style="max-width: 120px;">
+                                    <small class="text-muted" style="display:block; margin-top:5px; line-height:1.4;"><strong>¿Qué hace?:</strong> Define el umbral de asistencia anual por debajo del cual un estudiante será considerado en riesgo grave. En el panel principal (Alumnos en Riesgo), estos estudiantes se resaltarán en color rojo.<br><strong>¿Cómo configurar?:</strong> Escriba un número entero (ej: 75). Se recomienda usar el porcentaje que el colegio considera causal de repitencia.</small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Alerta de Riesgo Anual Medio (Naranja) %</label>
+                                    <input type="number" id="configRiesgoMedio" min="0" max="100" required style="max-width: 120px;">
+                                    <small class="text-muted" style="display:block; margin-top:5px; line-height:1.4;"><strong>¿Qué hace?:</strong> Define el umbral para una alerta preventiva. Los estudiantes por debajo de este porcentaje (pero por encima del nivel crítico) se mostrarán en color naranja (advertencia).<br><strong>¿Cómo configurar?:</strong> Escriba un número mayor al crítico (ej: 85). Sirve para advertir a los alumnos antes de que lleguen a la zona de riesgo grave.</small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Semáforo de Curso Excelente (Verde) %</label>
+                                    <input type="number" id="configSemaforoExcelente" min="0" max="100" required style="max-width: 120px;">
+                                    <small class="text-muted" style="display:block; margin-top:5px; line-height:1.4;"><strong>¿Qué hace?:</strong> En el widget 'Semáforo de Asistencia', los cursos cuya asistencia promedio mensual supere este valor aparecerán en verde, indicando una asistencia óptima.<br><strong>¿Cómo configurar?:</strong> Usualmente se sitúa en una meta alta, como el 95.</small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Semáforo de Curso Precaución (Amarillo) %</label>
+                                    <input type="number" id="configSemaforoPrecaucion" min="0" max="100" required style="max-width: 120px;">
+                                    <small class="text-muted" style="display:block; margin-top:5px; line-height:1.4;"><strong>¿Qué hace?:</strong> En el 'Semáforo de Asistencia', los cursos que no alcancen el nivel excelente pero superen este valor aparecerán en amarillo. Si un curso cae por debajo de este número, se pintará automáticamente en rojo indicando problemas grupales.<br><strong>¿Cómo configurar?:</strong> Debe ser un valor intermedio (ej: 90).</small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Días consecutivos ausente para Alerta</label>
+                                    <input type="number" id="configAusenciasConsecutivas" min="1" max="30" required style="max-width: 120px;">
+                                    <small class="text-muted" style="display:block; margin-top:5px; line-height:1.4;"><strong>¿Qué hace?:</strong> Establece la cantidad de inasistencias seguidas necesarias para disparar la 'Alerta Temprana'. Es vital para detectar de inmediato a estudiantes que dejaron de asistir abruptamente, sin importar si su promedio anual es alto.<br><strong>¿Cómo configurar?:</strong> Se recomienda ingresar 3 o 4 días hábiles.</small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Días en Gráfico de Tendencia</label>
+                                    <input type="number" id="configDiasTendencia" min="3" max="30" required style="max-width: 120px;">
+                                    <small class="text-muted" style="display:block; margin-top:5px; line-height:1.4;"><strong>¿Qué hace?:</strong> Controla cuántos días hacia atrás se dibujan en el gráfico principal de barras ('Tendencia de Asistencia').<br><strong>¿Cómo configurar?:</strong> Un valor de 5 muestra la última semana hábil. Escriba 10 o 15 si prefiere una visión quincenal o casi mensual para analizar el ausentismo.</small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Fijar Año Lectivo (Opcional)</label>
+                                    <input type="number" id="configAnioLectivo" min="2020" max="2100" placeholder="Ej: 2025" style="max-width: 120px;">
+                                    <small class="text-muted" style="display:block; margin-top:5px; line-height:1.4;"><strong>¿Qué hace?:</strong> Exclusivo para la transición de fin de año o revisión de actas pasadas. Obliga a toda la plataforma a ignorar la fecha actual y cargar solo los registros de este año específico.<br><strong>¿Cómo configurar?:</strong> Déjelo en blanco el 99% del tiempo. Solo escriba un año (ej: 2024) si en enero/febrero de 2025 necesita ver los datos del año anterior cerrado.</small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Fecha Inicio Uso de Plataforma</label>
+                                    <input type="date" id="configFechaInicioUso" style="max-width: 150px;">
+                                    <small class="text-muted" style="display:block; margin-top:5px; line-height:1.4;"><strong>¿Qué hace?:</strong> Bloquea los calendarios de asistencia para que nadie pueda registrar datos antes de este día y le indica al sistema que ignore las asistencias pendientes de fechas previas al lanzamiento oficial.<br><strong>¿Cómo configurar?:</strong> Seleccione la fecha exacta en la que los inspectores comenzaron a tomar asistencia obligatoria por primera vez. Si deja esto en blanco, el sistema asume el 1 de marzo.</small>
+                                </div>
+                            </div>
+                            <div style="margin-top:20px;">
+                                <button type="submit" id="btnGuardarConfig" class="btn btn-primary offline-restrict"><i class="fas fa-save"></i> Guardar Configuración</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ==========================================================
+    MODALES (resumidos para no repetir todo el código)
+    ========================================================== -->
+    <!-- Modal Curso, Alumno, Excel, Comunicación, Bitácora, Comprobante -->
+    <div class="modal-overlay" id="modalCurso">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalCursoTitle">Nuevo Curso</h2><button class="modal-close"
+                    onclick="cerrarModal('modalCurso')">&times;</button>
+            </div>
+            <form id="formCurso" onsubmit="guardarCurso(event)">
+                <input type="hidden" id="cursoEditId">
+                <div class="form-group"><label>Nombre del Curso</label><input type="text" id="cursoNombre" required>
+                </div>
+                <div class="form-group"><label>Nivel</label>
+                    <select id="cursoNivel" required>
+                        <option value="">Seleccione...</option>
+                        <option value="Pre-Kinder">Pre-Kinder</option>
+                        <option value="Kinder">Kinder</option>
+                        <option value="1° Básico">1° Básico</option>
+                        <option value="2° Básico">2° Básico</option>
+                        <option value="3° Básico">3° Básico</option>
+                        <option value="4° Básico">4° Básico</option>
+                        <option value="5° Básico">5° Básico</option>
+                        <option value="6° Básico">6° Básico</option>
+                        <option value="7° Básico">7° Básico</option>
+                        <option value="8° Básico">8° Básico</option>
+                        <option value="1° Medio">1° Medio</option>
+                        <option value="2° Medio">2° Medio</option>
+                        <option value="3° Medio">3° Medio</option>
+                        <option value="4° Medio">4° Medio</option>
+                    </select>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-outline"
+                        onclick="cerrarModal('modalCurso')">Cancelar</button><button type="submit"
+                        class="btn btn-primary"><i class="fas fa-save"></i> Guardar</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Alumno -->
+    <div class="modal-overlay" id="modalAlumno">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalAlumnoTitle">Nuevo Alumno</h2><button class="modal-close"
+                    onclick="cerrarModal('modalAlumno')">&times;</button>
+            </div>
+            <form id="formAlumno" onsubmit="guardarAlumno(event)">
+                <input type="hidden" id="alumnoEditId">
+                <div class="form-row">
+                    <div class="form-group"><label>RUT</label><input type="text" id="alumnoRut" placeholder="12345678-K"
+                            required></div>
+                    <div class="form-group" style="flex: 0 0 100px;"><label>N° Lista</label><input type="number" id="alumnoNumeroLista" placeholder="Ej: 5">
+                            </div>
+                    <div class="form-group"><label>Curso</label><select id="alumnoCurso" required>
+                            <option value="">Seleccione...</option>
+                        </select></div>
+                </div>
+                <div class="form-group"><label>Nombre Completo</label><input type="text" id="alumnoNombre" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Apoderado</label><input type="text" id="alumnoApoderado">
+                    </div>
+                    <div class="form-group"><label>Teléfono</label><input type="text" id="alumnoTelefono">
+                    </div>
+                </div>
+                <div class="form-group"><label>Correo Apoderado</label><input type="email" id="alumnoCorreo">
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-outline"
+                        onclick="cerrarModal('modalAlumno')">Cancelar</button><button type="submit"
+                        class="btn btn-primary"><i class="fas fa-save"></i> Guardar</button></div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal Reincorporar -->
+    <div class="modal-overlay" id="modalReincorporar">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Reincorporar Alumno</h2><button class="modal-close"
+                    onclick="cerrarModal('modalReincorporar')">&times;</button>
+            </div>
+            <form id="formReincorporar" onsubmit="guardarReincorporacion(event)">
+                <input type="hidden" id="reincorporarRut">
+                <p style="margin-bottom: 1rem; color: var(--gray-600);">Está a punto de reincorporar a: <strong id="reincorporarNombreText" style="color: var(--gray-800);"></strong></p>
+                <div class="form-row">
+                    <div class="form-group" style="flex: 0 0 100px;"><label>Nuevo N° Lista</label><input type="number" id="reincorporarNumeroLista" placeholder="Ej: 45" required>
+                            </div>
+                    <div class="form-group"><label>Curso</label><select id="reincorporarCurso" required>
+                            <option value="">Seleccione...</option>
+                        </select></div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-outline"
+                        onclick="cerrarModal('modalReincorporar')">Cancelar</button><button type="submit"
+                        class="btn btn-success"><i class="fas fa-user-plus"></i> Reincorporar</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Excel -->
+    <div class="modal-overlay" id="modalExcel">
+        <div class="modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-file-excel text-excel"></i> Importar de Excel</h2><button class="modal-close"
+                    onclick="cerrarModal('modalExcel')">&times;</button>
+            </div>
+            <p class="text-sm text-gray-500 mb-2">
+                La planilla debe contener las columnas: <strong>RUT, Nombre, Apoderado, Teléfono, Correo</strong>.<br>
+                <button onclick="descargarPlanillaEjemplo()" class="btn-link-primary"><i class="fas fa-download"></i>
+                    Descargar planilla de ejemplo</button>
+            </p>
+            <div class="form-group"><label>Curso destino</label><select id="excelCurso">
+                    <option value="">Seleccione...</option>
+                </select></div>
+            <div class="form-group">
+                <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Arrastra tu archivo o haz clic</p>
+                    <div class="file-info" id="fileInfo"></div>
+                </div>
+                <input type="file" id="fileInput" accept=".xlsx,.xls" class="d-none" onchange="handleFile(event)">
+            </div>
+            <div id="excelPreview" class="d-none">
+                <p><strong>Vista previa:</strong> <span id="excelCount">0</span> alumnos</p>
+                <div class="table-responsive scrollable-200 border rounded-6">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>RUT</th>
+                                <th>Nombre</th>
+                                <th>Apoderado</th>
+                                <th>Teléfono</th>
+                                <th>Correo</th>
+                            </tr>
+                        </thead>
+                        <tbody id="excelPreviewBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer"><button class="btn btn-outline"
+                    onclick="cerrarModal('modalExcel')">Cancelar</button><button class="btn btn-success"
+                    id="btnImportarExcel" onclick="importarExcel()" disabled><i class="fas fa-upload"></i>
+                    Importar</button></div>
+        </div>
+    </div>
+
+    <!-- Modal Excel Masivo (Cursos y Alumnos) -->
+    <div class="modal-overlay" id="modalExcelMasivo">
+        <div class="modal modal-lg">
+            <div class="modal-header">
+                <h2><i class="fas fa-file-excel text-excel"></i> Importación Masiva (Cursos y Alumnos)</h2>
+                <button class="modal-close" onclick="cerrarModal('modalExcelMasivo')">&times;</button>
+            </div>
+            <p class="text-sm text-gray-500 mb-2">
+                La planilla debe contener las columnas: <strong>Nombre grado, Nombre curso, Tipo enseñanza, Run, Nombre,
+                    Apellido paterno, Apellido materno, Nombre académico, Apellido paterno académico, Apellido materno
+                    académico, Teléfono celular académico, Email académico</strong>.
+            </p>
+            <div class="form-group">
+                <div class="drop-zone" id="dropZoneMasivo" onclick="document.getElementById('fileInputMasivo').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Arrastra tu archivo o haz clic</p>
+                    <div class="file-info" id="fileInfoMasivo"></div>
+                </div>
+                <input type="file" id="fileInputMasivo" accept=".xlsx,.xls" class="d-none"
+                    onchange="handleFileMasivo(event)">
+            </div>
+            <div id="excelPreviewMasivo" class="d-none">
+                <p><strong>Vista previa:</strong> Se detectaron <span id="excelCountCursos">0</span> cursos nuevos y
+                    <span id="excelCountAlumnos">0</span> alumnos.
+                </p>
+                <div class="table-responsive scrollable-250 border rounded-6">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Grado</th>
+                                <th>Curso</th>
+                                <th>Run</th>
+                                <th>Nombre Completo</th>
+                                <th>Académico</th>
+                            </tr>
+                        </thead>
+                        <tbody id="excelPreviewBodyMasivo"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="excelErrorsMasivo" class="d-none mt-2">
+                <p class="text-danger"><strong>⚠️ Errores Detectados:</strong> <span id="excelCountErrores">0</span>
+                    alumnos no se importarán.</p>
+                <div class="table-responsive scrollable-200 border-danger bg-danger-light rounded-6">
+                    <table>
+                        <thead>
+                            <tr class="bg-danger text-white">
+                                <th>Fila</th>
+                                <th>RUT / Alumno</th>
+                                <th>Motivo del Error</th>
+                            </tr>
+                        </thead>
+                        <tbody id="excelErrorsBodyMasivo"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="cerrarModal('modalExcelMasivo')">Cancelar</button>
+                <button class="btn btn-success" id="btnImportarExcelMasivo" onclick="importarExcelMasivo()" disabled>
+                    <i class="fas fa-upload"></i> Importar Datos
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Comunicación -->
+    <div class="modal-overlay" id="modalComunicacion">
+        <div class="modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-phone-alt text-primary"></i> Contactar Apoderado</h2><button class="modal-close"
+                    onclick="cerrarModal('modalComunicacion')">&times;</button>
+            </div>
+            <form id="formComunicacion" onsubmit="enviarComunicacion(event)">
+                <div class="form-group"><label>Estudiante</label><select id="comunicacionEstudiante" required
+                        onchange="actualizarDatosComunicacion()">
+                        <option value="">Seleccione...</option>
+                    </select></div>
+                <div class="form-row">
+                    <div class="form-group"><label>Apoderado</label><input type="text" id="comunicacionApoderado"
+                            readonly></div>
+                    <div class="form-group"><label>Teléfono</label><input type="text" id="comunicacionTelefono"
+                            readonly></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Medio</label>
+                        <select id="comunicacionMedio" required>
+                            <option value="Llamada">📞 Llamada</option>
+                            <option value="SMS">✉️ SMS</option>
+                            <option value="Email">📧 Email</option>
+                            <option value="WhatsApp">💬 WhatsApp</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Responsable</label><input type="text" id="comunicacionResponsable"
+                            placeholder="Quién contacta..." required></div>
+                </div>
+                <div class="form-group"><label>Nota</label><textarea id="comunicacionNota" rows="3"
+                        required>Inasistencia reiterada</textarea></div>
+                <div class="modal-footer"><button type="button" class="btn btn-outline"
+                        onclick="cerrarModal('modalComunicacion')">Cancelar</button><button type="submit"
+                        class="btn btn-success"><i class="fas fa-check"></i> Registrar</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Editar Comunicación -->
+    <div class="modal-overlay" id="modalEditarComunicacion">
+        <div class="modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-edit text-primary"></i> Detalles / Edición</h2><button class="modal-close"
+                    onclick="cerrarModal('modalEditarComunicacion')">&times;</button>
+            </div>
+            <form id="formEditarComunicacion" onsubmit="guardarEdicionComunicacion(event)">
+                <input type="hidden" id="editComunicacionIndex">
+                <input type="hidden" id="editComunicacionId">
+                <div class="form-row">
+                    <div class="form-group"><label>Estudiante</label><input type="text" id="editComunicacionEstudiante"
+                            readonly></div>
+                    <div class="form-group"><label>Apoderado</label><input type="text" id="editComunicacionApoderado"
+                            readonly></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Medio</label>
+                        <select id="editComunicacionMedio" required>
+                            <option value="Llamada">📞 Llamada</option>
+                            <option value="SMS">✉️ SMS</option>
+                            <option value="Email">📧 Email</option>
+                            <option value="WhatsApp">💬 WhatsApp</option>
+                            <option value="Registro manual">📝 Registro manual</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Responsable</label><input type="text"
+                            id="editComunicacionResponsable" placeholder="Quién contacta..." required></div>
+                </div>
+                <div class="form-group"><label>Estado</label>
+                    <select id="editComunicacionEstado" required>
+                        <option value="✅ Realizada">✅ Realizada</option>
+                        <option value="✅ Contactado">✅ Contactado</option>
+                        <option value="❌ No Contesta">❌ No Contesta</option>
+                        <option value="⚠️ Número equivocado">⚠️ Número equivocado</option>
+                        <option value="Pendiente">Pendiente</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Nota</label><textarea id="editComunicacionNota" rows="3"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline"
+                        onclick="cerrarModal('modalEditarComunicacion')">Cerrar</button>
+                    <button type="submit" class="btn btn-primary" id="btnGuardarEdicionComunicacion"><i
+                            class="fas fa-save"></i> Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Bitácora -->
+    <div class="modal-overlay" id="modalBitacora" class="d-none-important">
+        <div class="modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-book text-info"></i> Registrar Incidente</h2><button class="modal-close"
+                    onclick="cerrarModal('modalBitacora')">&times;</button>
+            </div>
+            <form id="formBitacora" onsubmit="guardarBitacora(event)">
+                <div class="form-row">
+                    <div class="form-group"><label>Fecha/Hora</label><input type="datetime-local" id="bitacoraFecha"
+                            required></div>
+                    <div class="form-group"><label>Estudiante</label>
+                        <input list="listaEstudiantesBitacora" id="bitacoraEstudianteInput"
+                            placeholder="🔍 Escriba nombre o RUT..." required autocomplete="off">
+                        <datalist id="listaEstudiantesBitacora"></datalist>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Apoderado (Opcional)</label><input type="text"
+                            id="bitacoraApoderado">
+                    </div>
+                    <div class="form-group"><label>Teléfono (Opcional)</label><input type="text" id="bitacoraTelefono">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Categoría</label>
+                        <select id="bitacoraCategoria" onchange="toggleCategoriaOtra()" required>
+                            <option value="Salud">Salud / Accidente</option>
+                            <option value="Retiro">Retiro Anticipado</option>
+                            <option value="Citacion">Citación Apoderado</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                        <input type="text" id="bitacoraCategoriaOtra" placeholder="Especifique la categoría..."
+                            class="d-none mt-1" />
+                    </div>
+                    <div class="form-group"><label>Motivo / Resumen</label><textarea id="bitacoraMotivo" rows="2"
+                            required></textarea></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Resultado</label>
+                        <select id="bitacoraResultado" required>
+                            <option value="Contacto exitoso">✅ Contacto exitoso</option>
+                            <option value="Sin respuesta">⏳ Sin respuesta</option>
+                            <option value="Mensaje dejado">📝 Mensaje dejado</option>
+                            <option value="Agendada nueva llamada">📅 Agendada nueva llamada</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Responsable</label><input type="text" id="bitacoraResponsable"
+                            placeholder="Quién registra..." required></div>
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-outline"
+                        onclick="cerrarModal('modalBitacora')">Cancelar</button><button type="submit"
+                        class="btn btn-primary"><i class="fas fa-save"></i> Guardar</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Editar Bitácora -->
+    <div class="modal-overlay" id="modalEditarBitacora" class="d-none-important">
+        <div class="modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-edit text-info"></i> Editar Incidente</h2><button class="modal-close"
+                    onclick="cerrarModal('modalEditarBitacora')">&times;</button>
+            </div>
+            <form id="formEditarBitacora" onsubmit="guardarEdicionBitacora(event)">
+                <input type="hidden" id="editBitacoraId">
+                <div class="form-row">
+                    <div class="form-group"><label>Fecha/Hora</label><input type="datetime-local" id="editBitacoraFecha"
+                            required></div>
+                    <div class="form-group"><label>Estudiante</label>
+                        <input type="text" id="editBitacoraEstudiante" readonly class="bg-gray-100">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Apoderado (Opcional)</label><input type="text"
+                            id="editBitacoraApoderado"></div>
+                    <div class="form-group"><label>Teléfono (Opcional)</label><input type="text"
+                            id="editBitacoraTelefono"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Categoría</label>
+                        <select id="editBitacoraCategoria" onchange="toggleEditCategoriaOtra()" required>
+                            <option value="Salud">Salud / Accidente</option>
+                            <option value="Retiro">Retiro Anticipado</option>
+                            <option value="Citacion">Citación Apoderado</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                        <input type="text" id="editBitacoraCategoriaOtra" placeholder="Especifique la categoría..."
+                            class="d-none mt-1" />
+                    </div>
+                    <div class="form-group"><label>Motivo / Resumen</label><textarea id="editBitacoraMotivo" rows="2"
+                            required></textarea></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Resultado</label>
+                        <select id="editBitacoraResultado" required>
+                            <option value="Contacto exitoso">✅ Contacto exitoso</option>
+                            <option value="Sin respuesta">⏳ Sin respuesta</option>
+                            <option value="Mensaje dejado">📝 Mensaje dejado</option>
+                            <option value="Agendada nueva llamada">📅 Agendada nueva llamada</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Responsable</label><input type="text" id="editBitacoraResponsable"
+                            placeholder="Quién registra..." required></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline"
+                        onclick="cerrarModal('modalEditarBitacora')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Vista Previa Hoja de Vida -->
+    <div class="modal-overlay" id="modalPreviewHojaVida">
+        <div class="modal modal-xl">
+            <div class="modal-header">
+                <h2><i class="fas fa-file-invoice text-primary"></i> Hoja de Vida del Alumno</h2>
+                <button class="modal-close" onclick="cerrarModal('modalPreviewHojaVida')">&times;</button>
+            </div>
+            <div class="modal-body modal-body-scroll">
+                <div id="hojaVidaPaper" class="modal-content-white">
+                    <!-- El contenido se cargará dinámicamente -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline"
+                    onclick="cerrarModal('modalPreviewHojaVida')">Cerrar</button>
+                <button type="button" class="btn btn-success" onclick="imprimirHojaVidaDesdePreview()"><i
+                        class="fas fa-print"></i> Imprimir / Exportar a PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Comprobante -->
+    <!-- ===== MODAL ASISTENTE SOCIAL ===== -->
+    <div class="modal-overlay" id="modalAsistenteSocial">
+        <div class="modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-home text-primary"></i> Registrar Intervención Inasistencia</h2>
+                <button class="modal-close" onclick="cerrarModal('modalAsistenteSocial')">&times;</button>
+            </div>
+            <form id="formAsistenteSocial">
+                <input type="hidden" id="asistSocialId" value="">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Curso *</label>
+                        <select id="asistSocialCurso" required onchange="cargarAlumnosPorCursoAsistSocial()">
+                            <option value="">Seleccione curso...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Estudiante / Alumno *</label>
+                        <select id="asistSocialEstudiante" required onchange="autocompletarDatosAsistSocial()">
+                            <option value="">Seleccione curso primero...</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Fecha de Intervención</label>
+                        <input type="date" id="asistSocialFecha" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Apoderado Entrevistado / Contactado</label>
+                        <input type="text" id="asistSocialApoderado" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono de Contacto</label>
+                        <input type="text" id="asistSocialTelefono">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tipo de Intervención *</label>
+                        <select id="asistSocialTipo" required>
+                            <option value="Llamada Telefónica">Llamada Telefónica</option>
+                            <option value="Entrevista en Liceo">Entrevista en Liceo</option>
+                            <option value="Visita Domiciliaria">Visita Domiciliaria</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Estado del Caso *</label>
+                        <select id="asistSocialEstado" required>
+                            <option value="🔴 Abierto">🔴 Abierto (Inicia seguimiento)</option>
+                            <option value="🟡 En Proceso">🟡 En Proceso (Recabando datos)</option>
+                            <option value="🔵 En Seguimiento">🔵 En Seguimiento (Derivado / Monitoreo)</option>
+                            <option value="🟢 Cerrado">🟢 Cerrado (Resuelto)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Motivo Declarado de la Inasistencia *</label>
+                    <input type="text" id="asistSocialMotivo"
+                        placeholder="Ej: Enfermedad, Problemas familiares, Cambio de domicilio..." required>
+                </div>
+                <div class="form-group">
+                    <label>Acuerdos / Compromisos *</label>
+                    <textarea id="asistSocialAcuerdos" rows="3"
+                        placeholder="Detalle los compromisos asumidos por la familia y/o el liceo..."
+                        required></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Responsable de Intervención</label>
+                        <input type="text" id="asistSocialResponsable" required placeholder="Nombre Asistente Social">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline"
+                        onclick="cerrarModal('modalAsistenteSocial')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+    <div class="modal-overlay" id="modalSubirEvidencia">
+        <div class="modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-cloud-upload-alt text-primary" style="color: #8b5cf6;"></i> Subir Evidencia a Base
+                    de Datos</h2>
+                <button class="modal-close" onclick="cerrarModal('modalSubirEvidencia')">&times;</button>
+            </div>
+            <form id="formSubidaDocumentos">
+                <div class="form-group">
+                    <label>Nombre del Estudiante *</label>
+                    <input list="listaEstudiantesDrive" id="driveNombreAlumno" placeholder="Ej: Juan Pérez" required
+                        autocomplete="off" class="form-control">
+                    <datalist id="listaEstudiantesDrive"></datalist>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Curso *</label>
+                        <select id="driveCurso" required class="form-control">
+                            <option value="">Seleccione un curso...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre del Apoderado *</label>
+                        <input type="text" id="driveNombreApoderado" placeholder="Ej: María Gómez" required
+                            class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Tipo de Documento *</label>
+                    <select id="driveTipoDocumento" required class="form-control"
+                        onchange="toggleDriveTipoDocumentoOtro()">
+                        <option value="Compromiso Asistencia">Compromiso Asistencia</option>
+                        <option value="Entrevista Apoderado">Entrevista Apoderado</option>
+                        <option value="Certificado Medico">Certificado Médico</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                    <input type="text" id="driveTipoDocumentoOtro" placeholder="Especifique el tipo de documento..."
+                        class="form-control" style="display: none; margin-top: 10px;">
+                </div>
+
+                <div class="form-group">
+                    <label>Archivo (PDF, Imagen, Word, Excel, PPT, TXT) *</label>
+                    <div
+                        style="border: 2px dashed #ccc; padding: 20px; text-align: center; border-radius: 8px; margin-top: 5px; background: #f9f9f9;">
+                        <input type="file" id="driveArchivo"
+                            accept=".pdf, image/*, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .txt" required
+                            style="width: 100%; cursor: pointer;">
+                        <p style="font-size: 12px; color: #666; margin-top: 10px;">Tamaño máximo recomendado: 5MB</p>
+                    </div>
+                </div>
+
+                <div class="modal-footer"
+                    style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
+                    <button type="button" class="btn btn-outline"
+                        onclick="cerrarModal('modalSubirEvidencia')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btnSubirDrive"
+                        style="background-color: #8b5cf6; border-color: #8b5cf6;">
+                        <i class="fas fa-upload"></i> Subir Archivo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalComprobante">
+        <div class="modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-receipt text-success"></i> Nuevo Comprobante</h2><button class="modal-close"
+                    onclick="cerrarModal('modalComprobante')">&times;</button>
+            </div>
+            <form id="formComprobante" onsubmit="guardarComprobante(event)">
+                <div class="form-row">
+                    <div class="form-group"><label>Fecha</label><input type="date" id="comprobanteFecha" required></div>
+                    <div class="form-group"><label>Medio</label>
+                        <select id="comprobanteMedio" required>
+                            <option value="Email">📧 Email</option>
+                            <option value="SMS">✉️ SMS</option>
+                            <option value="WhatsApp">💬 WhatsApp</option>
+                            <option value="Carta">📄 Carta</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Estudiante Vinculado (Opcional)</label>
+                        <input list="listaEstudiantesComprobante" id="comprobanteEstudianteInput"
+                            placeholder="🔍 Escriba nombre o RUT..." autocomplete="off">
+                        <datalist id="listaEstudiantesComprobante"></datalist>
+                    </div>
+                    <div class="form-group"><label>Estado</label>
+                        <select id="comprobanteEstado" required>
+                            <option value="Entregado">✅ Entregado</option>
+                            <option value="Pendiente de firma">⏳ Pendiente de firma</option>
+                            <option value="Devuelto firmado">📝 Devuelto firmado</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group"><label>Destinatario</label><input type="text" id="comprobanteDestinatario"
+                        placeholder="Apoderado / Institución" required></div>
+                <div class="form-group"><label>Asunto</label><input type="text" id="comprobanteAsunto" required></div>
+                <div class="form-group"><label>Contenido / Mensaje</label><textarea id="comprobanteContenido" rows="4"
+                        required></textarea></div>
+                <div class="form-group"><label>Observaciones</label><input type="text" id="comprobanteAdjuntos"
+                        placeholder="Ej: Se entregó copia en papel"></div>
+                <div class="modal-footer"><button type="button" class="btn btn-outline"
+                        onclick="cerrarModal('modalComprobante')">Cancelar</button><button type="submit"
+                        class="btn btn-success"><i class="fas fa-save"></i> Guardar Comprobante</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==========================================================
+    MODAL: JUSTIFICACIÓN RÁPIDA
+    ========================================================== -->
+    <div class="modal-overlay" id="modalJustificacionRapida">
+        <div class="modal" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2><i class="fas fa-edit text-primary"></i> Registrar Justificación</h2>
+                <button class="modal-close" onclick="cerrarModal('modalJustificacionRapida')">&times;</button>
+            </div>
+            <form id="formJustificacionRapida" onsubmit="procesarJustificacionRapida(event)">
+                <input type="hidden" id="jrCursoId">
+                <input type="hidden" id="jrAlumno">
+                <input type="hidden" id="jrFechaHidden">
+
+                <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <p style="margin: 0 0 8px 0;"><strong>Estudiante:</strong> <span id="jrAlumnoTxt"></span></p>
+                    <p style="margin: 0 0 8px 0;"><strong>Curso:</strong> <span id="jrCursoTxt"></span></p>
+                    <p style="margin: 0;"><strong>Fecha de Inasistencia:</strong> <span id="jrFechaTxt"></span></p>
+                </div>
+
+                <div class="form-group">
+                    <label>Tipo de Justificación</label>
+                    <select id="jrTipo" required class="form-control">
+                        <option value="">-- Seleccione una opción --</option>
+                        <option value="L">🟢 Licencia Médica (L)</option>
+                        <option value="J">🟡 Justificación (J)</option>
+                        <option value="S">🔴 Suspensión (S)</option>
+                        <option value="CP">🟠 Carpeta Pedagógica (CP)</option>
+                    </select>
+                </div>
+                <div class="modal-footer" style="margin-top: 20px;">
+                    <button type="button" class="btn btn-outline"
+                        onclick="cerrarModal('modalJustificacionRapida')">Cancelar</button>
+                    <button type="submit" class="btn btn-primary"
+                        style="background-color: #8b5cf6; border-color: #8b5cf6;">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast"><i class="fas fa-check-circle" id="toastIcon"></i><span
+            id="toastMessage">Mensaje</span></div>
+
+    <!-- ==========================================================
+    SCRIPT PRINCIPAL
+    ========================================================== -->
+    <!-- Scripts Modularizados -->
+    <script src="js/config.js?v=3.9"></script>
+    <script src="js/modules/state.js?v=3.5"></script>
+    <script src="js/modules/utils.js?v=3.4"></script>
+    <script src="js/modules/api.js?v=3.5"></script>
+    <script src="js/modules/navigation.js?v=3.4"></script>
+    <script src="js/modules/cursos.js?v=3.4"></script>
+    <script src="js/modules/alumnos.js?v=3.5"></script>
+    <script src="js/modules/asistencia.js?v=3.9"></script>
+    <script src="js/modules/comunicacion.js?v=3.4"></script>
+    <script src="js/modules/configPanel.js?v=3.5"></script>
+    <script src="js/modules/asistente-social.js?v=3.6"></script>
+    <script src="js/modules/comprobantes.js?v=3.4"></script>
+    <script src="js/modules/excel.js?v=3.4"></script>
+    <script src="js/modules/informes.js?v=3.5"></script>
+    <script src="js/modules/dashboard.js?v=3.8"></script>
+    <script src="js/modules/main.js?v=3.8"></script>
+</body>
+
+</html>
