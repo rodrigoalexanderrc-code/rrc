@@ -318,7 +318,13 @@
         function cargarListaAsistencia() {
             const fecha = document.getElementById('asistenciaFecha').value;
             const container = document.getElementById('asistenciaListaContainer');
+            const containerRapida = document.getElementById('asistenciaRapidaContainer');
             const filterVal = document.getElementById('asistenciaFiltro')?.value || '';
+
+            const setEmptyState = (html) => {
+                if (container) container.innerHTML = html;
+                if (containerRapida) containerRapida.innerHTML = html;
+            };
 
             if (fecha) {
                 const dateObj = new Date(fecha + 'T00:00:00');
@@ -326,7 +332,7 @@
                 if (month === 0 || month === 1) {
                     showToast('Enero y febrero corresponden al periodo de vacaciones de verano. Seleccione una fecha entre marzo y diciembre.', 'error');
                     document.getElementById('asistenciaFecha').value = '';
-                    container.innerHTML = `<div class="empty-state"><i class="fas fa-calendar-times"></i><p>Seleccione una fecha dentro del año escolar (marzo a diciembre)</p></div>`;
+                    setEmptyState(`<div class="empty-state"><i class="fas fa-calendar-times"></i><p>Seleccione una fecha dentro del año escolar (marzo a diciembre)</p></div>`);
                     if (document.getElementById('btnSuspenderClases')) document.getElementById('btnSuspenderClases').style.display = 'none';
                     return;
                 }
@@ -334,7 +340,7 @@
                 if (dayOfWeek === 0 || dayOfWeek === 6) {
                     showToast('Los fines de semana (sábado y domingo) no son días escolares hábiles.', 'error');
                     document.getElementById('asistenciaFecha').value = '';
-                    container.innerHTML = `<div class="empty-state"><i class="fas fa-calendar-times"></i><p>Seleccione un día escolar hábil (lunes a viernes)</p></div>`;
+                    setEmptyState(`<div class="empty-state"><i class="fas fa-calendar-times"></i><p>Seleccione un día escolar hábil (lunes a viernes)</p></div>`);
                     if (document.getElementById('btnSuspenderClases')) document.getElementById('btnSuspenderClases').style.display = 'none';
                     return;
                 }
@@ -342,7 +348,7 @@
                 // Verificar si es día sin clases
                 if (esDiaSinClases(fecha)) {
                     const motivo = obtenerMotivoDiaSinClases(fecha);
-                    container.innerHTML = `
+                    setEmptyState(`
                         <div class="empty-state" style="background: #fef2f2; border: 1px solid var(--danger); border-radius: var(--radius); padding: 2.5rem; text-align: center; margin-top: 1rem;">
                             <i class="fas fa-calendar-times" style="color: var(--danger); font-size: 3.5rem; margin-bottom: 1.25rem;"></i>
                             <h3 style="color: var(--danger); font-weight: 700; margin-bottom: 0.5rem; font-size: 1.3rem;">Día Sin Clases (Feriado o Suspensión)</h3>
@@ -352,20 +358,20 @@
                                 <i class="fas fa-calendar-check"></i> Habilitar Clases Nuevamente
                             </button>
                         </div>
-                    `;
+                    `);
                     actualizarBotonSuspension(true);
                     return;
                 } else {
                     actualizarBotonSuspension(false);
                 }
             } else {
-                container.innerHTML = `<div class="empty-state"><i class="fas fa-calendar"></i><p>Seleccione una fecha</p></div>`;
+                setEmptyState(`<div class="empty-state"><i class="fas fa-calendar"></i><p>Seleccione una fecha</p></div>`);
                 if (document.getElementById('btnSuspenderClases')) document.getElementById('btnSuspenderClases').style.display = 'none';
                 return;
             }
 
             if (!cursos || cursos.length === 0) {
-                container.innerHTML = `<div class="empty-state"><i class="fas fa-users"></i><p>No hay cursos registrados</p></div>`;
+                setEmptyState(`<div class="empty-state"><i class="fas fa-users"></i><p>No hay cursos registrados</p></div>`);
                 return;
             }
 
