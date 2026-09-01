@@ -996,6 +996,18 @@
 </head>
 
 <body>
+    <!-- Overlay de Login de Plataforma -->
+    <div id="platformLoginOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; z-index: 9999999; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+        <div style="background: white; padding: 40px; border-radius: 20px; width: 350px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+            <h2 style="margin-top: 0; color: #1e293b;">Acceso Plataforma</h2>
+            <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 20px;">Ingrese sus credenciales para acceder</p>
+            <input type="text" id="platformUser" placeholder="Usuario" autocomplete="off" spellcheck="false" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
+            <input type="password" id="platformPass" placeholder="Contraseña" autocomplete="new-password" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
+            <button id="btnPlatformLogin" onclick="validarPlatformLogin()" style="width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 10px; transition: background 0.3s;">Ingresar</button>
+            <p id="platformLoginError" style="color: #ef4444; font-size: 0.8rem; margin-top: 10px; display: none;">Usuario o contraseña incorrectos</p>
+        </div>
+    </div>
+
     <div class="container">
         <h1>📋 Panel de Reloj Control</h1>
         <div class="sub">Liceo Simón Bolívar</div>
@@ -1120,6 +1132,44 @@
     </div>
 
     <script>
+        // ======================= PLATFORM LOGIN =======================
+        document.addEventListener("DOMContentLoaded", () => {
+            document.body.style.overflow = 'hidden'; // Bloquear scroll hasta login
+            
+            // Limpiar campos por si el navegador los guarda
+            setTimeout(() => {
+                document.getElementById('platformUser').value = '';
+                document.getElementById('platformPass').value = '';
+            }, 50);
+            
+            // Permitir Enter para ingresar
+            document.getElementById('platformPass').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') validarPlatformLogin();
+            });
+            document.getElementById('platformUser').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') validarPlatformLogin();
+            });
+        });
+
+        // Forzar recarga si se usa el botón Atrás del navegador (bfcache)
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                window.location.reload();
+            }
+        });
+
+        function validarPlatformLogin() {
+            const user = document.getElementById('platformUser').value.trim().toLowerCase();
+            const pass = document.getElementById('platformPass').value.trim();
+            if (user === 'profesores' && (pass === 'lsb2124.' || pass === 'lsb2124')) {
+                document.getElementById('platformLoginOverlay').style.display = 'none';
+                document.body.style.overflow = 'auto'; // Restaurar scroll
+                document.getElementById('platformLoginError').style.display = 'none';
+            } else {
+                document.getElementById('platformLoginError').style.display = 'block';
+            }
+        }
+
         // ======================= CONFIGURACIÓN GLOBAL Y VARIABLES =======================
         const funcionariosMap = new Map();
         const funcionarios = [];
@@ -1223,7 +1273,8 @@
                 // Función auxiliar para extraer rango de fechas de un Excel
                 async function getDateRange(fileUrl) {
                     try {
-                        const res = await fetch(fileUrl);
+                        const res = await fetch(fileUrl + '?t=' + Date.now());
+                        if (!res.ok) throw new Error('Archivo no disponible todavía (HTTP ' + res.status + ')');
                         const ab = await res.arrayBuffer();
                         const wb = XLSX.read(ab, { type: 'array' });
                         const data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { raw: false });
@@ -1353,7 +1404,8 @@
             document.getElementById('resultados').innerHTML = '<div style="padding:40px; text-align:center; background:white; border-radius:20px;">⌛ Cargando y procesando Excel...</div>';
 
             try {
-                const res = await fetch(fileUrl);
+                const res = await fetch(fileUrl + '?t=' + Date.now());
+                if (!res.ok) throw new Error('HTTP ' + res.status);
                 const arrayBuffer = await res.arrayBuffer();
                 const workbook = XLSX.read(arrayBuffer, { type: 'array' });
                 const sheetName = workbook.SheetNames[0];
@@ -1450,7 +1502,11 @@
                 procesarRegistrosYMostrar();
             } catch (e) {
                 console.error('Error procesando Excel:', e);
-                document.getElementById('resultados').innerHTML = '<div style="padding:40px; text-align:center; color:#b91c1c; background:white; border-radius:20px;">❌ Error al procesar el archivo Excel.</div>';
+                let errorMsg = '❌ Error al procesar el archivo Excel.';
+                if (e.message && e.message.includes('HTTP 404')) {
+                    errorMsg = '❌ El archivo aún se está procesando en los servidores de GitHub. Por favor, espera 1 o 2 minutos y vuelve a intentarlo.';
+                }
+                document.getElementById('resultados').innerHTML = '<div style="padding:40px; text-align:center; color:#b91c1c; background:white; border-radius:20px;">' + errorMsg + '</div>';
             }
         }
 
