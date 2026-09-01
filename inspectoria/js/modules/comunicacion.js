@@ -174,7 +174,7 @@
             <div style="font-size:0.85rem;color:${borderColor}; margin-top:4px;">${badgeHtml}⚠️ ${motivoDisplay}</div>
         </div>
         <div class="flex gap-1" style="flex-wrap:wrap;">
-            <button class="btn btn-primary btn-sm" onclick="marcarContactado(${i})"><i class="fas fa-check"></i> Acción Realizada</button>
+            <button class="btn btn-primary btn-sm" onclick="marcarContactado(${i})"><i class="fas fa-check"></i> Ingresar Acción Realizada</button>
         </div>
     </div>
 `}).join('');
