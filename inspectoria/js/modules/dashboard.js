@@ -242,6 +242,16 @@
                 }).join('');
             }
 
+            const badgeRiesgo = document.getElementById('badgeAlumnosRiesgo');
+            if (badgeRiesgo) {
+                if (topAlumnos.length > 0) {
+                    badgeRiesgo.textContent = topAlumnos.length;
+                    badgeRiesgo.style.display = 'inline-block';
+                } else {
+                    badgeRiesgo.style.display = 'none';
+                }
+            }
+
             // WIDGET 2.5: Alerta Temprana (Ausencias Consecutivas)
             const containerAlertasConsecutivas = document.getElementById('dashAlertasConsecutivas');
             if (containerAlertasConsecutivas) {
