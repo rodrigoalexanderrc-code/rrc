@@ -3,7 +3,7 @@
 const CONFIG = {
     // 1. Configuración de Marca
     SCHOOL_NAME: 'Liceo Libertador Simón Bolívar',
-    LOGO_URL: 'https://www.liceo-simonbolivar.cl/intranet/insignia/ESCUDO.png',
+    LOGO_URL: 'insignia/insignia.jpg',
     BOT_NAME: 'Simona',
     BOT_AVATAR: 'simona_final.png',
 

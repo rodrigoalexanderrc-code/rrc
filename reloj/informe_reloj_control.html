@@ -1002,14 +1002,17 @@
             <h2 style="margin-top: 0; color: #1e293b;">Acceso Plataforma</h2>
             <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 20px;">Ingrese sus credenciales para acceder</p>
             <input type="text" id="platformUser" placeholder="Usuario" autocomplete="off" spellcheck="false" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
-            <input type="password" id="platformPass" placeholder="Contraseña" autocomplete="new-password" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
+            <input type="password" id="platformPass" placeholder="Contraseña" autocomplete="current-password" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box;">
             <button id="btnPlatformLogin" onclick="validarPlatformLogin()" style="width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 10px; transition: background 0.3s;">Ingresar</button>
             <p id="platformLoginError" style="color: #ef4444; font-size: 0.8rem; margin-top: 10px; display: none;">Usuario o contraseña incorrectos</p>
         </div>
     </div>
 
     <div class="container">
-        <h1>📋 Panel de Reloj Control</h1>
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 8px;">
+            <img src="insignia/insignia.jpg" alt="Insignia Liceo" style="height: 60px; object-fit: contain;">
+            <h1 style="margin: 0;">Panel de Reloj Control</h1>
+        </div>
         <div class="sub">Liceo Simón Bolívar</div>
 
         <button class="btn-admin-access" onclick="mostrarLogin()">🔐 Ingreso de Permisos</button>
@@ -2374,6 +2377,7 @@
 
             content.innerHTML = `
             <div style="text-align:center; margin-bottom:20px; border-bottom:3px solid #2563eb; padding-bottom:10px;">
+                <img src="insignia/insignia.jpg" alt="Insignia" style="height: 70px; margin-bottom: 10px;">
                 <h1 style="margin:0; color:#1e293b; font-size:22px; font-family:Arial, sans-serif;">REPORTE DE ASISTENCIA INDIVIDUAL</h1>
                 <div style="color:#64748b; font-size:14px; margin-top:2px;">Liceo Simón Bolívar</div>
             </div>
@@ -2538,6 +2542,7 @@
                 const subText = document.querySelector('.sub').innerText;
                 element.innerHTML = `
                 <div style="text-align:center; margin-bottom:30px; border-bottom: 2px solid #0c4a6e; padding-bottom:10px;">
+                    <img src="insignia/insignia.jpg" alt="Insignia" style="height: 70px; margin-bottom: 10px;">
                     <h1 style="color:#0c4a6e; margin:0;">Reporte de Asistencia y Observaciones</h1>
                     <p style="color:#4b5563; font-size:14px; margin:5px 0;">${subText}</p>
                     <p style="font-size:12px; color:#64748b;">Filtro aplicado: <strong>${document.querySelector(`.filtro-btn[data-filtro="${filtroActual}"]`).innerText}</strong></p>
@@ -3674,6 +3679,7 @@
 
             element.innerHTML = `
                 <div style="text-align:center; margin-bottom:20px; border-bottom:3px solid #10b981; padding-bottom:10px;">
+                    <img src="insignia/insignia.jpg" alt="Insignia" style="height: 70px; margin-bottom: 10px;">
                     <h1 style="margin:0; color:#065f46; font-size:24px;">REPORTE DE GESTIÓN DE PERMISOS</h1>
                     <div style="color:#64748b; font-size:14px; margin-top:5px;">Liceo Simón Bolívar | ${subtitulo}</div>
                 </div>
@@ -3926,7 +3932,7 @@
         <div class="login-box">
             <h3 style="margin-top:0;">🔒 Acceso Administrativo</h3>
             <input type="text" id="loginUser" placeholder="Usuario" autocomplete="off" spellcheck="false">
-            <input type="password" id="loginPass" placeholder="Contraseña" autocomplete="new-password">
+            <input type="password" id="loginPass" placeholder="Contraseña" autocomplete="current-password">
             <div style="display:flex; gap:10px; margin-top:10px;">
                 <button class="btn-login" onclick="validarLogin()">Entrar</button>
                 <button class="btn-login" style="background:#64748b;" onclick="cerrarLogin()">Cancelar</button>
