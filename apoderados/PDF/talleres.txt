@@ -1,0 +1,53 @@
+# Formato: mes, taller, profesor, horario, lugar
+# Ejemplo: mayo, Escuela de Fútbol, Prof. Juan Pérez, Mar y Jue 16:00, Estadio Municipal
+
+
+# TALLERES DE ACLE VOLEIBOL
+
+abril, ACLE Voleibol, Profesora Lisbeth Correa, Básica 2 Básico a 8 Básico todos los jueves 15:30 a 16:30, Multicancha Liceo Simón Bolívar
+mayo, ACLE Voleibol, Profesora Lisbeth Correa, Básica 2 Básico a 8 Básico todos los jueves 15:30 a 16:30, Multicancha Liceo Simón Bolívar
+junio, ACLE Voleibol, Profesora Lisbeth Correa, Básica 2 Básico a 8 Básico todos los jueves 15:30 a 16:30, Multicancha Liceo Simón Bolívar
+julio, ACLE Voleibol, Profesora Lisbeth Correa, Básica 2 Básico a 8 Básico todos los jueves 15:30 a 16:30, Multicancha Liceo Simón Bolívar
+agosto, ACLE Voleibol, Profesora Lisbeth Correa, Básica 2 Básico a 8 Básico todos los jueves 15:30 a 16:30, Multicancha Liceo Simón Bolívar
+septiembre, ACLE Voleibol, Profesora Lisbeth Correa, Básica 2 Básico a 8 Básico todos los jueves 15:30 a 16:30, Multicancha Liceo Simón Bolívar
+octubre, ACLE Voleibol, Profesora Lisbeth Correa, Básica 2 Básico a 8 Básico todos los jueves 15:30 a 16:30, Multicancha Liceo Simón Bolívar
+noviembre, ACLE Voleibol, Profesora Lisbeth Correa, Básica 2 Básico a 8 Básico todos los jueves 15:30 a 16:30, Multicancha Liceo Simón Bolívar
+diciembre, ACLE Voleibol, Profesora Lisbeth Correa, Básica 2 Básico a 8 Básico todos los jueves 15:30 a 16:30, Multicancha Liceo Simón Bolívar
+abril, ACLE Voleibol, Profesora Lisbeth Correa, 1 Medio a 4 Medio todos los jueves 16:30 a 17:30, Multicancha Liceo Simón Bolívar
+mayo, ACLE Voleibol, Profesora Lisbeth Correa, 1 Medio a 4 Medio todos los jueves 16:30 a 17:30, Multicancha Liceo Simón Bolívar
+junio, ACLE Voleibol, Profesora Lisbeth Correa, 1 Medio a 4 Medio todos los jueves 16:30 a 17:30, Multicancha Liceo Simón Bolívar
+julio, ACLE Voleibol, Profesora Lisbeth Correa, 1 Medio a 4 Medio todos los jueves 16:30 a 17:30, Multicancha Liceo Simón Bolívar
+agosto, ACLE Voleibol, Profesora Lisbeth Correa, 1 Medio a 4 Medio todos los jueves 16:30 a 17:30, Multicancha Liceo Simón Bolívar
+septiembre, ACLE Voleibol, Profesora Lisbeth Correa, 1 Medio a 4 Medio todos los jueves 16:30 a 17:30, Multicancha Liceo Simón Bolívar
+octubre, ACLE Voleibol, Profesora Lisbeth Correa, 1 Medio a 4 Medio todos los jueves 16:30 a 17:30, Multicancha Liceo Simón Bolívar
+noviembre, ACLE Voleibol, Profesora Lisbeth Correa, 1 Medio a 4 Medio todos los jueves 16:30 a 17:30, Multicancha Liceo Simón Bolívar
+diciembre, ACLE Voleibol, Profesora Lisbeth Correa, 1 Medio a 4 Medio todos los jueves 16:30 a 17:30, Multicancha Liceo Simón Bolívar
+
+# TALLERES DE FUTBOL
+
+# Entrenamientos (5° a 6° Básico)
+marzo, Entrenamiento, Profesor Juan Carlos Gongora, 5° a 6° Básico todos los martes 15:45 a 17:45, Multicancha del Liceo o Multicancha de Lourdes
+abril, Entrenamiento, Profesor Juan Carlos Gongora, 5° a 6° Básico todos los martes 15:45 a 17:45, Multicancha del Liceo o Multicancha de Lourdes
+mayo, Entrenamiento, Profesor Juan Carlos Gongora, 5° a 6° Básico todos los martes 15:45 a 17:45, Multicancha del Liceo o Multicancha de Lourdes
+junio, Entrenamiento, Profesor Juan Carlos Gongora, 5° a 6° Básico todos los martes 15:45 a 17:45, Multicancha del Liceo o Multicancha de Lourdes
+julio, Entrenamiento, Profesor Juan Carlos Gongora, 5° a 6° Básico todos los martes 15:45 a 17:45, Multicancha del Liceo o Multicancha de Lourdes
+agosto, Entrenamiento, Profesor Juan Carlos Gongora, 5° a 6° Básico todos los martes 15:45 a 17:45, Multicancha del Liceo o Multicancha de Lourdes
+septiembre, Entrenamiento, Profesor Juan Carlos Gongora, 5° a 6° Básico todos los martes 15:45 a 17:45, Multicancha del Liceo o Multicancha de Lourdes
+octubre, Entrenamiento, Profesor Juan Carlos Gongora, 5° a 6° Básico todos los martes 15:45 a 17:45, Multicancha del Liceo o Multicancha de Lourdes
+noviembre, Entrenamiento, Profesor Juan Carlos Gongora, 5° a 6° Básico todos los martes 15:45 a 17:45, Multicancha del Liceo o Multicancha de Lourdes
+
+# Entrenamientos (7° a 8° Básico)
+marzo, Entrenamiento, Profesor Juan Carlos Gongora, 7° a 8° Básico todos los jueves 15:45 a 17:45, Multicancha del Liceo o Multicancha de Lourdes
+abril, Entrenamiento, Profesor Juan Carlos Gongora, 7° a 8° Básico todos los jueves 15:45 a 17:45, Multicancha del Liceo o Multicancha de Lourdes
+mayo, Entrenamiento, Profesor Juan Carlos Gongora, 7° a 8° Básico todos los jueves 15:45 a 17:45, Multicancha del Liceo o Multicancha de Lourdes
+junio, Entrenamiento, Profesor Juan Carlos Gongora, 7° a 8° Básico todos los jueves 15:45 a 17:45, Multicancha del Liceo o Multicancha de Lourdes
+julio, Entrenamiento, Profesor Juan Carlos Gongora, 7° a 8° Básico todos los jueves 15:45 a 17:45, Multicancha del Liceo o Multicancha de Lourdes
+agosto, Entrenamiento, Profesor Juan Carlos Gongora, 7° a 8° Básico todos los jueves 15:45 a 17:45, Multicancha del Liceo o Multicancha de Lourdes
+septiembre, Entrenamiento, Profesor Juan Carlos Gongora, 7° a 8° Básico todos los jueves 15:45 a 17:45, Multicancha del Liceo o Multicancha de Lourdes
+octubre, Entrenamiento, Profesor Juan Carlos Gongora, 7° a 8° Básico todos los jueves 15:45 a 17:45, Multicancha del Liceo o Multicancha de Lourdes
+noviembre, Entrenamiento, Profesor Juan Carlos Gongora, 7° a 8° Básico todos los jueves 15:45 a 17:45, Multicancha del Liceo o Multicancha de Lourdes
+
+# Eventos Especiales (Campeonatos)
+abril, Campeonato interescolar, Profesor Juan Carlos Gongora, [Cursos por definir] [Horario por definir], Hermógenes Lizana
+octubre, Campeonato futbolito, Profesor Juan Carlos Gongora, [Cursos por definir] [Horario por definir], Estadio El Teniente
+octubre, Campeonato femenino, Profesor Juan Carlos Gongora, [Cursos por definir] [Horario por definir], Cancha Newclarence

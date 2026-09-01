@@ -1,0 +1,416 @@
+:root {
+    --primary: #003366;
+    --primary-light: #004d99;
+    --accent: #ffcc00; /* More vibrant yellow for better visibility */
+    --bg-body: #f8f9fa;
+    --bg-card: #ffffff;
+    --text-main: #111111; /* Very dark for legibility */
+    --text-muted: #555555;
+    --white: #ffffff;
+    --radius: 16px; /* Smoother corners */
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* 1. BASE STYLES (MOBILE FIRST) */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    line-height: 1.5;
+    font-size: 16px;
+    overflow-x: hidden;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column; /* Vertical by default */
+    min-height: 100vh;
+}
+
+/* --- MOBILE HEADER --- */
+.mobile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--primary);
+    color: white;
+    padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.menu-btn {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: white;
+    font-size: 1.4rem;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobile-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.mini-logo {
+    height: 35px;
+    width: auto;
+}
+
+.mobile-brand h1 {
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* --- SIDEBAR (MOBILE HIDDEN) --- */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 85%;
+    max-width: 320px;
+    height: 100vh;
+    background: var(--white);
+    z-index: 2000;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 20px 0 50px rgba(0,0,0,0.2);
+}
+
+.sidebar.open {
+    transform: translateX(0);
+}
+
+.sidebar-header {
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.main-logo {
+    width: 90px;
+    margin-bottom: 1rem;
+}
+
+.sidebar-header h2 {
+    font-size: 1.3rem;
+    color: var(--primary);
+    margin-bottom: 0.3rem;
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 1.5rem 1rem;
+    overflow-y: auto;
+}
+
+.nav-item {
+    width: 100%;
+    padding: 1.2rem 1.5rem; /* Large touch target */
+    margin-bottom: 0.6rem;
+    border: none;
+    background: transparent;
+    border-radius: 12px;
+    text-align: left;
+    font: inherit;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-item.active {
+    background: var(--primary);
+    color: var(--white);
+    font-weight: 600;
+}
+
+.sidebar-footer {
+    padding: 1.5rem;
+    background: #fdfdfd;
+}
+
+.shortcut-icon {
+    display: flex;
+    padding: 1.2rem;
+    background: var(--primary-light);
+    color: white;
+    border-radius: 12px;
+    align-items: center;
+    gap: 1rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* --- MAIN CONTENT (MOBILE) --- */
+.content {
+    padding: 1.2rem;
+    width: 100%;
+}
+
+.desktop-only {
+    display: none; /* Hide PC header on mobile */
+}
+
+.section-banner {
+    background: white;
+    padding: 1.8rem 1.5rem;
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+    border-top: 5px solid var(--accent); /* Top border for mobile flair */
+    box-shadow: var(--shadow);
+}
+
+.section-banner h2 {
+    font-size: 1.6rem;
+    color: var(--primary);
+    margin-bottom: 0.4rem;
+    line-height: 1.2;
+}
+
+.section-banner p {
+    color: var(--text-muted);
+    font-size: 1rem;
+}
+
+/* --- DOCUMENT GRID (MOBILE) --- */
+.document-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.doc-card {
+    background: var(--bg-card);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(0,0,0,0.03);
+}
+
+.doc-info {
+    margin-bottom: 1.5rem;
+}
+
+.doc-info i {
+    font-size: 1.8rem;
+    color: #e74c3c;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.doc-info h3 {
+    font-size: 1.2rem;
+    color: var(--primary);
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+}
+
+.doc-date {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.doc-actions {
+    display: flex;
+    flex-direction: column; /* Stacked for mobile */
+    gap: 0.8rem;
+}
+
+.btn-view, .btn-download-sm {
+    width: 100%;
+    padding: 1.2rem; /* VERY LARGE touch targets */
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-view {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-download-sm {
+    background: #f0f4f8;
+    color: var(--primary);
+    border: 2px solid #e0e6ed;
+}
+
+/* --- MODAL (MOBILE) --- */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9);
+    z-index: 3000;
+}
+
+.modal-content {
+    background: white;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    padding: 1.2rem;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    font-size: 1rem;
+    color: var(--primary);
+    max-width: 80%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.close-modal {
+    font-size: 2rem;
+    border: none;
+    background: transparent;
+    padding: 0.5rem;
+}
+
+.modal-body {
+    flex: 1;
+    background: #f0f0f0;
+}
+
+.modal-body iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.btn-download {
+    display: block;
+    margin: 1rem;
+    padding: 1.2rem;
+    background: var(--accent);
+    color: var(--primary);
+    text-align: center;
+    text-decoration: none;
+    font-weight: 800;
+    border-radius: 12px;
+    font-size: 1.1rem;
+}
+
+/* 2. DESKTOP STYLES (min-width: 1025px) */
+@media (min-width: 1025px) {
+    .app-container {
+        flex-direction: row;
+    }
+
+    .mobile-header {
+        display: none;
+    }
+
+    .sidebar {
+        position: fixed;
+        width: 280px;
+        transform: translateX(0);
+        box-shadow: none;
+        border-right: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .content {
+        margin-left: 280px;
+        padding: 4rem;
+        max-width: 1400px;
+    }
+
+    .desktop-only {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 4rem;
+    }
+
+    .header-title h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--primary);
+    }
+
+    .current-month-display {
+        background: white;
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        box-shadow: var(--shadow);
+        font-weight: 700;
+        color: var(--primary);
+        font-size: 1.1rem;
+    }
+
+    .section-banner {
+        padding: 3.5rem;
+        border-top: none;
+        border-left: 8px solid var(--accent);
+    }
+
+    .section-banner h2 {
+        font-size: 2.5rem;
+    }
+
+    .document-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2rem;
+    }
+
+    .doc-actions {
+        flex-direction: row;
+    }
+
+    .btn-view:hover { background: var(--primary-light); }
+    .btn-download-sm:hover { background: #e2e8f0; }
+
+    .modal {
+        padding: 40px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-content {
+        width: 90%;
+        height: 90vh;
+        max-width: 1000px;
+        border-radius: var(--radius);
+    }
+}
