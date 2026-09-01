@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Reporte SIMCE (ENSAYO SIMCE N1 LENGUA Y LITERATURA 2DO MEDIO (1-56))</title>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
+            --secondary: #f8fafc;
+            --accent: #10b981;
+            --danger: #cb2431;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #e0e7ff 100%);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            font-size: 16px;
+            /* Aumentado de default a 16px para mejor legibilidad general */
+        }
+
+        /* VIEW: UPLOAD */
+        #upload-view {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 650px;
+            background: var(--surface);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            transition: transform 0.3s ease;
+        }
+
+        .icon-container {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            color: white;
+            font-size: 32px;
+            box-shadow: 0 10px 15px -3px rgba(30, 58, 138, 0.3);
+            transform: rotate(-5deg);
+        }
+
+        h1.main-title {
+            font-size: 26px;
+            color: var(--text-main);
+            margin: 0 0 8px 0;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        h2.subtitle {
+            font-size: 16px;
+            color: var(--primary-light);
+            margin: 0;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .description {
+            color: var(--text-muted);
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 20px;
+            padding: 0 20px;
+            margin-top: 20px;
+        }
+
+        .options-panel {
+            background: rgba(59, 130, 246, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+            display: none;
+        }
+
+        .options-panel.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Outfit';
+            font-size: 14px;
+            box-sizing: border-box;
+            background-color: white;
+            color: black;
+            font-weight: bold;
+        }
+
+        .form-group input[readonly] {
+            background-color: white;
+            color: black;
+            font-weight: bold;
+            border-color: #cbd5e1;
+            cursor: default;
+        }
+
+        .upload-area {
+            position: relative;
+            border: 2px dashed var(--primary-light);
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            background: rgba(59, 130, 246, 0.03);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 25px;
+        }
+
+        .upload-area:hover {
+            background: rgba(59, 130, 246, 0.08);
+            border-color: var(--primary);
+            transform: scale(1.02);
+        }
+
+        input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .upload-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+            display: block;
+            opacity: 0.8;
+        }
+
+        .upload-text {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 16px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .upload-subtext {
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 400;
+        }
+
+        .generate-btn {
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            margin-bottom: 15px;
+        }
+
+        .generate-btn:hover {
+            box-shadow: 0 8px 20px rgba(30, 58, 138, 0.35);
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            filter: grayscale(1);
+        }
+
+        #loading {
+            display: none;
+            text-align: center;
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        /* VIEW: DASHBOARD */
+        #report-view {
+            display: none;
+            max-width: 1250px;
+            /* Expandido para alojar mejor las fuentes mayores */
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            color: #334e68;
+        }
+
+        .report-header {
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .report-header h1 {
+            text-transform: uppercase;
+            font-size: 28px;
+            /* Título informe más grande */
+            color: var(--primary);
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        .report-header h2 {
+            font-size: 22px;
+            color: #627d98;
+            margin: 5px 0 20px 0;
+            font-weight: bold;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+            background: var(--secondary);
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            /* Más grande en metadatos */
+        }
+
+        .meta-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .meta-label {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            background: #fff;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-value {
+            font-size: 40px;
+            /* Números más grandes */
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--text-main);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            /* Mayor legibilidad */
+            color: #627d98;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .stat-card.verde {
+            border-top: 5px solid #2ecc71;
+        }
+
+        .stat-card.amarillo {
+            border-top: 5px solid #f1c40f;
+        }
+
+        .stat-card.rojo {
+            border-top: 5px solid #e74c3c;
+        }
+
+        .stat-card.total {
+            border-top: 5px solid var(--primary);
+        }
+
+        .rankings-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .ranking-title {
+            font-size: 18px;
+            /* Título de tablas más grande */
+            font-weight: bold;
+            color: var(--primary);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border: 1px solid var(--border);
+            font-size: 15px;
+            /* Textos de tabla más amigables */
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--secondary);
+        }
+
+        .nota-azul {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .nota-roja {
+            color: var(--danger);
+            font-weight: bold;
+        }
+
+        .cat-verde {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .cat-amarillo {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .cat-rojo {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+        }
+
+        #error-card {
+            display: none;
+            background: #fee2e2;
+            border: 1px solid #ef4444;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            color: #b91c1c;
+            font-size: 13px;
+        }
+
+        @media print {
+            .actions {
+                display: none !important;
+            }
+
+            body {
+                padding: 0;
+                background: white;
+            }
+
+            #report-view {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                max-width: 100%;
+            }
+
+            @page {
+                size: A4 portrait;
+                margin: 10mm;
+            }
+        }
+
+        /* --- MODAL STYLES --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 95%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .btn-close {
+            background: #f1f5f9;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #64748b;
+        }
+
+        .btn-close:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .ans-card {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ans-card.bad {
+            border-left: 4px solid #ef4444;
+            background: #fef2f2;
+        }
+
+        .ans-card.ok {
+            border-left: 4px solid #2ecc71;
+            background: #f0fdf4;
+        }
+
+        .ans-q {
+            font-size: 15px;
+            font-weight: 500;
+            color: #334155;
+            max-width: 80%;
+        }
+
+        .ans-val {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .ans-val.bad {
+            color: #ef4444;
+            text-decoration: line-through;
+        }
+
+        .ans-val.ok {
+            color: #2ecc71;
+        }
+
+        .interactive-row {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .interactive-row:hover {
+            background-color: #e0e7ff !important;
+            transform: translateX(4px);
+        }
+
+        .interactive-row:hover .student-link {
+            color: #1d4ed8;
+        }
+
+        .student-link {
+            color: #2563eb;
+            text-decoration: underline;
+            font-weight: bold;
+            transition: color 0.2s ease;
+        }
+     body{background:white; margin:0}</style>
+</head>
+<body>
+<div id="report-view" style="display: block;">
+        
+
+        <div id="dashboard-content">
+            <div class="report-header">
+                <h1>Informe Plataforma Ensayos SIMCE Institucional</h1>
+                <h2>Liceo Integrado Libertador Simón Bolívar - 2do medio B</h2>
+            </div>
+
+            <div class="meta-grid" id="ui-metadata">
+                <div class="meta-item"><span class="meta-label">Ensayo:</span> ENSAYO SIMCE N1 LENGUA Y LITERATURA 2DO MEDIO&nbsp;(1-56)</div>
+                <div class="meta-item"><span class="meta-label">Curso:</span> 2do medio B</div>
+                <div class="meta-item"><span class="meta-label">Fecha:</span> 15-07-2026</div>
+                <div class="meta-item"><span class="meta-label">Exigencia Prueba:</span> 60%</div>
+                <div class="meta-item"><span class="meta-label">Total Preguntas Oficiales:</span> 30 pts.</div>
+                <div class="meta-item"><span class="meta-label">Puntaje de Corte de Aprobación Mín.:</span> 18 pts.</div>
+            </div>
+
+            <section class="stats-container" id="ui-kpis">
+                <div class="stat-card total"><div class="stat-value">26</div><div class="stat-label">Total Estudiantes</div></div>
+                <div class="stat-card verde"><div class="stat-value">24</div><div class="stat-label">Logro Avanzado</div></div>
+                <div class="stat-card amarillo"><div class="stat-value">2</div><div class="stat-label">Logro Intermedio</div></div>
+                <div class="stat-card rojo"><div class="stat-value">0</div><div class="stat-label">Logro Inicial</div></div>
+            </section>
+
+            <section class="rankings-grid" id="ui-rankings">
+                <div><div class="ranking-title">🏆 Top 10 Puntajes Altos</div>
+                <table><thead><tr><th>Nombre</th><th style="text-align:center">Pts</th><th style="text-align:center">Nota</th><th style="text-align:center">SIMCE Aprox.</th></tr></thead><tbody><tr><td>ISABEL PACHECO</td><td style="text-align:center">30</td><td style="text-align:center" class="nota-azul">7,0</td><td style="text-align:center">400</td></tr><tr><td>WILLIAM ARÉVALO</td><td style="text-align:center">30</td><td style="text-align:center" class="nota-azul">7,0</td><td style="text-align:center">400</td></tr><tr><td>ORLAINE AMUNDARAY</td><td style="text-align:center">30</td><td style="text-align:center" class="nota-azul">7,0</td><td style="text-align:center">400</td></tr><tr><td>JACIEL IGNACIO POZO MACIA</td><td style="text-align:center">30</td><td style="text-align:center" class="nota-azul">7,0</td><td style="text-align:center">400</td></tr><tr><td>JOSE ENRIQUE BRAVO DIAZ.</td><td style="text-align:center">30</td><td style="text-align:center" class="nota-azul">7,0</td><td style="text-align:center">400</td></tr><tr><td>ALONSO PAREDES</td><td style="text-align:center">28</td><td style="text-align:center" class="nota-azul">6,5</td><td style="text-align:center">375</td></tr><tr><td>LORENA MERCHÁN MARCANO</td><td style="text-align:center">28</td><td style="text-align:center" class="nota-azul">6,5</td><td style="text-align:center">375</td></tr><tr><td>BRANDON SILVA</td><td style="text-align:center">27</td><td style="text-align:center" class="nota-azul">6,3</td><td style="text-align:center">363</td></tr><tr><td>MARTIN GONZALEZ</td><td style="text-align:center">27</td><td style="text-align:center" class="nota-azul">6,3</td><td style="text-align:center">363</td></tr><tr><td>FLORENCIA MIRANDA</td><td style="text-align:center">27</td><td style="text-align:center" class="nota-azul">6,3</td><td style="text-align:center">363</td></tr></tbody></table></div>
+
+                <div><div class="ranking-title">⚠️ Alumnos en Riesgo (Nota &lt; 4,0)</div>
+                    <table><thead><tr><th>Nombre</th><th style="text-align:center">Pts</th><th style="text-align:center">Nota</th><th style="text-align:center">SIMCE Aprox.</th></tr></thead><tbody><tr><td colspan="4" style="text-align:center; color:gray; padding:15px;">Ningún alumno obtuvo nota roja. 🎉</td></tr></tbody></table></div>
+            </section>
+
+            <section>
+                <div class="ranking-title">📋 Resultados Detallados de Alumnos</div>
+                <div style="background-color: #eef2ff; border-left: 4px solid #4f46e5; padding: 12px 16px; margin-bottom: 15px; border-radius: 6px;">
+                    <strong style="color: #4f46e5; font-size: 16px;">💡 TIP:</strong> <span style="font-size: 16px; font-weight: bold; color: #334155;">Haz click en el nombre de cualquier
+                        alumno de la lista
+                        para ver el reporte detallado con las preguntas y alternativas exactas que marcó.</span>
+                </div>
+                <table id="ui-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th style="text-align:center">Puntos</th>
+                            <th style="text-align:center">Nota</th>
+                            <th style="text-align:center">Puntaje SIMCE aproximado</th>
+                            <th>Nivel de Logro</th>
+                        </tr>
+                    </thead>
+                    <tbody><tr class="interactive-row" onclick="openStudentModal(0)" title="Haz click para ver respuestas">
+                    <td class="student-link">ISABEL PACHECO</td>
+                    <td style="text-align:center">30</td>
+                    <td style="text-align:center" class="nota-azul">7,0</td>
+                    <td style="text-align:center; font-weight:bold;">400</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(1)" title="Haz click para ver respuestas">
+                    <td class="student-link">WILLIAM ARÉVALO</td>
+                    <td style="text-align:center">30</td>
+                    <td style="text-align:center" class="nota-azul">7,0</td>
+                    <td style="text-align:center; font-weight:bold;">400</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(2)" title="Haz click para ver respuestas">
+                    <td class="student-link">ORLAINE AMUNDARAY</td>
+                    <td style="text-align:center">30</td>
+                    <td style="text-align:center" class="nota-azul">7,0</td>
+                    <td style="text-align:center; font-weight:bold;">400</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(3)" title="Haz click para ver respuestas">
+                    <td class="student-link">JACIEL IGNACIO POZO MACIAS</td>
+                    <td style="text-align:center">30</td>
+                    <td style="text-align:center" class="nota-azul">7,0</td>
+                    <td style="text-align:center; font-weight:bold;">400</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(4)" title="Haz click para ver respuestas">
+                    <td class="student-link">JOSE ENRIQUE BRAVO DIAZ.</td>
+                    <td style="text-align:center">30</td>
+                    <td style="text-align:center" class="nota-azul">7,0</td>
+                    <td style="text-align:center; font-weight:bold;">400</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(5)" title="Haz click para ver respuestas">
+                    <td class="student-link">ALONSO PAREDES</td>
+                    <td style="text-align:center">28</td>
+                    <td style="text-align:center" class="nota-azul">6,5</td>
+                    <td style="text-align:center; font-weight:bold;">375</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(6)" title="Haz click para ver respuestas">
+                    <td class="student-link">LORENA MERCHÁN MARCANO</td>
+                    <td style="text-align:center">28</td>
+                    <td style="text-align:center" class="nota-azul">6,5</td>
+                    <td style="text-align:center; font-weight:bold;">375</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(7)" title="Haz click para ver respuestas">
+                    <td class="student-link">BRANDON SILVA</td>
+                    <td style="text-align:center">27</td>
+                    <td style="text-align:center" class="nota-azul">6,3</td>
+                    <td style="text-align:center; font-weight:bold;">363</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(8)" title="Haz click para ver respuestas">
+                    <td class="student-link">MARTIN GONZALEZ</td>
+                    <td style="text-align:center">27</td>
+                    <td style="text-align:center" class="nota-azul">6,3</td>
+                    <td style="text-align:center; font-weight:bold;">363</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(9)" title="Haz click para ver respuestas">
+                    <td class="student-link">FLORENCIA MIRANDA</td>
+                    <td style="text-align:center">27</td>
+                    <td style="text-align:center" class="nota-azul">6,3</td>
+                    <td style="text-align:center; font-weight:bold;">363</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(10)" title="Haz click para ver respuestas">
+                    <td class="student-link">LEONEL  HIJAR ATAO</td>
+                    <td style="text-align:center">27</td>
+                    <td style="text-align:center" class="nota-azul">6,3</td>
+                    <td style="text-align:center; font-weight:bold;">363</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(11)" title="Haz click para ver respuestas">
+                    <td class="student-link">MARTINA ISIDORA MARTÍNEZ SALAZAR</td>
+                    <td style="text-align:center">27</td>
+                    <td style="text-align:center" class="nota-azul">6,3</td>
+                    <td style="text-align:center; font-weight:bold;">363</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(12)" title="Haz click para ver respuestas">
+                    <td class="student-link">SHAROM ZABALSA</td>
+                    <td style="text-align:center">26</td>
+                    <td style="text-align:center" class="nota-azul">6,0</td>
+                    <td style="text-align:center; font-weight:bold;">350</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(13)" title="Haz click para ver respuestas">
+                    <td class="student-link">MARTIN ALONSO JIMENEZ ANDRADE</td>
+                    <td style="text-align:center">26</td>
+                    <td style="text-align:center" class="nota-azul">6,0</td>
+                    <td style="text-align:center; font-weight:bold;">350</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(14)" title="Haz click para ver respuestas">
+                    <td class="student-link">LUIS SANTIAGO VACA SOLIZ</td>
+                    <td style="text-align:center">25</td>
+                    <td style="text-align:center" class="nota-azul">5,8</td>
+                    <td style="text-align:center; font-weight:bold;">338</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(15)" title="Haz click para ver respuestas">
+                    <td class="student-link">FERMIN NARANJO</td>
+                    <td style="text-align:center">25</td>
+                    <td style="text-align:center" class="nota-azul">5,8</td>
+                    <td style="text-align:center; font-weight:bold;">338</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(16)" title="Haz click para ver respuestas">
+                    <td class="student-link">GIANELLA GARRIDO</td>
+                    <td style="text-align:center">25</td>
+                    <td style="text-align:center" class="nota-azul">5,8</td>
+                    <td style="text-align:center; font-weight:bold;">338</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(17)" title="Haz click para ver respuestas">
+                    <td class="student-link">AGUSTIN OLIVARES GONZALEZ</td>
+                    <td style="text-align:center">25</td>
+                    <td style="text-align:center" class="nota-azul">5,8</td>
+                    <td style="text-align:center; font-weight:bold;">338</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(18)" title="Haz click para ver respuestas">
+                    <td class="student-link">GABRIELA ESCOBEDO</td>
+                    <td style="text-align:center">25</td>
+                    <td style="text-align:center" class="nota-azul">5,8</td>
+                    <td style="text-align:center; font-weight:bold;">338</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(19)" title="Haz click para ver respuestas">
+                    <td class="student-link">ROSIELYS ASTUDILLO</td>
+                    <td style="text-align:center">24</td>
+                    <td style="text-align:center" class="nota-azul">5,5</td>
+                    <td style="text-align:center; font-weight:bold;">325</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(20)" title="Haz click para ver respuestas">
+                    <td class="student-link">ANTONIA MILLA</td>
+                    <td style="text-align:center">24</td>
+                    <td style="text-align:center" class="nota-azul">5,5</td>
+                    <td style="text-align:center; font-weight:bold;">325</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(21)" title="Haz click para ver respuestas">
+                    <td class="student-link">LENNY GUZMAN</td>
+                    <td style="text-align:center">24</td>
+                    <td style="text-align:center" class="nota-azul">5,5</td>
+                    <td style="text-align:center; font-weight:bold;">325</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(22)" title="Haz click para ver respuestas">
+                    <td class="student-link">BENJAMÍN BELÁUSTEGUI</td>
+                    <td style="text-align:center">22</td>
+                    <td style="text-align:center" class="nota-azul">5,0</td>
+                    <td style="text-align:center; font-weight:bold;">300</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(23)" title="Haz click para ver respuestas">
+                    <td class="student-link">ALEJANDRO PEÑA</td>
+                    <td style="text-align:center">21</td>
+                    <td style="text-align:center" class="nota-azul">4,8</td>
+                    <td style="text-align:center; font-weight:bold;">288</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(24)" title="Haz click para ver respuestas">
+                    <td class="student-link">AEYZINLLER LOBOS LAZCANO</td>
+                    <td style="text-align:center">20</td>
+                    <td style="text-align:center" class="nota-azul">4,5</td>
+                    <td style="text-align:center; font-weight:bold;">275</td>
+                    <td style="text-align:center" class="cat-amarillo">Intermedio 🟡</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(25)" title="Haz click para ver respuestas">
+                    <td class="student-link">MORENA OLEA</td>
+                    <td style="text-align:center">18</td>
+                    <td style="text-align:center" class="nota-azul">4,0</td>
+                    <td style="text-align:center; font-weight:bold;">250</td>
+                    <td style="text-align:center" class="cat-amarillo">Intermedio 🟡</td>
+                </tr></tbody>
+                </table>
+            </section>
+
+            <!-- Sección de Preguntas Críticas (Ahora debajo de Alumnos) -->
+            <section id="ui-critical-questions">
+                <div style="grid-column: 1 / -1; margin-top:20px;">
+                    <div class="ranking-title">📈 Top Preguntas con Mayor Porcentaje de Error</div>
+                    <table id="table-critical-questions">
+                        <thead>
+                            <tr>
+                                <th>Pregunta / Contenido</th>
+                                <th style="text-align:center">Error %</th>
+                                <th style="text-align:center">Cantidad de Alumnos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Si una persona decide apoyar el "comercio local", según el texto está:</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">46%</td>
+                                <td style="text-align:center">12 alumnos</td>
+                            </tr><tr>
+                                <td>Si el objetivo primordial de un ecologista es "reducir, reusar y reciclar", ¿por qué la quema de basura podría considerarse una solución imperfecta?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">42%</td>
+                                <td style="text-align:center">11 alumnos</td>
+                            </tr><tr>
+                                <td>¿Cuál es la función de Don Teodoro en el relato?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">35%</td>
+                                <td style="text-align:center">9 alumnos</td>
+                            </tr><tr>
+                                <td>¿Cuál es el tema central del fragmento?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">35%</td>
+                                <td style="text-align:center">9 alumnos</td>
+                            </tr><tr>
+                                <td>A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">35%</td>
+                                <td style="text-align:center">9 alumnos</td>
+                            </tr><tr>
+                                <td>Considerando el subtítulo "Mándenos su basura", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">31%</td>
+                                <td style="text-align:center">8 alumnos</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div></section>
+        </div>
+    </div>
+<div id="student-modal" class="modal-overlay" onclick="if(event.target === this) closeModal()" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h3 id="modal-name" style="margin:0; color:var(--primary); font-size:20px;">Nombre Alumno</h3>
+                    <div id="modal-stats" style="font-size:13px; color:#64748b; margin-top:4px;">Nota: 0.0 | Puntos: 0
+                    </div>
+                </div>
+                <button class="btn-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div style="font-size:14px; font-weight:bold; margin-bottom:15px; border-bottom:2px solid var(--border); padding-bottom:5px;">
+                    Detalle de Respuestas</div>
+                <div id="modal-answers-list"></div>
+            </div>
+        </div>
+    </div>
+
+                <script>
+                var masterStudents = [{"Nombre":"ISABEL PACHECO","Puntos":30,"Nota":7,"Simce":400,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Representar la sabiduría incomprendida de la vejez.","puntaje":1},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"La inmovilidad y el aspecto del agua del mar.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"El poder del miedo y la superstición en una\r\ncomunidad.","puntaje":1},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que eran escépticos frente a las advertencias de los\r\nmayores.","puntaje":1},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque la causa de la huida fue la angustia\r\npsicológica de la gente.","puntaje":1},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"La presencia constante de dispositivos electrónicos.","puntaje":1},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Indiferente y justificadora.","puntaje":1},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"La producción masiva, rápida y económica de\r\nprendas de tendencia.","puntaje":1},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2,700 litros.","puntaje":1},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La gran contaminación de las fuentes de agua dulce.","puntaje":1},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Adquirir prendas en tiendas de segunda mano.","puntaje":1},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Altamente destructivo o ruinoso.","puntaje":1},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"El teñido de ropa es un proceso libre de\r\ncontaminantes.","puntaje":1},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Ayudando a reducir el impacto ambiental de la\r\nmoda.","puntaje":1},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"La dependencia de la producción constante de residuos\r\npara mantener la operatividad de las plantas.","puntaje":1},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Ejemplificar los beneficios tangibles y prácticos de la\r\nconversión de basura en energía.","puntaje":1},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Informativa y favorable, destacando cómo este modelo\r\npuede contribuir a que Oslo sea una de las ciudades más\r\nverdes.","puntaje":1},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde los desechos dejan de ser un problema\r\npara convertirse en un recurso con valor de mercado.","puntaje":1},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque incentiva la generación de desperdicios en lugar\r\nde promover un consumo responsable.","puntaje":1}}},{"Nombre":"WILLIAM ARÉVALO","Puntos":30,"Nota":7,"Simce":400,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Representar la sabiduría incomprendida de la vejez.","puntaje":1},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"La inmovilidad y el aspecto del agua del mar.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"El poder del miedo y la superstición en una\r\ncomunidad.","puntaje":1},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que eran escépticos frente a las advertencias de los\r\nmayores.","puntaje":1},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque la causa de la huida fue la angustia\r\npsicológica de la gente.","puntaje":1},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"La presencia constante de dispositivos electrónicos.","puntaje":1},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Indiferente y justificadora.","puntaje":1},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"La producción masiva, rápida y económica de\r\nprendas de tendencia.","puntaje":1},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2,700 litros.","puntaje":1},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La gran contaminación de las fuentes de agua dulce.","puntaje":1},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Adquirir prendas en tiendas de segunda mano.","puntaje":1},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Altamente destructivo o ruinoso.","puntaje":1},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"El teñido de ropa es un proceso libre de\r\ncontaminantes.","puntaje":1},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Ayudando a reducir el impacto ambiental de la\r\nmoda.","puntaje":1},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"La dependencia de la producción constante de residuos\r\npara mantener la operatividad de las plantas.","puntaje":1},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Ejemplificar los beneficios tangibles y prácticos de la\r\nconversión de basura en energía.","puntaje":1},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Informativa y favorable, destacando cómo este modelo\r\npuede contribuir a que Oslo sea una de las ciudades más\r\nverdes.","puntaje":1},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde los desechos dejan de ser un problema\r\npara convertirse en un recurso con valor de mercado.","puntaje":1},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque incentiva la generación de desperdicios en lugar\r\nde promover un consumo responsable.","puntaje":1}}},{"Nombre":"ORLAINE AMUNDARAY","Puntos":30,"Nota":7,"Simce":400,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Representar la sabiduría incomprendida de la vejez.","puntaje":1},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"La inmovilidad y el aspecto del agua del mar.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"El poder del miedo y la superstición en una\r\ncomunidad.","puntaje":1},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que eran escépticos frente a las advertencias de los\r\nmayores.","puntaje":1},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque la causa de la huida fue la angustia\r\npsicológica de la gente.","puntaje":1},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"La presencia constante de dispositivos electrónicos.","puntaje":1},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Indiferente y justificadora.","puntaje":1},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"La producción masiva, rápida y económica de\r\nprendas de tendencia.","puntaje":1},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2,700 litros.","puntaje":1},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La gran contaminación de las fuentes de agua dulce.","puntaje":1},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Adquirir prendas en tiendas de segunda mano.","puntaje":1},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Altamente destructivo o ruinoso.","puntaje":1},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"El teñido de ropa es un proceso libre de\r\ncontaminantes.","puntaje":1},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Ayudando a reducir el impacto ambiental de la\r\nmoda.","puntaje":1},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"La dependencia de la producción constante de residuos\r\npara mantener la operatividad de las plantas.","puntaje":1},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Ejemplificar los beneficios tangibles y prácticos de la\r\nconversión de basura en energía.","puntaje":1},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Informativa y favorable, destacando cómo este modelo\r\npuede contribuir a que Oslo sea una de las ciudades más\r\nverdes.","puntaje":1},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde los desechos dejan de ser un problema\r\npara convertirse en un recurso con valor de mercado.","puntaje":1},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque incentiva la generación de desperdicios en lugar\r\nde promover un consumo responsable.","puntaje":1}}},{"Nombre":"JACIEL IGNACIO POZO MACIAS","Puntos":30,"Nota":7,"Simce":400,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Representar la sabiduría incomprendida de la vejez.","puntaje":1},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"La inmovilidad y el aspecto del agua del mar.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"El poder del miedo y la superstición en una\r\ncomunidad.","puntaje":1},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que eran escépticos frente a las advertencias de los\r\nmayores.","puntaje":1},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque la causa de la huida fue la angustia\r\npsicológica de la gente.","puntaje":1},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"La presencia constante de dispositivos electrónicos.","puntaje":1},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Indiferente y justificadora.","puntaje":1},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"La producción masiva, rápida y económica de\r\nprendas de tendencia.","puntaje":1},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2,700 litros.","puntaje":1},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La gran contaminación de las fuentes de agua dulce.","puntaje":1},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Adquirir prendas en tiendas de segunda mano.","puntaje":1},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Altamente destructivo o ruinoso.","puntaje":1},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"El teñido de ropa es un proceso libre de\r\ncontaminantes.","puntaje":1},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Ayudando a reducir el impacto ambiental de la\r\nmoda.","puntaje":1},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"La dependencia de la producción constante de residuos\r\npara mantener la operatividad de las plantas.","puntaje":1},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Ejemplificar los beneficios tangibles y prácticos de la\r\nconversión de basura en energía.","puntaje":1},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Informativa y favorable, destacando cómo este modelo\r\npuede contribuir a que Oslo sea una de las ciudades más\r\nverdes.","puntaje":1},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde los desechos dejan de ser un problema\r\npara convertirse en un recurso con valor de mercado.","puntaje":1},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque incentiva la generación de desperdicios en lugar\r\nde promover un consumo responsable.","puntaje":1}}},{"Nombre":"JOSE ENRIQUE BRAVO DIAZ.","Puntos":30,"Nota":7,"Simce":400,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Representar la sabiduría incomprendida de la vejez.","puntaje":1},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"La inmovilidad y el aspecto del agua del mar.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"El poder del miedo y la superstición en una\r\ncomunidad.","puntaje":1},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que eran escépticos frente a las advertencias de los\r\nmayores.","puntaje":1},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque la causa de la huida fue la angustia\r\npsicológica de la gente.","puntaje":1},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"La presencia constante de dispositivos electrónicos.","puntaje":1},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Indiferente y justificadora.","puntaje":1},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"La producción masiva, rápida y económica de\r\nprendas de tendencia.","puntaje":1},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2,700 litros.","puntaje":1},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La gran contaminación de las fuentes de agua dulce.","puntaje":1},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Adquirir prendas en tiendas de segunda mano.","puntaje":1},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Altamente destructivo o ruinoso.","puntaje":1},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"El teñido de ropa es un proceso libre de\r\ncontaminantes.","puntaje":1},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Ayudando a reducir el impacto ambiental de la\r\nmoda.","puntaje":1},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"La dependencia de la producción constante de residuos\r\npara mantener la operatividad de las plantas.","puntaje":1},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Ejemplificar los beneficios tangibles y prácticos de la\r\nconversión de basura en energía.","puntaje":1},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Informativa y favorable, destacando cómo este modelo\r\npuede contribuir a que Oslo sea una de las ciudades más\r\nverdes.","puntaje":1},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde los desechos dejan de ser un problema\r\npara convertirse en un recurso con valor de mercado.","puntaje":1},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque incentiva la generación de desperdicios en lugar\r\nde promover un consumo responsable.","puntaje":1}}},{"Nombre":"ALONSO PAREDES","Puntos":28,"Nota":6.5,"Simce":375,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Representar la sabiduría incomprendida de la vejez.","puntaje":1},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"La inmovilidad y el aspecto del agua del mar.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"El poder del miedo y la superstición en una\r\ncomunidad.","puntaje":1},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que eran escépticos frente a las advertencias de los\r\nmayores.","puntaje":1},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque la causa de la huida fue la angustia\r\npsicológica de la gente.","puntaje":1},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"La presencia constante de dispositivos electrónicos.","puntaje":1},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Indiferente y justificadora.","puntaje":1},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"La producción masiva, rápida y económica de\r\nprendas de tendencia.","puntaje":1},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2,700 litros.","puntaje":1},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La gran contaminación de las fuentes de agua dulce.","puntaje":1},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Adquirir prendas en tiendas de segunda mano.","puntaje":1},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Altamente destructivo o ruinoso.","puntaje":1},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"El teñido de ropa es un proceso libre de\r\ncontaminantes.","puntaje":1},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Contribuyendo a que haya más basura en los\r\nvertederos.","puntaje":0},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"La dependencia de la producción constante de residuos\r\npara mantener la operatividad de las plantas.","puntaje":1},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Ejemplificar los beneficios tangibles y prácticos de la\r\nconversión de basura en energía.","puntaje":1},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Informativa y favorable, destacando cómo este modelo\r\npuede contribuir a que Oslo sea una de las ciudades más\r\nverdes.","puntaje":1},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde los desechos dejan de ser un problema\r\npara convertirse en un recurso con valor de mercado.","puntaje":1},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque el proceso de incineración a 850 grados emite\r\nnubes de polvo blanco peligrosas.","puntaje":0}}},{"Nombre":"LORENA MERCHÁN MARCANO","Puntos":28,"Nota":6.5,"Simce":375,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Representar la sabiduría incomprendida de la vejez.","puntaje":1},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"La inmovilidad y el aspecto del agua del mar.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"El poder del miedo y la superstición en una\r\ncomunidad.","puntaje":1},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que eran escépticos frente a las advertencias de los\r\nmayores.","puntaje":1},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque el pueblo ya estaba vacío antes de que\r\nsubiera la marea.","puntaje":0},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"La presencia constante de dispositivos electrónicos.","puntaje":1},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Indiferente y justificadora.","puntaje":1},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"La producción masiva, rápida y económica de\r\nprendas de tendencia.","puntaje":1},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2,700 litros.","puntaje":1},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La gran contaminación de las fuentes de agua dulce.","puntaje":1},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Adquirir prendas en tiendas de segunda mano.","puntaje":1},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Altamente destructivo o ruinoso.","puntaje":1},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"El teñido de ropa es un proceso libre de\r\ncontaminantes.","puntaje":1},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Ayudando a reducir el impacto ambiental de la\r\nmoda.","puntaje":1},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"La dependencia de la producción constante de residuos\r\npara mantener la operatividad de las plantas.","puntaje":1},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Ejemplificar los beneficios tangibles y prácticos de la\r\nconversión de basura en energía.","puntaje":1},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Escéptica, ya que da mayor importancia a la visión de los\r\necologistas que prefieren reducir el consumo.","puntaje":0},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde los desechos dejan de ser un problema\r\npara convertirse en un recurso con valor de mercado.","puntaje":1},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque incentiva la generación de desperdicios en lugar\r\nde promover un consumo responsable.","puntaje":1}}},{"Nombre":"BRANDON SILVA","Puntos":27,"Nota":6.3,"Simce":363,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Alertar a las autoridades sobre un tsunami inminente.","puntaje":0},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"La inmovilidad y el aspecto del agua del mar.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"El poder del miedo y la superstición en una\r\ncomunidad.","puntaje":1},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que eran escépticos frente a las advertencias de los\r\nmayores.","puntaje":1},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque la causa de la huida fue la angustia\r\npsicológica de la gente.","puntaje":1},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"La presencia constante de dispositivos electrónicos.","puntaje":1},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Indiferente y justificadora.","puntaje":1},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"La producción masiva, rápida y económica de\r\nprendas de tendencia.","puntaje":1},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2,700 litros.","puntaje":1},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La gran contaminación de las fuentes de agua dulce.","puntaje":1},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Adquirir prendas en tiendas de segunda mano.","puntaje":1},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Altamente destructivo o ruinoso.","puntaje":1},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"El teñido de ropa es un proceso libre de\r\ncontaminantes.","puntaje":1},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Contribuyendo a que haya más basura en los\r\nvertederos.","puntaje":0},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"La competencia desleal con otros tipos de energía como\r\nla nuclear o el gas de esquisto.","puntaje":0},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Ejemplificar los beneficios tangibles y prácticos de la\r\nconversión de basura en energía.","puntaje":1},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Informativa y favorable, destacando cómo este modelo\r\npuede contribuir a que Oslo sea una de las ciudades más\r\nverdes.","puntaje":1},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde los desechos dejan de ser un problema\r\npara convertirse en un recurso con valor de mercado.","puntaje":1},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque incentiva la generación de desperdicios en lugar\r\nde promover un consumo responsable.","puntaje":1}}},{"Nombre":"MARTIN GONZALEZ","Puntos":27,"Nota":6.3,"Simce":363,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Representar la sabiduría incomprendida de la vejez.","puntaje":1},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"La inmovilidad y el aspecto del agua del mar.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"El poder del miedo y la superstición en una\r\ncomunidad.","puntaje":1},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que eran escépticos frente a las advertencias de los\r\nmayores.","puntaje":1},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque la causa de la huida fue la angustia\r\npsicológica de la gente.","puntaje":1},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"La presencia constante de dispositivos electrónicos.","puntaje":1},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Indiferente y justificadora.","puntaje":1},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"La producción masiva, rápida y económica de\r\nprendas de tendencia.","puntaje":1},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2,700 litros.","puntaje":1},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La gran contaminación de las fuentes de agua dulce.","puntaje":1},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Utilizar solo tintes químicos brillantes.","puntaje":0},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Altamente destructivo o ruinoso.","puntaje":1},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"La producción de textiles genera una gran cantidad\r\nde basura.","puntaje":0},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Ayudando a reducir el impacto ambiental de la\r\nmoda.","puntaje":1},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"La dependencia de la producción constante de residuos\r\npara mantener la operatividad de las plantas.","puntaje":1},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Ejemplificar los beneficios tangibles y prácticos de la\r\nconversión de basura en energía.","puntaje":1},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Informativa y favorable, destacando cómo este modelo\r\npuede contribuir a que Oslo sea una de las ciudades más\r\nverdes.","puntaje":1},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde los países desarrollados abusan de las\r\nnaciones más pequeñas enviándoles sus desperdicios.","puntaje":0},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque incentiva la generación de desperdicios en lugar\r\nde promover un consumo responsable.","puntaje":1}}},{"Nombre":"FLORENCIA MIRANDA","Puntos":27,"Nota":6.3,"Simce":363,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Representar la sabiduría incomprendida de la vejez.","puntaje":1},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"La inmovilidad y el aspecto del agua del mar.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"El poder del miedo y la superstición en una\r\ncomunidad.","puntaje":1},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que eran escépticos frente a las advertencias de los\r\nmayores.","puntaje":1},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque la causa de la huida fue la angustia\r\npsicológica de la gente.","puntaje":1},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"La presencia constante de dispositivos electrónicos.","puntaje":1},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Indiferente y justificadora.","puntaje":1},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"La producción masiva, rápida y económica de\r\nprendas de tendencia.","puntaje":1},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2,700 litros.","puntaje":1},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La gran contaminación de las fuentes de agua dulce.","puntaje":1},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Adquirir prendas en tiendas de segunda mano.","puntaje":1},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Altamente destructivo o ruinoso.","puntaje":1},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"El teñido de ropa es un proceso libre de\r\ncontaminantes.","puntaje":1},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Ayudando a reducir el impacto ambiental de la\r\nmoda.","puntaje":1},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"El riesgo de que la población deje de producir basura y\r\nlas plantas dejen de funcionar.","puntaje":0},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Ejemplificar los beneficios tangibles y prácticos de la\r\nconversión de basura en energía.","puntaje":1},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Indiferente, limitándose a comparar los precios de la\r\nbasura en Reino Unido frente a los de Noruega.","puntaje":0},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde los desechos dejan de ser un problema\r\npara convertirse en un recurso con valor de mercado.","puntaje":1},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque el proceso de incineración a 850 grados emite\r\nnubes de polvo blanco peligrosas.","puntaje":0}}},{"Nombre":"LEONEL  HIJAR ATAO","Puntos":27,"Nota":6.3,"Simce":363,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Representar la sabiduría incomprendida de la vejez.","puntaje":1},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"La inmovilidad y el aspecto del agua del mar.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"El poder del miedo y la superstición en una\r\ncomunidad.","puntaje":1},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que eran escépticos frente a las advertencias de los\r\nmayores.","puntaje":1},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque la causa de la huida fue la angustia\r\npsicológica de la gente.","puntaje":1},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"La presencia constante de dispositivos electrónicos.","puntaje":1},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Indiferente y justificadora.","puntaje":1},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián tiene problemas de memoria.","puntaje":0},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"La producción masiva, rápida y económica de\r\nprendas de tendencia.","puntaje":1},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2,700 litros.","puntaje":1},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La gran contaminación de las fuentes de agua dulce.","puntaje":1},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Adquirir prendas en tiendas de segunda mano.","puntaje":1},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Altamente destructivo o ruinoso.","puntaje":1},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"El teñido de ropa es un proceso libre de\r\ncontaminantes.","puntaje":1},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Ayudando a reducir el impacto ambiental de la\r\nmoda.","puntaje":1},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"La dependencia de la producción constante de residuos\r\npara mantener la operatividad de las plantas.","puntaje":1},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Ejemplificar los beneficios tangibles y prácticos de la\r\nconversión de basura en energía.","puntaje":1},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Informativa y favorable, destacando cómo este modelo\r\npuede contribuir a que Oslo sea una de las ciudades más\r\nverdes.","puntaje":1},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde el reciclaje es la única solución viable\r\npara eliminar los rellenos sanitarios en Europa.","puntaje":0},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque solo logra proveer de electricidad a un pequeño\r\nporcentaje de los hogares de la ciudad.","puntaje":0}}},{"Nombre":"MARTINA ISIDORA MARTÍNEZ SALAZAR","Puntos":27,"Nota":6.3,"Simce":363,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Representar la sabiduría incomprendida de la vejez.","puntaje":1},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"La inmovilidad y el aspecto del agua del mar.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"El poder del miedo y la superstición en una\r\ncomunidad.","puntaje":1},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que eran escépticos frente a las advertencias de los\r\nmayores.","puntaje":1},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque la causa de la huida fue la angustia\r\npsicológica de la gente.","puntaje":1},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"La presencia constante de dispositivos electrónicos.","puntaje":1},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Indiferente y justificadora.","puntaje":1},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"La producción masiva, rápida y económica de\r\nprendas de tendencia.","puntaje":1},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2,700 litros.","puntaje":1},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La gran contaminación de las fuentes de agua dulce.","puntaje":1},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Adquirir prendas en tiendas de segunda mano.","puntaje":1},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Convencer al lector de que la ropa barata es de\r\nmejor calidad.","puntaje":0},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Altamente destructivo o ruinoso.","puntaje":1},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"La producción de textiles genera una gran cantidad\r\nde basura.","puntaje":0},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Ayudando a reducir el impacto ambiental de la\r\nmoda.","puntaje":1},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"La dependencia de la producción constante de residuos\r\npara mantener la operatividad de las plantas.","puntaje":1},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Ejemplificar los beneficios tangibles y prácticos de la\r\nconversión de basura en energía.","puntaje":1},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Informativa y favorable, destacando cómo este modelo\r\npuede contribuir a que Oslo sea una de las ciudades más\r\nverdes.","puntaje":1},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde los desechos dejan de ser un problema\r\npara convertirse en un recurso con valor de mercado.","puntaje":1},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque el proceso de incineración a 850 grados emite\r\nnubes de polvo blanco peligrosas.","puntaje":0}}},{"Nombre":"SHAROM ZABALSA","Puntos":26,"Nota":6,"Simce":350,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Alertar a las autoridades sobre un tsunami inminente.","puntaje":0},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"La inmovilidad y el aspecto del agua del mar.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"El poder del miedo y la superstición en una\r\ncomunidad.","puntaje":1},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que eran escépticos frente a las advertencias de los\r\nmayores.","puntaje":1},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque el mar finalmente inundó el pueblo por\r\ncompleto.","puntaje":0},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"La presencia constante de dispositivos electrónicos.","puntaje":1},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Indiferente y justificadora.","puntaje":1},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"La producción masiva, rápida y económica de\r\nprendas de tendencia.","puntaje":1},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2,700 litros.","puntaje":1},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La gran contaminación de las fuentes de agua dulce.","puntaje":1},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Adquirir prendas en tiendas de segunda mano.","puntaje":1},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Altamente destructivo o ruinoso.","puntaje":1},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"El teñido de ropa es un proceso libre de\r\ncontaminantes.","puntaje":1},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Ayudando a reducir el impacto ambiental de la\r\nmoda.","puntaje":1},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"La dependencia de la producción constante de residuos\r\npara mantener la operatividad de las plantas.","puntaje":1},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Ejemplificar los beneficios tangibles y prácticos de la\r\nconversión de basura en energía.","puntaje":1},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Informativa y favorable, destacando cómo este modelo\r\npuede contribuir a que Oslo sea una de las ciudades más\r\nverdes.","puntaje":1},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde los países desarrollados abusan de las\r\nnaciones más pequeñas enviándoles sus desperdicios.","puntaje":0},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque solo logra proveer de electricidad a un pequeño\r\nporcentaje de los hogares de la ciudad.","puntaje":0}}},{"Nombre":"MARTIN ALONSO JIMENEZ ANDRADE","Puntos":26,"Nota":6,"Simce":350,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Alertar a las autoridades sobre un tsunami inminente.","puntaje":0},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"La inmovilidad y el aspecto del agua del mar.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"El conflicto generacional entre jóvenes y adultos.","puntaje":0},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que eran escépticos frente a las advertencias de los\r\nmayores.","puntaje":1},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque la causa de la huida fue la angustia\r\npsicológica de la gente.","puntaje":1},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"La presencia constante de dispositivos electrónicos.","puntaje":1},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Indiferente y justificadora.","puntaje":1},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"La producción masiva, rápida y económica de\r\nprendas de tendencia.","puntaje":1},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2,700 litros.","puntaje":1},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La gran contaminación de las fuentes de agua dulce.","puntaje":1},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Adquirir prendas en tiendas de segunda mano.","puntaje":1},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Altamente destructivo o ruinoso.","puntaje":1},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"El teñido de ropa es un proceso libre de\r\ncontaminantes.","puntaje":1},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Ayudando a reducir el impacto ambiental de la\r\nmoda.","puntaje":1},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"La dependencia de la producción constante de residuos\r\npara mantener la operatividad de las plantas.","puntaje":1},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Ejemplificar los beneficios tangibles y prácticos de la\r\nconversión de basura en energía.","puntaje":1},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Informativa y favorable, destacando cómo este modelo\r\npuede contribuir a que Oslo sea una de las ciudades más\r\nverdes.","puntaje":1},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde el reciclaje es la única solución viable\r\npara eliminar los rellenos sanitarios en Europa.","puntaje":0},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque solo logra proveer de electricidad a un pequeño\r\nporcentaje de los hogares de la ciudad.","puntaje":0}}},{"Nombre":"LUIS SANTIAGO VACA SOLIZ","Puntos":25,"Nota":5.8,"Simce":338,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Representar la sabiduría incomprendida de la vejez.","puntaje":1},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"Lafrialdaddelosjóveneshacialosancianos.","puntaje":0},"¿Cuál es el tema central del fragmento?":{"alternativa":"El poder del miedo y la superstición en una\r\ncomunidad.","puntaje":1},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que eran escépticos frente a las advertencias de los\r\nmayores.","puntaje":1},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque la causa de la huida fue la angustia\r\npsicológica de la gente.","puntaje":1},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"La presencia constante de dispositivos electrónicos.","puntaje":1},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Indiferente y justificadora.","puntaje":1},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"La producción masiva, rápida y económica de\r\nprendas de tendencia.","puntaje":1},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2.5 litros.","puntaje":0},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La gran contaminación de las fuentes de agua dulce.","puntaje":1},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Adquirir prendas en tiendas de segunda mano.","puntaje":1},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Altamente destructivo o ruinoso.","puntaje":1},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"El teñido de ropa es un proceso libre de\r\ncontaminantes.","puntaje":1},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Fomentando la moda rápida.","puntaje":0},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"El riesgo de que la población deje de producir basura y\r\nlas plantas dejen de funcionar.","puntaje":0},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Ejemplificar los beneficios tangibles y prácticos de la\r\nconversión de basura en energía.","puntaje":1},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Informativa y favorable, destacando cómo este modelo\r\npuede contribuir a que Oslo sea una de las ciudades más\r\nverdes.","puntaje":1},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde los desechos dejan de ser un problema\r\npara convertirse en un recurso con valor de mercado.","puntaje":1},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque el proceso de incineración a 850 grados emite\r\nnubes de polvo blanco peligrosas.","puntaje":0}}},{"Nombre":"FERMIN NARANJO","Puntos":25,"Nota":5.8,"Simce":338,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Representar la sabiduría incomprendida de la vejez.","puntaje":1},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"La inmovilidad y el aspecto del agua del mar.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"El poder del miedo y la superstición en una\r\ncomunidad.","puntaje":1},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que eran escépticos frente a las advertencias de los\r\nmayores.","puntaje":1},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque los habitantes le tenían más miedo a\r\nTeodoro que al agua.","puntaje":0},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"La presencia constante de dispositivos electrónicos.","puntaje":1},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Indiferente y justificadora.","puntaje":1},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"La producción masiva, rápida y económica de\r\nprendas de tendencia.","puntaje":1},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2,700 litros.","puntaje":1},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La gran contaminación de las fuentes de agua dulce.","puntaje":1},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Comprar ropa barata todas las semanas.","puntaje":0},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Altamente destructivo o ruinoso.","puntaje":1},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"La producción de textiles genera una gran cantidad\r\nde basura.","puntaje":0},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Fomentando la moda rápida.","puntaje":0},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"La dependencia de la producción constante de residuos\r\npara mantener la operatividad de las plantas.","puntaje":1},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Ejemplificar los beneficios tangibles y prácticos de la\r\nconversión de basura en energía.","puntaje":1},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Escéptica, ya que da mayor importancia a la visión de los\r\necologistas que prefieren reducir el consumo.","puntaje":0},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde los desechos dejan de ser un problema\r\npara convertirse en un recurso con valor de mercado.","puntaje":1},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque incentiva la generación de desperdicios en lugar\r\nde promover un consumo responsable.","puntaje":1}}},{"Nombre":"GIANELLA GARRIDO","Puntos":25,"Nota":5.8,"Simce":338,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Organizar la evacuación masiva de los habitantes.","puntaje":0},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"La inmovilidad y el aspecto del agua del mar.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"El poder del miedo y la superstición en una\r\ncomunidad.","puntaje":1},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que eran escépticos frente a las advertencias de los\r\nmayores.","puntaje":1},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque la causa de la huida fue la angustia\r\npsicológica de la gente.","puntaje":1},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"La presencia constante de dispositivos electrónicos.","puntaje":1},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Indiferente y justificadora.","puntaje":1},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"La producción masiva, rápida y económica de\r\nprendas de tendencia.","puntaje":1},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2,700 litros.","puntaje":1},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La gran contaminación de las fuentes de agua dulce.","puntaje":1},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Adquirir prendas en tiendas de segunda mano.","puntaje":1},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Altamente destructivo o ruinoso.","puntaje":1},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"Existen alternativas más sustentables que el fast\r\nfashion.","puntaje":0},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Contribuyendo a que haya más basura en los\r\nvertederos.","puntaje":0},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"La necesidad de importar basura de otros países para\r\ngenerar ganancias económicas.","puntaje":0},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Ejemplificar los beneficios tangibles y prácticos de la\r\nconversión de basura en energía.","puntaje":1},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Informativa y favorable, destacando cómo este modelo\r\npuede contribuir a que Oslo sea una de las ciudades más\r\nverdes.","puntaje":1},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde el reciclaje es la única solución viable\r\npara eliminar los rellenos sanitarios en Europa.","puntaje":0},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque incentiva la generación de desperdicios en lugar\r\nde promover un consumo responsable.","puntaje":1}}},{"Nombre":"AGUSTIN OLIVARES GONZALEZ","Puntos":25,"Nota":5.8,"Simce":338,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Espantar a los turistas para mantener la paz del\r\npueblo.","puntaje":0},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"La inmovilidad y el aspecto del agua del mar.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"Los desastres naturales producidos por el cambio\r\nclimático.","puntaje":0},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que eran escépticos frente a las advertencias de los\r\nmayores.","puntaje":1},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque la causa de la huida fue la angustia\r\npsicológica de la gente.","puntaje":1},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"La presencia constante de dispositivos electrónicos.","puntaje":1},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Indiferente y justificadora.","puntaje":1},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"La producción masiva, rápida y económica de\r\nprendas de tendencia.","puntaje":1},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2,700 litros.","puntaje":1},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La gran contaminación de las fuentes de agua dulce.","puntaje":1},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Adquirir prendas en tiendas de segunda mano.","puntaje":1},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Altamente destructivo o ruinoso.","puntaje":1},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"La producción de textiles genera una gran cantidad\r\nde basura.","puntaje":0},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Contribuyendo a que haya más basura en los\r\nvertederos.","puntaje":0},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"La dependencia de la producción constante de residuos\r\npara mantener la operatividad de las plantas.","puntaje":1},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Ejemplificar los beneficios tangibles y prácticos de la\r\nconversión de basura en energía.","puntaje":1},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Informativa y favorable, destacando cómo este modelo\r\npuede contribuir a que Oslo sea una de las ciudades más\r\nverdes.","puntaje":1},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde los desechos dejan de ser un problema\r\npara convertirse en un recurso con valor de mercado.","puntaje":1},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque el proceso de incineración a 850 grados emite\r\nnubes de polvo blanco peligrosas.","puntaje":0}}},{"Nombre":"GABRIELA ESCOBEDO","Puntos":25,"Nota":5.8,"Simce":338,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Representar la sabiduría incomprendida de la vejez.","puntaje":1},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"La inmovilidad y el aspecto del agua del mar.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"Los desastres naturales producidos por el cambio\r\nclimático.","puntaje":0},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que eran escépticos frente a las advertencias de los\r\nmayores.","puntaje":1},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque la causa de la huida fue la angustia\r\npsicológica de la gente.","puntaje":1},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"La presencia constante de dispositivos electrónicos.","puntaje":1},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Indiferente y justificadora.","puntaje":1},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"La producción masiva, rápida y económica de\r\nprendas de tendencia.","puntaje":1},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2,700 litros.","puntaje":1},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La gran contaminación de las fuentes de agua dulce.","puntaje":1},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Adquirir prendas en tiendas de segunda mano.","puntaje":1},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Altamente destructivo o ruinoso.","puntaje":1},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"El teñido de ropa es un proceso libre de\r\ncontaminantes.","puntaje":1},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Fomentando la moda rápida.","puntaje":0},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"La necesidad de importar basura de otros países para\r\ngenerar ganancias económicas.","puntaje":0},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Advertir sobre los peligros de utilizar combustibles fósiles\r\nen establecimientos educacionales.","puntaje":0},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Escéptica, ya que da mayor importancia a la visión de los\r\necologistas que prefieren reducir el consumo.","puntaje":0},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde los desechos dejan de ser un problema\r\npara convertirse en un recurso con valor de mercado.","puntaje":1},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque incentiva la generación de desperdicios en lugar\r\nde promover un consumo responsable.","puntaje":1}}},{"Nombre":"ROSIELYS ASTUDILLO","Puntos":24,"Nota":5.5,"Simce":325,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Representar la sabiduría incomprendida de la vejez.","puntaje":1},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"La inmovilidad y el aspecto del agua del mar.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"La soledad del farero en una sociedad moderna.","puntaje":0},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que eran escépticos frente a las advertencias de los\r\nmayores.","puntaje":1},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque la causa de la huida fue la angustia\r\npsicológica de la gente.","puntaje":1},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"Un monólogo interior sobre sus sueños.","puntaje":0},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Indiferente y justificadora.","puntaje":1},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"La producción masiva, rápida y económica de\r\nprendas de tendencia.","puntaje":1},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2,700 litros.","puntaje":1},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"El aumento del precio de la ropa de marca.","puntaje":0},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Adquirir prendas en tiendas de segunda mano.","puntaje":1},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Altamente destructivo o ruinoso.","puntaje":1},"¿A quién está dirigido principalmente este texto?":{"alternativa":"A historiadores del arte y la vestimenta.","puntaje":0},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"La producción de textiles genera una gran cantidad\r\nde basura.","puntaje":0},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Ayudando a reducir el impacto ambiental de la\r\nmoda.","puntaje":1},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"La dependencia de la producción constante de residuos\r\npara mantener la operatividad de las plantas.","puntaje":1},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Ejemplificar los beneficios tangibles y prácticos de la\r\nconversión de basura en energía.","puntaje":1},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Informativa y favorable, destacando cómo este modelo\r\npuede contribuir a que Oslo sea una de las ciudades más\r\nverdes.","puntaje":1},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde el reciclaje es la única solución viable\r\npara eliminar los rellenos sanitarios en Europa.","puntaje":0},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque incentiva la generación de desperdicios en lugar\r\nde promover un consumo responsable.","puntaje":1}}},{"Nombre":"ANTONIA MILLA","Puntos":24,"Nota":5.5,"Simce":325,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Representar la sabiduría incomprendida de la vejez.","puntaje":1},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"La inmovilidad y el aspecto del agua del mar.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"El poder del miedo y la superstición en una\r\ncomunidad.","puntaje":1},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que eran escépticos frente a las advertencias de los\r\nmayores.","puntaje":1},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque la causa de la huida fue la angustia\r\npsicológica de la gente.","puntaje":1},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"La presencia constante de dispositivos electrónicos.","puntaje":1},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Indiferente y justificadora.","puntaje":1},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Enseñar técnicas de cocina rápida para parejas.","puntaje":0},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"La producción masiva, rápida y económica de\r\nprendas de tendencia.","puntaje":1},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2,700 litros.","puntaje":1},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La gran contaminación de las fuentes de agua dulce.","puntaje":1},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Adquirir prendas en tiendas de segunda mano.","puntaje":1},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Difícil de entender.","puntaje":0},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"El teñido de ropa es un proceso libre de\r\ncontaminantes.","puntaje":1},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Gastando más agua que el promedio.","puntaje":0},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"La necesidad de importar basura de otros países para\r\ngenerar ganancias económicas.","puntaje":0},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Advertir sobre los peligros de utilizar combustibles fósiles\r\nen establecimientos educacionales.","puntaje":0},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Escéptica, ya que da mayor importancia a la visión de los\r\necologistas que prefieren reducir el consumo.","puntaje":0},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde los desechos dejan de ser un problema\r\npara convertirse en un recurso con valor de mercado.","puntaje":1},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque incentiva la generación de desperdicios en lugar\r\nde promover un consumo responsable.","puntaje":1}}},{"Nombre":"LENNY GUZMAN","Puntos":24,"Nota":5.5,"Simce":325,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Representar la sabiduría incomprendida de la vejez.","puntaje":1},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"La dureza del clima invernal en la costa.","puntaje":0},"¿Cuál es el tema central del fragmento?":{"alternativa":"Los desastres naturales producidos por el cambio\r\nclimático.","puntaje":0},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que eran escépticos frente a las advertencias de los\r\nmayores.","puntaje":1},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque la causa de la huida fue la angustia\r\npsicológica de la gente.","puntaje":1},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"La descripción física de su cansancio.","puntaje":0},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Indiferente y justificadora.","puntaje":1},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"La producción masiva, rápida y económica de\r\nprendas de tendencia.","puntaje":1},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2,700 litros.","puntaje":1},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La gran contaminación de las fuentes de agua dulce.","puntaje":1},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Adquirir prendas en tiendas de segunda mano.","puntaje":1},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Altamente destructivo o ruinoso.","puntaje":1},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"El teñido de ropa es un proceso libre de\r\ncontaminantes.","puntaje":1},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Ayudando a reducir el impacto ambiental de la\r\nmoda.","puntaje":1},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"El riesgo de que la población deje de producir basura y\r\nlas plantas dejen de funcionar.","puntaje":0},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Ejemplificar los beneficios tangibles y prácticos de la\r\nconversión de basura en energía.","puntaje":1},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Informativa y favorable, destacando cómo este modelo\r\npuede contribuir a que Oslo sea una de las ciudades más\r\nverdes.","puntaje":1},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde los países desarrollados abusan de las\r\nnaciones más pequeñas enviándoles sus desperdicios.","puntaje":0},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque el proceso de incineración a 850 grados emite\r\nnubes de polvo blanco peligrosas.","puntaje":0}}},{"Nombre":"BENJAMÍN BELÁUSTEGUI","Puntos":22,"Nota":5,"Simce":300,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Alertar a las autoridades sobre un tsunami inminente.","puntaje":0},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"La inmovilidad y el aspecto del agua del mar.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"El conflicto generacional entre jóvenes y adultos.","puntaje":0},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que eran escépticos frente a las advertencias de los\r\nmayores.","puntaje":1},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque la causa de la huida fue la angustia\r\npsicológica de la gente.","puntaje":1},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"Un monólogo interior sobre sus sueños.","puntaje":0},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Indiferente y justificadora.","puntaje":1},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"El uso exclusivo de materiales reciclados en la\r\nindustria.","puntaje":0},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2,700 litros.","puntaje":1},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La gran contaminación de las fuentes de agua dulce.","puntaje":1},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Comprar ropa barata todas las semanas.","puntaje":0},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Altamente destructivo o ruinoso.","puntaje":1},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"El teñido de ropa es un proceso libre de\r\ncontaminantes.","puntaje":1},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Fomentando la moda rápida.","puntaje":0},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"La necesidad de importar basura de otros países para\r\ngenerar ganancias económicas.","puntaje":0},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Ejemplificar los beneficios tangibles y prácticos de la\r\nconversión de basura en energía.","puntaje":1},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Informativa y favorable, destacando cómo este modelo\r\npuede contribuir a que Oslo sea una de las ciudades más\r\nverdes.","puntaje":1},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde los desechos dejan de ser un problema\r\npara convertirse en un recurso con valor de mercado.","puntaje":1},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque el proceso de incineración a 850 grados emite\r\nnubes de polvo blanco peligrosas.","puntaje":0}}},{"Nombre":"ALEJANDRO PEÑA","Puntos":21,"Nota":4.8,"Simce":288,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Espantar a los turistas para mantener la paz del\r\npueblo.","puntaje":0},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"El reflejo de las luces del faro en la noche.","puntaje":0},"¿Cuál es el tema central del fragmento?":{"alternativa":"La soledad del farero en una sociedad moderna.","puntaje":0},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que estaban planeando irse del pueblo desde antes.","puntaje":0},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque el pueblo ya estaba vacío antes de que\r\nsubiera la marea.","puntaje":0},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"La presencia constante de dispositivos electrónicos.","puntaje":1},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Indiferente y justificadora.","puntaje":1},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"El uso exclusivo de materiales reciclados en la\r\nindustria.","puntaje":0},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2,700 litros.","puntaje":1},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La gran contaminación de las fuentes de agua dulce.","puntaje":1},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Adquirir prendas en tiendas de segunda mano.","puntaje":1},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Altamente destructivo o ruinoso.","puntaje":1},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"La producción de textiles genera una gran cantidad\r\nde basura.","puntaje":0},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Contribuyendo a que haya más basura en los\r\nvertederos.","puntaje":0},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"La dependencia de la producción constante de residuos\r\npara mantener la operatividad de las plantas.","puntaje":1},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Ejemplificar los beneficios tangibles y prácticos de la\r\nconversión de basura en energía.","puntaje":1},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Escéptica, ya que da mayor importancia a la visión de los\r\necologistas que prefieren reducir el consumo.","puntaje":0},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde los desechos dejan de ser un problema\r\npara convertirse en un recurso con valor de mercado.","puntaje":1},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque incentiva la generación de desperdicios en lugar\r\nde promover un consumo responsable.","puntaje":1}}},{"Nombre":"AEYZINLLER LOBOS LAZCANO","Puntos":20,"Nota":4.5,"Simce":275,"Categoria":"Intermedio 🟡","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Alertar a las autoridades sobre un tsunami inminente.","puntaje":0},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Abandonaron el pueblo silenciosamente por temor.","puntaje":1},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"La inmovilidad y el aspecto del agua del mar.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"El conflicto generacional entre jóvenes y adultos.","puntaje":0},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que eran escépticos frente a las advertencias de los\r\nmayores.","puntaje":1},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque la causa de la huida fue la angustia\r\npsicológica de la gente.","puntaje":1},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"La presencia constante de dispositivos electrónicos.","puntaje":1},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Agresiva y violenta.","puntaje":0},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"El uso exclusivo de materiales reciclados en la\r\nindustria.","puntaje":0},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2,700 litros.","puntaje":1},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La mejora en la durabilidad de las prendas.","puntaje":0},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Adquirir prendas en tiendas de segunda mano.","puntaje":1},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Demostrar que la industria de la moda cuida la salud\r\nhumana.","puntaje":0},"¿Qué significa el término \"devastador\"?":{"alternativa":"Altamente destructivo o ruinoso.","puntaje":1},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"El teñido de ropa es un proceso libre de\r\ncontaminantes.","puntaje":1},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Gastando más agua que el promedio.","puntaje":0},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"La dependencia de la producción constante de residuos\r\npara mantener la operatividad de las plantas.","puntaje":1},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Criticar la falta de suministro de combustible que sufrían\r\nlas escuelas públicas en el pasado.","puntaje":0},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Informativa y favorable, destacando cómo este modelo\r\npuede contribuir a que Oslo sea una de las ciudades más\r\nverdes.","puntaje":1},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde la contaminación ambiental es\r\nresponsabilidad exclusiva de quienes producen la basura.","puntaje":0},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque el proceso de incineración a 850 grados emite\r\nnubes de polvo blanco peligrosas.","puntaje":0}}},{"Nombre":"MORENA OLEA","Puntos":18,"Nota":4,"Simce":250,"Categoria":"Intermedio 🟡","Respuestas":{"¿Cuál es la función de Don Teodoro en el relato?":{"alternativa":"Alertar a las autoridades sobre un tsunami inminente.","puntaje":0},"¿Qué fenómeno extraño ocurrió en el pueblo una noche de julio?":{"alternativa":"El viento se detuvo y la marea quedó estática.","puntaje":1},"¿Cómo reaccionaron los habitantes ante el fenómeno del mar?":{"alternativa":"Ignoraron el suceso y continuaron con sus vidas\r\nnormales.","puntaje":0},"En el texto, la expresión \"un espejo de acero\" se refiere a:":{"alternativa":"La inmovilidad y el aspecto del agua del mar.","puntaje":1},"¿Cuál es el tema central del fragmento?":{"alternativa":"Los desastres naturales producidos por el cambio\r\nclimático.","puntaje":0},"¿Qué se infiere de la actitud de los jóvenes al principio del relato?":{"alternativa":"Que tenían un conocimiento científico superior al de\r\nTeodoro.","puntaje":0},"¿Por qué el narrador afirma que \"el miedo, y no el mar, vaciaba las calles\"?":{"alternativa":"Porque el mar finalmente inundó el pueblo por\r\ncompleto.","puntaje":0},"¿Cuál es el conflicto principal entre Julián y Marta?":{"alternativa":"El exceso de trabajo y la desconexión emocional de\r\nJulián.","puntaje":1},"¿Qué recurso utiliza la obra para mostrar la obsesión de Julián?":{"alternativa":"La presencia constante de dispositivos electrónicos.","puntaje":1},"¿A qué se refiere Marta con la metáfora de la \"señal de humo desde otra isla\"?":{"alternativa":"A la enorme distancia comunicativa que siente\r\nrespecto a su esposo.","puntaje":1},"¿Cómo se describe la actitud de Julián ante los reclamos de Marta?":{"alternativa":"Agresiva y violenta.","puntaje":0},"¿Qué acción de Marta marca el clímax o cierre de la tensión en esta escena?":{"alternativa":"Apagar la luz y retirarse sin comer.","puntaje":1},"¿Cuál es el propósito comunicativo de este fragmento dramático?":{"alternativa":"Criticar cómo la vida laboral invade el espacio\r\npersonal.","puntaje":1},"¿Qué significa la frase de Julián \"Tus manos están aquí, pero tu cabeza está en una nube de datos\"?":{"alternativa":"Que Julián está presente físicamente pero distraído\r\nmentalmente.","puntaje":1},"¿Qué define principalmente al concepto de fast fashion?":{"alternativa":"La fabricación de ropa de alta costura para eventos\r\nexclusivos.","puntaje":0},"Según el texto, ¿cuánta agua se requiere para producir una camiseta de algodón?":{"alternativa":"2.5 litros.","puntaje":0},"¿Cuál es la consecuencia del teñido de textiles mencionada en el texto?":{"alternativa":"La mejora en la durabilidad de las prendas.","puntaje":0},"¿Qué sucede con los textiles desechados cada segundo en el mundo?":{"alternativa":"Se queman o terminan en vertederos de basura.","puntaje":1},"¿Cuál de las siguientes es una recomendación de la \"moda lenta\"?":{"alternativa":"Adquirir prendas en tiendas de segunda mano.","puntaje":1},"¿Cuál es el propósito principal de este texto?":{"alternativa":"Informar sobre los daños ecológicos de la industria\r\nde la moda rápida.","puntaje":1},"La relación entre \"agua\" y \"persona\" mencionada en el primer punto sirve para:":{"alternativa":"Dar una dimensión comprensible del enorme gasto\r\nde recursos.","puntaje":1},"¿Qué significa el término \"devastador\"?":{"alternativa":"Difícil de entender.","puntaje":0},"¿A quién está dirigido principalmente este texto?":{"alternativa":"Al público general y consumidores de ropa.","puntaje":1},"¿Cuál de las siguientes afirmaciones es FALSA según el texto?":{"alternativa":"El teñido de ropa es un proceso libre de\r\ncontaminantes.","puntaje":1},"Si una persona decide apoyar el \"comercio local\", según el texto está:":{"alternativa":"Contribuyendo a que haya más basura en los\r\nvertederos.","puntaje":0},"A partir de los argumentos presentados en el texto, ¿cuál es el dilema ético que enfrentan las plantas de energía en Noruega y Suecia?":{"alternativa":"La competencia desleal con otros tipos de energía como\r\nla nuclear o el gas de esquisto.","puntaje":0},"¿Qué función cumple la mención de la escuela Bjoernholt y su gerente técnico en la argumentación del texto?":{"alternativa":"Ejemplificar los beneficios tangibles y prácticos de la\r\nconversión de basura en energía.","puntaje":1},"¿Cuál es la postura del autor respecto a la iniciativa noruega de convertir basura en energía?":{"alternativa":"Informativa y favorable, destacando cómo este modelo\r\npuede contribuir a que Oslo sea una de las ciudades más\r\nverdes.","puntaje":1},"Considerando el subtítulo \"Mándenos su basura\", ¿qué visión de mundo se desprende de la relación comercial entre Oslo y ciudades como Bristol?":{"alternativa":"Una visión donde los desechos dejan de ser un problema\r\npara convertirse en un recurso con valor de mercado.","puntaje":1},"Si el objetivo primordial de un ecologista es \"reducir, reusar y reciclar\", ¿por qué la quema de basura podría considerarse una solución imperfecta?":{"alternativa":"Porque incentiva la generación de desperdicios en lugar\r\nde promover un consumo responsable.","puntaje":1}}}];
+
+            function openStudentModal(idx) {
+                var s = masterStudents[idx];
+                if (!s) return;
+
+                document.getElementById('modal-name').textContent = s.Nombre;
+                document.getElementById('modal-stats').textContent =
+                    'Nota: ' + s.Nota.toFixed(1).replace('.', ',') +
+                    ' | Puntos: ' + s.Puntos +
+                    ' | Categoría: ' + s.Categoria;
+
+                var listHtml = '';
+                var respuestas = s.Respuestas || {};
+                var keys = Object.keys(respuestas);
+
+                for (var i = 0; i < keys.length; i++) {
+                    var qTitle = keys[i];
+                    var dataObj = respuestas[qTitle];
+                    var cleanQ = String(qTitle).trim();
+                    var userAlt = dataObj.alternativa;
+                    var userPts = dataObj.puntaje;
+                    var isError = (userPts === 0);
+                    var badgeClass = isError ? 'bad' : 'ok';
+                    var icon = isError ? '❌ No Acertó' : '✅ Acertó';
+                    var detailsMsg = isError
+                        ? '<span style="display:block;font-size:14px;color:#ef4444;margin-top:6px;font-weight:bold;">Alternativa Marcada: <span style="text-decoration:underline;">' + userAlt + '</span></span>'
+                        : '<span style="display:block;font-size:14px;color:#2ecc71;margin-top:6px;font-weight:bold;">Alternativa Marcada: ' + userAlt + '</span>';
+
+                    listHtml += '<div class="ans-card ' + badgeClass + '">' +
+                        '<div class="ans-q">' + cleanQ + detailsMsg + '</div>' +
+                        '<div class="ans-val ' + badgeClass + '">' + icon + '</div>' +
+                        '</div>';
+                }
+
+                if (!listHtml) listHtml = '<div style="color:gray;text-align:center;padding:20px;">No hay detalle de alternativas detectado.</div>';
+
+                document.getElementById('modal-answers-list').innerHTML = listHtml;
+                document.getElementById('student-modal').style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal() {
+                document.getElementById('student-modal').style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+            </script>
+</body>
+</html>

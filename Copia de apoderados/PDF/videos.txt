@@ -1,0 +1,22 @@
+# Formato: mes, titulo, fecha, link de youtube
+# Usa siempre el nombre del mes en minúsculas.
+
+abril, Reviviendo una jornada de Súper Asistencia, 16/04/2026, https://www.instagram.com/p/DXMQ69ADlIc/
+abril, Encuentro literario con Alejandro Peña Sepúlveda, 22/04/2026, https://www.instagram.com/p/DXery0djiQt/?igsh=MWdhOWFtaHRldnNvcA==
+abril, Día de la Tierra en Plaza de los Héroes con estudiantes de tercero medio B, 26/04/2026, https://www.instagram.com/p/DXg04ETjgdi/?igsh=aXMya3J6czBpenI3
+abril, Elecciones Centro de Estudiantes, 06/05/2026, https://www.instagram.com/reel/DXwRnA2O8EZ/?igsh=MTNpemZ6cXNlOXl4aA==
+abril, Consejo Escolar Liceo Libertador Simón Bolívar, 06/05/2026, https://www.instagram.com/p/DXw_F7ijtwe/?igsh=MXRsMWYweTVycTd5Yw==
+abril, Recreo Lector La Ratita Presumida, 06/05/2026, https://www.instagram.com/p/DXzGK3SDnru/?igsh=NDduM2ZoaHMzNGtk
+abril, Jornada de Trabajo Red Poniente, 06/05/2026, https://www.instagram.com/p/DX6kyp9Dqry/?igsh=MWhwdGMzZG5oYnVhNg==
+mayo, Acto Día del Trabajador, 06/05/2026, https://www.instagram.com/p/DX6zmJ3DoX8/?igsh=OGI0dnFvNGJ5NjV4
+mayo, Semana de la Familia, 06/05/2026, https://www.instagram.com/p/DX9b5IBOtca/?igsh=MXF6MTh6NWVraDZoag==
+
+
+
+
+# --- EJEMPLOS PARA EL PROCESO DE ADMISIÓN ---
+
+admision, Conoce nuestro Liceo Simón Bolívar, 27/05/2026, https://www.youtube.com/watch?v=VsnGNxFXsfk
+admision, Postula a nuestro Liceo Simón Bolívar, 27/07/2027, https://www.youtube.com/shorts/3EFxEntjTKQ
+
+

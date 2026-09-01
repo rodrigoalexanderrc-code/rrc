@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Reporte SIMCE (Ensayo SIMCE N3 Lenguaje 2 Medio Daño de imagen en redes sociales(1-15))</title>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
+            --secondary: #f8fafc;
+            --accent: #10b981;
+            --danger: #cb2431;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #e0e7ff 100%);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            font-size: 16px;
+            /* Aumentado de default a 16px para mejor legibilidad general */
+        }
+
+        /* VIEW: UPLOAD */
+        #upload-view {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 650px;
+            background: var(--surface);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            transition: transform 0.3s ease;
+        }
+
+        .icon-container {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            color: white;
+            font-size: 32px;
+            box-shadow: 0 10px 15px -3px rgba(30, 58, 138, 0.3);
+            transform: rotate(-5deg);
+        }
+
+        h1.main-title {
+            font-size: 26px;
+            color: var(--text-main);
+            margin: 0 0 8px 0;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        h2.subtitle {
+            font-size: 16px;
+            color: var(--primary-light);
+            margin: 0;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .description {
+            color: var(--text-muted);
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 20px;
+            padding: 0 20px;
+            margin-top: 20px;
+        }
+
+        .options-panel {
+            background: rgba(59, 130, 246, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+            display: none;
+        }
+
+        .options-panel.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Outfit';
+            font-size: 14px;
+            box-sizing: border-box;
+            background-color: white;
+            color: black;
+            font-weight: bold;
+        }
+
+        .form-group input[readonly] {
+            background-color: white;
+            color: black;
+            font-weight: bold;
+            border-color: #cbd5e1;
+            cursor: default;
+        }
+
+        .upload-area {
+            position: relative;
+            border: 2px dashed var(--primary-light);
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            background: rgba(59, 130, 246, 0.03);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 25px;
+        }
+
+        .upload-area:hover {
+            background: rgba(59, 130, 246, 0.08);
+            border-color: var(--primary);
+            transform: scale(1.02);
+        }
+
+        input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .upload-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+            display: block;
+            opacity: 0.8;
+        }
+
+        .upload-text {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 16px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .upload-subtext {
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 400;
+        }
+
+        .generate-btn {
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            margin-bottom: 15px;
+        }
+
+        .generate-btn:hover {
+            box-shadow: 0 8px 20px rgba(30, 58, 138, 0.35);
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            filter: grayscale(1);
+        }
+
+        #loading {
+            display: none;
+            text-align: center;
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        /* VIEW: DASHBOARD */
+        #report-view {
+            display: none;
+            max-width: 1250px;
+            /* Expandido para alojar mejor las fuentes mayores */
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            color: #334e68;
+        }
+
+        .report-header {
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .report-header h1 {
+            text-transform: uppercase;
+            font-size: 28px;
+            /* Título informe más grande */
+            color: var(--primary);
+            margin: 0;
+            letter-spacing: 1px;
+        }
+
+        .report-header h2 {
+            font-size: 22px;
+            color: #627d98;
+            margin: 5px 0 20px 0;
+            font-weight: bold;
+        }
+
+        .meta-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+            background: var(--secondary);
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            /* Más grande en metadatos */
+        }
+
+        .meta-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .meta-label {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            background: #fff;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-value {
+            font-size: 40px;
+            /* Números más grandes */
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--text-main);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            /* Mayor legibilidad */
+            color: #627d98;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .stat-card.verde {
+            border-top: 5px solid #2ecc71;
+        }
+
+        .stat-card.amarillo {
+            border-top: 5px solid #f1c40f;
+        }
+
+        .stat-card.rojo {
+            border-top: 5px solid #e74c3c;
+        }
+
+        .stat-card.total {
+            border-top: 5px solid var(--primary);
+        }
+
+        .rankings-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .ranking-title {
+            font-size: 18px;
+            /* Título de tablas más grande */
+            font-weight: bold;
+            color: var(--primary);
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border: 1px solid var(--border);
+            font-size: 15px;
+            /* Textos de tabla más amigables */
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--secondary);
+        }
+
+        .nota-azul {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .nota-roja {
+            color: var(--danger);
+            font-weight: bold;
+        }
+
+        .cat-verde {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .cat-amarillo {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .cat-rojo {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+        }
+
+        #error-card {
+            display: none;
+            background: #fee2e2;
+            border: 1px solid #ef4444;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            color: #b91c1c;
+            font-size: 13px;
+        }
+
+        @media print {
+            .actions {
+                display: none !important;
+            }
+
+            body {
+                padding: 0;
+                background: white;
+            }
+
+            #report-view {
+                box-shadow: none;
+                border: none;
+                padding: 0;
+                max-width: 100%;
+            }
+
+            @page {
+                size: A4 portrait;
+                margin: 10mm;
+            }
+        }
+
+        /* --- MODAL STYLES --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 95%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .btn-close {
+            background: #f1f5f9;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #64748b;
+        }
+
+        .btn-close:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .ans-card {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ans-card.bad {
+            border-left: 4px solid #ef4444;
+            background: #fef2f2;
+        }
+
+        .ans-card.ok {
+            border-left: 4px solid #2ecc71;
+            background: #f0fdf4;
+        }
+
+        .ans-q {
+            font-size: 15px;
+            font-weight: 500;
+            color: #334155;
+            max-width: 80%;
+        }
+
+        .ans-val {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .ans-val.bad {
+            color: #ef4444;
+            text-decoration: line-through;
+        }
+
+        .ans-val.ok {
+            color: #2ecc71;
+        }
+
+        .interactive-row {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .interactive-row:hover {
+            background-color: #e0e7ff !important;
+            transform: translateX(4px);
+        }
+
+        .interactive-row:hover .student-link {
+            color: #1d4ed8;
+        }
+
+        .student-link {
+            color: #2563eb;
+            text-decoration: underline;
+            font-weight: bold;
+            transition: color 0.2s ease;
+        }
+     body{background:white; margin:0}</style>
+</head>
+<body>
+<div id="report-view" style="display: block;">
+        
+
+        <div id="dashboard-content">
+            <div class="report-header">
+                <h1>Informe Plataforma Ensayos SIMCE Institucional</h1>
+                <h2>Liceo Integrado Libertador Simón Bolívar - 2 medio A</h2>
+            </div>
+
+            <div class="meta-grid" id="ui-metadata">
+                <div class="meta-item"><span class="meta-label">Ensayo:</span> Ensayo SIMCE N3 Lenguaje 2 Medio&nbsp;Daño de imagen en redes sociales(1-15)</div>
+                <div class="meta-item"><span class="meta-label">Curso:</span> 2 medio A</div>
+                <div class="meta-item"><span class="meta-label">Fecha:</span> 01-06-2026</div>
+                <div class="meta-item"><span class="meta-label">Exigencia Prueba:</span> 60%</div>
+                <div class="meta-item"><span class="meta-label">Total Preguntas Oficiales:</span> 20 pts.</div>
+                <div class="meta-item"><span class="meta-label">Puntaje de Corte de Aprobación Mín.:</span> 12 pts.</div>
+            </div>
+
+            <section class="stats-container" id="ui-kpis">
+                <div class="stat-card total"><div class="stat-value">15</div><div class="stat-label">Total Estudiantes</div></div>
+                <div class="stat-card verde"><div class="stat-value">13</div><div class="stat-label">Logro Avanzado</div></div>
+                <div class="stat-card amarillo"><div class="stat-value">2</div><div class="stat-label">Logro Intermedio</div></div>
+                <div class="stat-card rojo"><div class="stat-value">0</div><div class="stat-label">Logro Inicial</div></div>
+            </section>
+
+            <section class="rankings-grid" id="ui-rankings">
+                <div><div class="ranking-title">🏆 Top 10 Puntajes Altos</div>
+                <table><thead><tr><th>Nombre</th><th style="text-align:center">Pts</th><th style="text-align:center">Nota</th><th style="text-align:center">SIMCE Aprox.</th></tr></thead><tbody><tr><td>DANIEL LÓPEZ</td><td style="text-align:center">20</td><td style="text-align:center" class="nota-azul">7,0</td><td style="text-align:center">400</td></tr><tr><td>MATEO MONTENEGRO</td><td style="text-align:center">20</td><td style="text-align:center" class="nota-azul">7,0</td><td style="text-align:center">400</td></tr><tr><td>GABRIELA MALDONADO</td><td style="text-align:center">20</td><td style="text-align:center" class="nota-azul">7,0</td><td style="text-align:center">400</td></tr><tr><td>JEAN CARLOS ISAIAS CARTES</td><td style="text-align:center">19</td><td style="text-align:center" class="nota-azul">6,6</td><td style="text-align:center">381</td></tr><tr><td>AARON MICHEL DIAZ GARCIA</td><td style="text-align:center">19</td><td style="text-align:center" class="nota-azul">6,6</td><td style="text-align:center">381</td></tr><tr><td>JOSÉ CASTILLO</td><td style="text-align:center">18</td><td style="text-align:center" class="nota-azul">6,3</td><td style="text-align:center">363</td></tr><tr><td>PABLO PAZ</td><td style="text-align:center">18</td><td style="text-align:center" class="nota-azul">6,3</td><td style="text-align:center">363</td></tr><tr><td>JEAN PAUL ALEXANDER BANDA</td><td style="text-align:center">18</td><td style="text-align:center" class="nota-azul">6,3</td><td style="text-align:center">363</td></tr><tr><td>ALEXANDER CORDERO</td><td style="text-align:center">16</td><td style="text-align:center" class="nota-azul">5,5</td><td style="text-align:center">325</td></tr><tr><td>BRUNO VALLEJOS</td><td style="text-align:center">16</td><td style="text-align:center" class="nota-azul">5,5</td><td style="text-align:center">325</td></tr></tbody></table></div>
+
+                <div><div class="ranking-title">⚠️ Alumnos en Riesgo (Nota &lt; 4,0)</div>
+                    <table><thead><tr><th>Nombre</th><th style="text-align:center">Pts</th><th style="text-align:center">Nota</th><th style="text-align:center">SIMCE Aprox.</th></tr></thead><tbody><tr><td colspan="4" style="text-align:center; color:gray; padding:15px;">Ningún alumno obtuvo nota roja. 🎉</td></tr></tbody></table></div>
+            </section>
+
+            <section>
+                <div class="ranking-title">📋 Resultados Detallados de Alumnos</div>
+                <div style="background-color: #eef2ff; border-left: 4px solid #4f46e5; padding: 12px 16px; margin-bottom: 15px; border-radius: 6px;">
+                    <strong style="color: #4f46e5; font-size: 16px;">💡 TIP:</strong> <span style="font-size: 16px; font-weight: bold; color: #334155;">Haz click en el nombre de cualquier
+                        alumno de la lista
+                        para ver el reporte detallado con las preguntas y alternativas exactas que marcó.</span>
+                </div>
+                <table id="ui-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th style="text-align:center">Puntos</th>
+                            <th style="text-align:center">Nota</th>
+                            <th style="text-align:center">Puntaje SIMCE aproximado</th>
+                            <th>Nivel de Logro</th>
+                        </tr>
+                    </thead>
+                    <tbody><tr class="interactive-row" onclick="openStudentModal(0)" title="Haz click para ver respuestas">
+                    <td class="student-link">DANIEL LÓPEZ</td>
+                    <td style="text-align:center">20</td>
+                    <td style="text-align:center" class="nota-azul">7,0</td>
+                    <td style="text-align:center; font-weight:bold;">400</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(1)" title="Haz click para ver respuestas">
+                    <td class="student-link">MATEO MONTENEGRO</td>
+                    <td style="text-align:center">20</td>
+                    <td style="text-align:center" class="nota-azul">7,0</td>
+                    <td style="text-align:center; font-weight:bold;">400</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(2)" title="Haz click para ver respuestas">
+                    <td class="student-link">GABRIELA MALDONADO</td>
+                    <td style="text-align:center">20</td>
+                    <td style="text-align:center" class="nota-azul">7,0</td>
+                    <td style="text-align:center; font-weight:bold;">400</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(3)" title="Haz click para ver respuestas">
+                    <td class="student-link">JEAN CARLOS ISAIAS CARTES PERALTA</td>
+                    <td style="text-align:center">19</td>
+                    <td style="text-align:center" class="nota-azul">6,6</td>
+                    <td style="text-align:center; font-weight:bold;">381</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(4)" title="Haz click para ver respuestas">
+                    <td class="student-link">AARON MICHEL DIAZ GARCIA</td>
+                    <td style="text-align:center">19</td>
+                    <td style="text-align:center" class="nota-azul">6,6</td>
+                    <td style="text-align:center; font-weight:bold;">381</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(5)" title="Haz click para ver respuestas">
+                    <td class="student-link">JOSÉ CASTILLO</td>
+                    <td style="text-align:center">18</td>
+                    <td style="text-align:center" class="nota-azul">6,3</td>
+                    <td style="text-align:center; font-weight:bold;">363</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(6)" title="Haz click para ver respuestas">
+                    <td class="student-link">PABLO PAZ</td>
+                    <td style="text-align:center">18</td>
+                    <td style="text-align:center" class="nota-azul">6,3</td>
+                    <td style="text-align:center; font-weight:bold;">363</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(7)" title="Haz click para ver respuestas">
+                    <td class="student-link">JEAN PAUL ALEXANDER BANDA CASTILLO</td>
+                    <td style="text-align:center">18</td>
+                    <td style="text-align:center" class="nota-azul">6,3</td>
+                    <td style="text-align:center; font-weight:bold;">363</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(8)" title="Haz click para ver respuestas">
+                    <td class="student-link">ALEXANDER CORDERO</td>
+                    <td style="text-align:center">16</td>
+                    <td style="text-align:center" class="nota-azul">5,5</td>
+                    <td style="text-align:center; font-weight:bold;">325</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(9)" title="Haz click para ver respuestas">
+                    <td class="student-link">BRUNO VALLEJOS</td>
+                    <td style="text-align:center">16</td>
+                    <td style="text-align:center" class="nota-azul">5,5</td>
+                    <td style="text-align:center; font-weight:bold;">325</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(10)" title="Haz click para ver respuestas">
+                    <td class="student-link">MATIAS IGNACIO FUENTES DIAZ</td>
+                    <td style="text-align:center">15</td>
+                    <td style="text-align:center" class="nota-azul">5,1</td>
+                    <td style="text-align:center; font-weight:bold;">306</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(11)" title="Haz click para ver respuestas">
+                    <td class="student-link">JOHANN LOYOLA</td>
+                    <td style="text-align:center">15</td>
+                    <td style="text-align:center" class="nota-azul">5,1</td>
+                    <td style="text-align:center; font-weight:bold;">306</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(12)" title="Haz click para ver respuestas">
+                    <td class="student-link">MAXIMILIANO JARA JOFRE</td>
+                    <td style="text-align:center">14</td>
+                    <td style="text-align:center" class="nota-azul">4,8</td>
+                    <td style="text-align:center; font-weight:bold;">288</td>
+                    <td style="text-align:center" class="cat-verde">Avanzado 🌟</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(13)" title="Haz click para ver respuestas">
+                    <td class="student-link">FELIPE GUZMÁN</td>
+                    <td style="text-align:center">12</td>
+                    <td style="text-align:center" class="nota-azul">4,0</td>
+                    <td style="text-align:center; font-weight:bold;">250</td>
+                    <td style="text-align:center" class="cat-amarillo">Intermedio 🟡</td>
+                </tr><tr class="interactive-row" onclick="openStudentModal(14)" title="Haz click para ver respuestas">
+                    <td class="student-link">MARTIN CAVIERES</td>
+                    <td style="text-align:center">12</td>
+                    <td style="text-align:center" class="nota-azul">4,0</td>
+                    <td style="text-align:center; font-weight:bold;">250</td>
+                    <td style="text-align:center" class="cat-amarillo">Intermedio 🟡</td>
+                </tr></tbody>
+                </table>
+            </section>
+
+            <!-- Sección de Preguntas Críticas (Ahora debajo de Alumnos) -->
+            <section id="ui-critical-questions">
+                <div style="grid-column: 1 / -1; margin-top:20px;">
+                    <div class="ranking-title">📈 Top Preguntas con Mayor Porcentaje de Error</div>
+                    <table id="table-critical-questions">
+                        <thead>
+                            <tr>
+                                <th>Pregunta / Contenido</th>
+                                <th style="text-align:center">Error %</th>
+                                <th style="text-align:center">Cantidad de Alumnos</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>¿Qué herramienta legal permite a la víctima de una publicación dañina buscar una solución rápida?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">67%</td>
+                                <td style="text-align:center">10 alumnos</td>
+                            </tr><tr>
+                                <td>¿Cuál es la principal limitación del recurso de protección según el texto?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">47%</td>
+                                <td style="text-align:center">7 alumnos</td>
+                            </tr><tr>
+                                <td>¿Qué implica que los delitos de injurias y calumnias sean de "acción de privados"?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">40%</td>
+                                <td style="text-align:center">6 alumnos</td>
+                            </tr><tr>
+                                <td>¿Cuál es una de las desventajas del proceso penal en casos de daño a la imagen?</td>
+                                <td style="text-align:center; font-weight:bold; color:#ef4444;">33%</td>
+                                <td style="text-align:center">5 alumnos</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div></section>
+        </div>
+    </div>
+<div id="student-modal" class="modal-overlay" onclick="if(event.target === this) closeModal()" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h3 id="modal-name" style="margin:0; color:var(--primary); font-size:20px;">Nombre Alumno</h3>
+                    <div id="modal-stats" style="font-size:13px; color:#64748b; margin-top:4px;">Nota: 0.0 | Puntos: 0
+                    </div>
+                </div>
+                <button class="btn-close" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <div style="font-size:14px; font-weight:bold; margin-bottom:15px; border-bottom:2px solid var(--border); padding-bottom:5px;">
+                    Detalle de Respuestas</div>
+                <div id="modal-answers-list"></div>
+            </div>
+        </div>
+    </div>
+
+                <script>
+                var masterStudents = [{"Nombre":"DANIEL LÓPEZ","Puntos":20,"Nota":7,"Simce":400,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es el principal problema que plantea el texto en relación con las redes sociales?":{"alternativa":"La \"democratización de la información\" que puede llevar al daño de la imagen.","puntaje":1},"Según el texto, ¿qué significa que las redes sociales se han convertido en un \"arma de doble filo\"?":{"alternativa":"Que ofrecen libertad de expresión, pero también exponen al daño a la imagen.","puntaje":1},"¿A qué se refiere el texto con la expresión \"asesinar nuestra imagen\"?":{"alternativa":"Al daño que acusaciones infundadas pueden causar a la reputación de alguien.","puntaje":1},"¿Qué aspectos de la vida de una persona pueden verse gravemente afectados por el daño a la imagen en redes sociales?":{"alternativa":"La honra, el honor, y la integridad psicológica y física.","puntaje":1},"¿Cómo describe el texto la legislación actual en defensa del derecho a la imagen?":{"alternativa":"Pobrísimo, lento y de alto costo.","puntaje":1},"¿Qué herramienta legal permite a la víctima de una publicación dañina buscar una solución rápida?":{"alternativa":"El recurso de protección.","puntaje":1},"¿Cuál es la principal limitación del recurso de protección según el texto?":{"alternativa":"Que no otorga indemnizaciones ni sanciona la conducta dañina.","puntaje":1},"¿Qué ofrece la demanda civil de indemnización de perjuicios del artículo 2314 del Código Civil?":{"alternativa":"El amparo contra el \"asesinato de imagen\".","puntaje":1},"¿Por qué la demanda civil de indemnización de perjuicios se considera un mecanismo poco atractivo para las víctimas?":{"alternativa":"Por los altos costos y la larga duración del juicio.","puntaje":1},"Según el texto, ¿cuál es el promedio aproximado que la Corte Suprema ha otorgado como indemnización por daño moral en casos de pérdida de la vida?":{"alternativa":"50 millones de pesos.","puntaje":1},"En materia penal, ¿qué delitos se relacionan con el daño a la imagen?":{"alternativa":"Injurias y calumnias.","puntaje":1},"¿Qué implica que los delitos de injurias y calumnias sean de \"acción de privados\"?":{"alternativa":"Que su persecución depende de una querella criminal.","puntaje":1},"¿Cuál es una de las desventajas del proceso penal en casos de daño a la imagen?":{"alternativa":"Las penas son bajas y pueden tener salidas alternativas.","puntaje":1},"¿Qué se necesita para presentar una querella criminal por injurias y calumnias?":{"alternativa":"Un abogado particular.","puntaje":1},"¿Qué se concluye sobre la legislación actual en relación con el daño a la imagen en redes sociales?":{"alternativa":"No existe una legislación moderna que permita sancionar estas conductas de\r\nmanera expedita, rápida y eficiente.","puntaje":1},"¿Cuál es la tarea pendiente que señala el autor del texto?":{"alternativa":"Desarrollar una legislación moderna para sancionar el daño a la imagen en redes\r\nsociales.","puntaje":1},"¿A quiénes se dirige principalmente la tarea pendiente mencionada en el texto?":{"alternativa":"A los legisladores y a quienes trabajan en el área legal.","puntaje":1},"¿Qué tipo de texto es el que acabas de leer?":{"alternativa":"Expositivo/Argumentativo.","puntaje":1},"¿Cuál es el propósito principal del autor al escribir este texto?":{"alternativa":"Informar y crear conciencia sobre las deficiencias de la legislación actual frente al\r\ndaño en redes sociales.","puntaje":1},"¿Cuál sería un título alternativo adecuado para este texto?":{"alternativa":"\"Desafíos legales del daño a la imagen en el entorno digital\".","puntaje":1}}},{"Nombre":"MATEO MONTENEGRO","Puntos":20,"Nota":7,"Simce":400,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es el principal problema que plantea el texto en relación con las redes sociales?":{"alternativa":"La \"democratización de la información\" que puede llevar al daño de la imagen.","puntaje":1},"Según el texto, ¿qué significa que las redes sociales se han convertido en un \"arma de doble filo\"?":{"alternativa":"Que ofrecen libertad de expresión, pero también exponen al daño a la imagen.","puntaje":1},"¿A qué se refiere el texto con la expresión \"asesinar nuestra imagen\"?":{"alternativa":"Al daño que acusaciones infundadas pueden causar a la reputación de alguien.","puntaje":1},"¿Qué aspectos de la vida de una persona pueden verse gravemente afectados por el daño a la imagen en redes sociales?":{"alternativa":"La honra, el honor, y la integridad psicológica y física.","puntaje":1},"¿Cómo describe el texto la legislación actual en defensa del derecho a la imagen?":{"alternativa":"Pobrísimo, lento y de alto costo.","puntaje":1},"¿Qué herramienta legal permite a la víctima de una publicación dañina buscar una solución rápida?":{"alternativa":"El recurso de protección.","puntaje":1},"¿Cuál es la principal limitación del recurso de protección según el texto?":{"alternativa":"Que no otorga indemnizaciones ni sanciona la conducta dañina.","puntaje":1},"¿Qué ofrece la demanda civil de indemnización de perjuicios del artículo 2314 del Código Civil?":{"alternativa":"El amparo contra el \"asesinato de imagen\".","puntaje":1},"¿Por qué la demanda civil de indemnización de perjuicios se considera un mecanismo poco atractivo para las víctimas?":{"alternativa":"Por los altos costos y la larga duración del juicio.","puntaje":1},"Según el texto, ¿cuál es el promedio aproximado que la Corte Suprema ha otorgado como indemnización por daño moral en casos de pérdida de la vida?":{"alternativa":"50 millones de pesos.","puntaje":1},"En materia penal, ¿qué delitos se relacionan con el daño a la imagen?":{"alternativa":"Injurias y calumnias.","puntaje":1},"¿Qué implica que los delitos de injurias y calumnias sean de \"acción de privados\"?":{"alternativa":"Que su persecución depende de una querella criminal.","puntaje":1},"¿Cuál es una de las desventajas del proceso penal en casos de daño a la imagen?":{"alternativa":"Las penas son bajas y pueden tener salidas alternativas.","puntaje":1},"¿Qué se necesita para presentar una querella criminal por injurias y calumnias?":{"alternativa":"Un abogado particular.","puntaje":1},"¿Qué se concluye sobre la legislación actual en relación con el daño a la imagen en redes sociales?":{"alternativa":"No existe una legislación moderna que permita sancionar estas conductas de\r\nmanera expedita, rápida y eficiente.","puntaje":1},"¿Cuál es la tarea pendiente que señala el autor del texto?":{"alternativa":"Desarrollar una legislación moderna para sancionar el daño a la imagen en redes\r\nsociales.","puntaje":1},"¿A quiénes se dirige principalmente la tarea pendiente mencionada en el texto?":{"alternativa":"A los legisladores y a quienes trabajan en el área legal.","puntaje":1},"¿Qué tipo de texto es el que acabas de leer?":{"alternativa":"Expositivo/Argumentativo.","puntaje":1},"¿Cuál es el propósito principal del autor al escribir este texto?":{"alternativa":"Informar y crear conciencia sobre las deficiencias de la legislación actual frente al\r\ndaño en redes sociales.","puntaje":1},"¿Cuál sería un título alternativo adecuado para este texto?":{"alternativa":"\"Desafíos legales del daño a la imagen en el entorno digital\".","puntaje":1}}},{"Nombre":"GABRIELA MALDONADO","Puntos":20,"Nota":7,"Simce":400,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es el principal problema que plantea el texto en relación con las redes sociales?":{"alternativa":"La \"democratización de la información\" que puede llevar al daño de la imagen.","puntaje":1},"Según el texto, ¿qué significa que las redes sociales se han convertido en un \"arma de doble filo\"?":{"alternativa":"Que ofrecen libertad de expresión, pero también exponen al daño a la imagen.","puntaje":1},"¿A qué se refiere el texto con la expresión \"asesinar nuestra imagen\"?":{"alternativa":"Al daño que acusaciones infundadas pueden causar a la reputación de alguien.","puntaje":1},"¿Qué aspectos de la vida de una persona pueden verse gravemente afectados por el daño a la imagen en redes sociales?":{"alternativa":"La honra, el honor, y la integridad psicológica y física.","puntaje":1},"¿Cómo describe el texto la legislación actual en defensa del derecho a la imagen?":{"alternativa":"Pobrísimo, lento y de alto costo.","puntaje":1},"¿Qué herramienta legal permite a la víctima de una publicación dañina buscar una solución rápida?":{"alternativa":"El recurso de protección.","puntaje":1},"¿Cuál es la principal limitación del recurso de protección según el texto?":{"alternativa":"Que no otorga indemnizaciones ni sanciona la conducta dañina.","puntaje":1},"¿Qué ofrece la demanda civil de indemnización de perjuicios del artículo 2314 del Código Civil?":{"alternativa":"El amparo contra el \"asesinato de imagen\".","puntaje":1},"¿Por qué la demanda civil de indemnización de perjuicios se considera un mecanismo poco atractivo para las víctimas?":{"alternativa":"Por los altos costos y la larga duración del juicio.","puntaje":1},"Según el texto, ¿cuál es el promedio aproximado que la Corte Suprema ha otorgado como indemnización por daño moral en casos de pérdida de la vida?":{"alternativa":"50 millones de pesos.","puntaje":1},"En materia penal, ¿qué delitos se relacionan con el daño a la imagen?":{"alternativa":"Injurias y calumnias.","puntaje":1},"¿Qué implica que los delitos de injurias y calumnias sean de \"acción de privados\"?":{"alternativa":"Que su persecución depende de una querella criminal.","puntaje":1},"¿Cuál es una de las desventajas del proceso penal en casos de daño a la imagen?":{"alternativa":"Las penas son bajas y pueden tener salidas alternativas.","puntaje":1},"¿Qué se necesita para presentar una querella criminal por injurias y calumnias?":{"alternativa":"Un abogado particular.","puntaje":1},"¿Qué se concluye sobre la legislación actual en relación con el daño a la imagen en redes sociales?":{"alternativa":"No existe una legislación moderna que permita sancionar estas conductas de\r\nmanera expedita, rápida y eficiente.","puntaje":1},"¿Cuál es la tarea pendiente que señala el autor del texto?":{"alternativa":"Desarrollar una legislación moderna para sancionar el daño a la imagen en redes\r\nsociales.","puntaje":1},"¿A quiénes se dirige principalmente la tarea pendiente mencionada en el texto?":{"alternativa":"A los legisladores y a quienes trabajan en el área legal.","puntaje":1},"¿Qué tipo de texto es el que acabas de leer?":{"alternativa":"Expositivo/Argumentativo.","puntaje":1},"¿Cuál es el propósito principal del autor al escribir este texto?":{"alternativa":"Informar y crear conciencia sobre las deficiencias de la legislación actual frente al\r\ndaño en redes sociales.","puntaje":1},"¿Cuál sería un título alternativo adecuado para este texto?":{"alternativa":"\"Desafíos legales del daño a la imagen en el entorno digital\".","puntaje":1}}},{"Nombre":"JEAN CARLOS ISAIAS CARTES PERALTA","Puntos":19,"Nota":6.6,"Simce":381,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es el principal problema que plantea el texto en relación con las redes sociales?":{"alternativa":"La \"democratización de la información\" que puede llevar al daño de la imagen.","puntaje":1},"Según el texto, ¿qué significa que las redes sociales se han convertido en un \"arma de doble filo\"?":{"alternativa":"Que ofrecen libertad de expresión, pero también exponen al daño a la imagen.","puntaje":1},"¿A qué se refiere el texto con la expresión \"asesinar nuestra imagen\"?":{"alternativa":"Al daño que acusaciones infundadas pueden causar a la reputación de alguien.","puntaje":1},"¿Qué aspectos de la vida de una persona pueden verse gravemente afectados por el daño a la imagen en redes sociales?":{"alternativa":"La honra, el honor, y la integridad psicológica y física.","puntaje":1},"¿Cómo describe el texto la legislación actual en defensa del derecho a la imagen?":{"alternativa":"Pobrísimo, lento y de alto costo.","puntaje":1},"¿Qué herramienta legal permite a la víctima de una publicación dañina buscar una solución rápida?":{"alternativa":"La querella criminal por injurias y calumnias.","puntaje":0},"¿Cuál es la principal limitación del recurso de protección según el texto?":{"alternativa":"Que no otorga indemnizaciones ni sanciona la conducta dañina.","puntaje":1},"¿Qué ofrece la demanda civil de indemnización de perjuicios del artículo 2314 del Código Civil?":{"alternativa":"El amparo contra el \"asesinato de imagen\".","puntaje":1},"¿Por qué la demanda civil de indemnización de perjuicios se considera un mecanismo poco atractivo para las víctimas?":{"alternativa":"Por los altos costos y la larga duración del juicio.","puntaje":1},"Según el texto, ¿cuál es el promedio aproximado que la Corte Suprema ha otorgado como indemnización por daño moral en casos de pérdida de la vida?":{"alternativa":"50 millones de pesos.","puntaje":1},"En materia penal, ¿qué delitos se relacionan con el daño a la imagen?":{"alternativa":"Injurias y calumnias.","puntaje":1},"¿Qué implica que los delitos de injurias y calumnias sean de \"acción de privados\"?":{"alternativa":"Que su persecución depende de una querella criminal.","puntaje":1},"¿Cuál es una de las desventajas del proceso penal en casos de daño a la imagen?":{"alternativa":"Las penas son bajas y pueden tener salidas alternativas.","puntaje":1},"¿Qué se necesita para presentar una querella criminal por injurias y calumnias?":{"alternativa":"Un abogado particular.","puntaje":1},"¿Qué se concluye sobre la legislación actual en relación con el daño a la imagen en redes sociales?":{"alternativa":"No existe una legislación moderna que permita sancionar estas conductas de\r\nmanera expedita, rápida y eficiente.","puntaje":1},"¿Cuál es la tarea pendiente que señala el autor del texto?":{"alternativa":"Desarrollar una legislación moderna para sancionar el daño a la imagen en redes\r\nsociales.","puntaje":1},"¿A quiénes se dirige principalmente la tarea pendiente mencionada en el texto?":{"alternativa":"A los legisladores y a quienes trabajan en el área legal.","puntaje":1},"¿Qué tipo de texto es el que acabas de leer?":{"alternativa":"Expositivo/Argumentativo.","puntaje":1},"¿Cuál es el propósito principal del autor al escribir este texto?":{"alternativa":"Informar y crear conciencia sobre las deficiencias de la legislación actual frente al\r\ndaño en redes sociales.","puntaje":1},"¿Cuál sería un título alternativo adecuado para este texto?":{"alternativa":"\"Desafíos legales del daño a la imagen en el entorno digital\".","puntaje":1}}},{"Nombre":"AARON MICHEL DIAZ GARCIA","Puntos":19,"Nota":6.6,"Simce":381,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es el principal problema que plantea el texto en relación con las redes sociales?":{"alternativa":"La \"democratización de la información\" que puede llevar al daño de la imagen.","puntaje":1},"Según el texto, ¿qué significa que las redes sociales se han convertido en un \"arma de doble filo\"?":{"alternativa":"Que ofrecen libertad de expresión, pero también exponen al daño a la imagen.","puntaje":1},"¿A qué se refiere el texto con la expresión \"asesinar nuestra imagen\"?":{"alternativa":"Al daño que acusaciones infundadas pueden causar a la reputación de alguien.","puntaje":1},"¿Qué aspectos de la vida de una persona pueden verse gravemente afectados por el daño a la imagen en redes sociales?":{"alternativa":"La honra, el honor, y la integridad psicológica y física.","puntaje":1},"¿Cómo describe el texto la legislación actual en defensa del derecho a la imagen?":{"alternativa":"Pobrísimo, lento y de alto costo.","puntaje":1},"¿Qué herramienta legal permite a la víctima de una publicación dañina buscar una solución rápida?":{"alternativa":"La querella criminal por injurias y calumnias.","puntaje":0},"¿Cuál es la principal limitación del recurso de protección según el texto?":{"alternativa":"Que no otorga indemnizaciones ni sanciona la conducta dañina.","puntaje":1},"¿Qué ofrece la demanda civil de indemnización de perjuicios del artículo 2314 del Código Civil?":{"alternativa":"El amparo contra el \"asesinato de imagen\".","puntaje":1},"¿Por qué la demanda civil de indemnización de perjuicios se considera un mecanismo poco atractivo para las víctimas?":{"alternativa":"Por los altos costos y la larga duración del juicio.","puntaje":1},"Según el texto, ¿cuál es el promedio aproximado que la Corte Suprema ha otorgado como indemnización por daño moral en casos de pérdida de la vida?":{"alternativa":"50 millones de pesos.","puntaje":1},"En materia penal, ¿qué delitos se relacionan con el daño a la imagen?":{"alternativa":"Injurias y calumnias.","puntaje":1},"¿Qué implica que los delitos de injurias y calumnias sean de \"acción de privados\"?":{"alternativa":"Que su persecución depende de una querella criminal.","puntaje":1},"¿Cuál es una de las desventajas del proceso penal en casos de daño a la imagen?":{"alternativa":"Las penas son bajas y pueden tener salidas alternativas.","puntaje":1},"¿Qué se necesita para presentar una querella criminal por injurias y calumnias?":{"alternativa":"Un abogado particular.","puntaje":1},"¿Qué se concluye sobre la legislación actual en relación con el daño a la imagen en redes sociales?":{"alternativa":"No existe una legislación moderna que permita sancionar estas conductas de\r\nmanera expedita, rápida y eficiente.","puntaje":1},"¿Cuál es la tarea pendiente que señala el autor del texto?":{"alternativa":"Desarrollar una legislación moderna para sancionar el daño a la imagen en redes\r\nsociales.","puntaje":1},"¿A quiénes se dirige principalmente la tarea pendiente mencionada en el texto?":{"alternativa":"A los legisladores y a quienes trabajan en el área legal.","puntaje":1},"¿Qué tipo de texto es el que acabas de leer?":{"alternativa":"Expositivo/Argumentativo.","puntaje":1},"¿Cuál es el propósito principal del autor al escribir este texto?":{"alternativa":"Informar y crear conciencia sobre las deficiencias de la legislación actual frente al\r\ndaño en redes sociales.","puntaje":1},"¿Cuál sería un título alternativo adecuado para este texto?":{"alternativa":"\"Desafíos legales del daño a la imagen en el entorno digital\".","puntaje":1}}},{"Nombre":"JOSÉ CASTILLO","Puntos":18,"Nota":6.3,"Simce":363,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es el principal problema que plantea el texto en relación con las redes sociales?":{"alternativa":"La \"democratización de la información\" que puede llevar al daño de la imagen.","puntaje":1},"Según el texto, ¿qué significa que las redes sociales se han convertido en un \"arma de doble filo\"?":{"alternativa":"Que ofrecen libertad de expresión, pero también exponen al daño a la imagen.","puntaje":1},"¿A qué se refiere el texto con la expresión \"asesinar nuestra imagen\"?":{"alternativa":"Al daño que acusaciones infundadas pueden causar a la reputación de alguien.","puntaje":1},"¿Qué aspectos de la vida de una persona pueden verse gravemente afectados por el daño a la imagen en redes sociales?":{"alternativa":"La honra, el honor, y la integridad psicológica y física.","puntaje":1},"¿Cómo describe el texto la legislación actual en defensa del derecho a la imagen?":{"alternativa":"Pobrísimo, lento y de alto costo.","puntaje":1},"¿Qué herramienta legal permite a la víctima de una publicación dañina buscar una solución rápida?":{"alternativa":"La querella criminal por injurias y calumnias.","puntaje":0},"¿Cuál es la principal limitación del recurso de protección según el texto?":{"alternativa":"Que no otorga indemnizaciones ni sanciona la conducta dañina.","puntaje":1},"¿Qué ofrece la demanda civil de indemnización de perjuicios del artículo 2314 del Código Civil?":{"alternativa":"El amparo contra el \"asesinato de imagen\".","puntaje":1},"¿Por qué la demanda civil de indemnización de perjuicios se considera un mecanismo poco atractivo para las víctimas?":{"alternativa":"Por los altos costos y la larga duración del juicio.","puntaje":1},"Según el texto, ¿cuál es el promedio aproximado que la Corte Suprema ha otorgado como indemnización por daño moral en casos de pérdida de la vida?":{"alternativa":"50 millones de pesos.","puntaje":1},"En materia penal, ¿qué delitos se relacionan con el daño a la imagen?":{"alternativa":"Injurias y calumnias.","puntaje":1},"¿Qué implica que los delitos de injurias y calumnias sean de \"acción de privados\"?":{"alternativa":"Que no requieren de la intervención de un abogado.","puntaje":0},"¿Cuál es una de las desventajas del proceso penal en casos de daño a la imagen?":{"alternativa":"Las penas son bajas y pueden tener salidas alternativas.","puntaje":1},"¿Qué se necesita para presentar una querella criminal por injurias y calumnias?":{"alternativa":"Un abogado particular.","puntaje":1},"¿Qué se concluye sobre la legislación actual en relación con el daño a la imagen en redes sociales?":{"alternativa":"No existe una legislación moderna que permita sancionar estas conductas de\r\nmanera expedita, rápida y eficiente.","puntaje":1},"¿Cuál es la tarea pendiente que señala el autor del texto?":{"alternativa":"Desarrollar una legislación moderna para sancionar el daño a la imagen en redes\r\nsociales.","puntaje":1},"¿A quiénes se dirige principalmente la tarea pendiente mencionada en el texto?":{"alternativa":"A los legisladores y a quienes trabajan en el área legal.","puntaje":1},"¿Qué tipo de texto es el que acabas de leer?":{"alternativa":"Expositivo/Argumentativo.","puntaje":1},"¿Cuál es el propósito principal del autor al escribir este texto?":{"alternativa":"Informar y crear conciencia sobre las deficiencias de la legislación actual frente al\r\ndaño en redes sociales.","puntaje":1},"¿Cuál sería un título alternativo adecuado para este texto?":{"alternativa":"\"Desafíos legales del daño a la imagen en el entorno digital\".","puntaje":1}}},{"Nombre":"PABLO PAZ","Puntos":18,"Nota":6.3,"Simce":363,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es el principal problema que plantea el texto en relación con las redes sociales?":{"alternativa":"La \"democratización de la información\" que puede llevar al daño de la imagen.","puntaje":1},"Según el texto, ¿qué significa que las redes sociales se han convertido en un \"arma de doble filo\"?":{"alternativa":"Que ofrecen libertad de expresión, pero también exponen al daño a la imagen.","puntaje":1},"¿A qué se refiere el texto con la expresión \"asesinar nuestra imagen\"?":{"alternativa":"Al daño que acusaciones infundadas pueden causar a la reputación de alguien.","puntaje":1},"¿Qué aspectos de la vida de una persona pueden verse gravemente afectados por el daño a la imagen en redes sociales?":{"alternativa":"La honra, el honor, y la integridad psicológica y física.","puntaje":1},"¿Cómo describe el texto la legislación actual en defensa del derecho a la imagen?":{"alternativa":"Pobrísimo, lento y de alto costo.","puntaje":1},"¿Qué herramienta legal permite a la víctima de una publicación dañina buscar una solución rápida?":{"alternativa":"El recurso de protección.","puntaje":1},"¿Cuál es la principal limitación del recurso de protección según el texto?":{"alternativa":"Que no otorga indemnizaciones ni sanciona la conducta dañina.","puntaje":1},"¿Qué ofrece la demanda civil de indemnización de perjuicios del artículo 2314 del Código Civil?":{"alternativa":"La posibilidad de obtener una alta indemnización.","puntaje":0},"¿Por qué la demanda civil de indemnización de perjuicios se considera un mecanismo poco atractivo para las víctimas?":{"alternativa":"Por los altos costos y la larga duración del juicio.","puntaje":1},"Según el texto, ¿cuál es el promedio aproximado que la Corte Suprema ha otorgado como indemnización por daño moral en casos de pérdida de la vida?":{"alternativa":"50 millones de pesos.","puntaje":1},"En materia penal, ¿qué delitos se relacionan con el daño a la imagen?":{"alternativa":"Injurias y calumnias.","puntaje":1},"¿Qué implica que los delitos de injurias y calumnias sean de \"acción de privados\"?":{"alternativa":"Que su persecución depende de una querella criminal.","puntaje":1},"¿Cuál es una de las desventajas del proceso penal en casos de daño a la imagen?":{"alternativa":"Las penas son bajas y pueden tener salidas alternativas.","puntaje":1},"¿Qué se necesita para presentar una querella criminal por injurias y calumnias?":{"alternativa":"La intervención de la Defensoría Penal Pública.","puntaje":0},"¿Qué se concluye sobre la legislación actual en relación con el daño a la imagen en redes sociales?":{"alternativa":"No existe una legislación moderna que permita sancionar estas conductas de\r\nmanera expedita, rápida y eficiente.","puntaje":1},"¿Cuál es la tarea pendiente que señala el autor del texto?":{"alternativa":"Desarrollar una legislación moderna para sancionar el daño a la imagen en redes\r\nsociales.","puntaje":1},"¿A quiénes se dirige principalmente la tarea pendiente mencionada en el texto?":{"alternativa":"A los legisladores y a quienes trabajan en el área legal.","puntaje":1},"¿Qué tipo de texto es el que acabas de leer?":{"alternativa":"Expositivo/Argumentativo.","puntaje":1},"¿Cuál es el propósito principal del autor al escribir este texto?":{"alternativa":"Informar y crear conciencia sobre las deficiencias de la legislación actual frente al\r\ndaño en redes sociales.","puntaje":1},"¿Cuál sería un título alternativo adecuado para este texto?":{"alternativa":"\"Desafíos legales del daño a la imagen en el entorno digital\".","puntaje":1}}},{"Nombre":"JEAN PAUL ALEXANDER BANDA CASTILLO","Puntos":18,"Nota":6.3,"Simce":363,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es el principal problema que plantea el texto en relación con las redes sociales?":{"alternativa":"La \"democratización de la información\" que puede llevar al daño de la imagen.","puntaje":1},"Según el texto, ¿qué significa que las redes sociales se han convertido en un \"arma de doble filo\"?":{"alternativa":"Que ofrecen libertad de expresión, pero también exponen al daño a la imagen.","puntaje":1},"¿A qué se refiere el texto con la expresión \"asesinar nuestra imagen\"?":{"alternativa":"Al daño que acusaciones infundadas pueden causar a la reputación de alguien.","puntaje":1},"¿Qué aspectos de la vida de una persona pueden verse gravemente afectados por el daño a la imagen en redes sociales?":{"alternativa":"La honra, el honor, y la integridad psicológica y física.","puntaje":1},"¿Cómo describe el texto la legislación actual en defensa del derecho a la imagen?":{"alternativa":"Pobrísimo, lento y de alto costo.","puntaje":1},"¿Qué herramienta legal permite a la víctima de una publicación dañina buscar una solución rápida?":{"alternativa":"La demanda civil de indemnización de perjuicios.","puntaje":0},"¿Cuál es la principal limitación del recurso de protección según el texto?":{"alternativa":"Que no otorga indemnizaciones ni sanciona la conducta dañina.","puntaje":1},"¿Qué ofrece la demanda civil de indemnización de perjuicios del artículo 2314 del Código Civil?":{"alternativa":"El amparo contra el \"asesinato de imagen\".","puntaje":1},"¿Por qué la demanda civil de indemnización de perjuicios se considera un mecanismo poco atractivo para las víctimas?":{"alternativa":"Por los altos costos y la larga duración del juicio.","puntaje":1},"Según el texto, ¿cuál es el promedio aproximado que la Corte Suprema ha otorgado como indemnización por daño moral en casos de pérdida de la vida?":{"alternativa":"50 millones de pesos.","puntaje":1},"En materia penal, ¿qué delitos se relacionan con el daño a la imagen?":{"alternativa":"Injurias y calumnias.","puntaje":1},"¿Qué implica que los delitos de injurias y calumnias sean de \"acción de privados\"?":{"alternativa":"Que su persecución depende de una querella criminal.","puntaje":1},"¿Cuál es una de las desventajas del proceso penal en casos de daño a la imagen?":{"alternativa":"Las indemnizaciones suelen ser muy altas.","puntaje":0},"¿Qué se necesita para presentar una querella criminal por injurias y calumnias?":{"alternativa":"Un abogado particular.","puntaje":1},"¿Qué se concluye sobre la legislación actual en relación con el daño a la imagen en redes sociales?":{"alternativa":"No existe una legislación moderna que permita sancionar estas conductas de\r\nmanera expedita, rápida y eficiente.","puntaje":1},"¿Cuál es la tarea pendiente que señala el autor del texto?":{"alternativa":"Desarrollar una legislación moderna para sancionar el daño a la imagen en redes\r\nsociales.","puntaje":1},"¿A quiénes se dirige principalmente la tarea pendiente mencionada en el texto?":{"alternativa":"A los legisladores y a quienes trabajan en el área legal.","puntaje":1},"¿Qué tipo de texto es el que acabas de leer?":{"alternativa":"Expositivo/Argumentativo.","puntaje":1},"¿Cuál es el propósito principal del autor al escribir este texto?":{"alternativa":"Informar y crear conciencia sobre las deficiencias de la legislación actual frente al\r\ndaño en redes sociales.","puntaje":1},"¿Cuál sería un título alternativo adecuado para este texto?":{"alternativa":"\"Desafíos legales del daño a la imagen en el entorno digital\".","puntaje":1}}},{"Nombre":"ALEXANDER CORDERO","Puntos":16,"Nota":5.5,"Simce":325,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es el principal problema que plantea el texto en relación con las redes sociales?":{"alternativa":"La \"democratización de la información\" que puede llevar al daño de la imagen.","puntaje":1},"Según el texto, ¿qué significa que las redes sociales se han convertido en un \"arma de doble filo\"?":{"alternativa":"Que ofrecen libertad de expresión, pero también exponen al daño a la imagen.","puntaje":1},"¿A qué se refiere el texto con la expresión \"asesinar nuestra imagen\"?":{"alternativa":"Al daño que acusaciones infundadas pueden causar a la reputación de alguien.","puntaje":1},"¿Qué aspectos de la vida de una persona pueden verse gravemente afectados por el daño a la imagen en redes sociales?":{"alternativa":"La honra, el honor, y la integridad psicológica y física.","puntaje":1},"¿Cómo describe el texto la legislación actual en defensa del derecho a la imagen?":{"alternativa":"Pobrísimo, lento y de alto costo.","puntaje":1},"¿Qué herramienta legal permite a la víctima de una publicación dañina buscar una solución rápida?":{"alternativa":"El recurso de protección.","puntaje":1},"¿Cuál es la principal limitación del recurso de protección según el texto?":{"alternativa":"Su alto costo económico.","puntaje":0},"¿Qué ofrece la demanda civil de indemnización de perjuicios del artículo 2314 del Código Civil?":{"alternativa":"El amparo contra el \"asesinato de imagen\".","puntaje":1},"¿Por qué la demanda civil de indemnización de perjuicios se considera un mecanismo poco atractivo para las víctimas?":{"alternativa":"Por los altos costos y la larga duración del juicio.","puntaje":1},"Según el texto, ¿cuál es el promedio aproximado que la Corte Suprema ha otorgado como indemnización por daño moral en casos de pérdida de la vida?":{"alternativa":"50 millones de pesos.","puntaje":1},"En materia penal, ¿qué delitos se relacionan con el daño a la imagen?":{"alternativa":"Injurias y calumnias.","puntaje":1},"¿Qué implica que los delitos de injurias y calumnias sean de \"acción de privados\"?":{"alternativa":"Que la Defensoría Penal Pública los litiga gratuitamente.","puntaje":0},"¿Cuál es una de las desventajas del proceso penal en casos de daño a la imagen?":{"alternativa":"Las penas impuestas son altas.","puntaje":0},"¿Qué se necesita para presentar una querella criminal por injurias y calumnias?":{"alternativa":"La intervención de la Defensoría Penal Pública.","puntaje":0},"¿Qué se concluye sobre la legislación actual en relación con el daño a la imagen en redes sociales?":{"alternativa":"No existe una legislación moderna que permita sancionar estas conductas de\r\nmanera expedita, rápida y eficiente.","puntaje":1},"¿Cuál es la tarea pendiente que señala el autor del texto?":{"alternativa":"Desarrollar una legislación moderna para sancionar el daño a la imagen en redes\r\nsociales.","puntaje":1},"¿A quiénes se dirige principalmente la tarea pendiente mencionada en el texto?":{"alternativa":"A los legisladores y a quienes trabajan en el área legal.","puntaje":1},"¿Qué tipo de texto es el que acabas de leer?":{"alternativa":"Expositivo/Argumentativo.","puntaje":1},"¿Cuál es el propósito principal del autor al escribir este texto?":{"alternativa":"Informar y crear conciencia sobre las deficiencias de la legislación actual frente al\r\ndaño en redes sociales.","puntaje":1},"¿Cuál sería un título alternativo adecuado para este texto?":{"alternativa":"\"Desafíos legales del daño a la imagen en el entorno digital\".","puntaje":1}}},{"Nombre":"BRUNO VALLEJOS","Puntos":16,"Nota":5.5,"Simce":325,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es el principal problema que plantea el texto en relación con las redes sociales?":{"alternativa":"La \"democratización de la información\" que puede llevar al daño de la imagen.","puntaje":1},"Según el texto, ¿qué significa que las redes sociales se han convertido en un \"arma de doble filo\"?":{"alternativa":"Que ofrecen libertad de expresión, pero también exponen al daño a la imagen.","puntaje":1},"¿A qué se refiere el texto con la expresión \"asesinar nuestra imagen\"?":{"alternativa":"Al daño que acusaciones infundadas pueden causar a la reputación de alguien.","puntaje":1},"¿Qué aspectos de la vida de una persona pueden verse gravemente afectados por el daño a la imagen en redes sociales?":{"alternativa":"La honra, el honor, y la integridad psicológica y física.","puntaje":1},"¿Cómo describe el texto la legislación actual en defensa del derecho a la imagen?":{"alternativa":"Pobrísimo, lento y de alto costo.","puntaje":1},"¿Qué herramienta legal permite a la víctima de una publicación dañina buscar una solución rápida?":{"alternativa":"La demanda civil de indemnización de perjuicios.","puntaje":0},"¿Cuál es la principal limitación del recurso de protección según el texto?":{"alternativa":"Su alto costo económico.","puntaje":0},"¿Qué ofrece la demanda civil de indemnización de perjuicios del artículo 2314 del Código Civil?":{"alternativa":"La posibilidad de obtener una alta indemnización.","puntaje":0},"¿Por qué la demanda civil de indemnización de perjuicios se considera un mecanismo poco atractivo para las víctimas?":{"alternativa":"Por los altos costos y la larga duración del juicio.","puntaje":1},"Según el texto, ¿cuál es el promedio aproximado que la Corte Suprema ha otorgado como indemnización por daño moral en casos de pérdida de la vida?":{"alternativa":"50 millones de pesos.","puntaje":1},"En materia penal, ¿qué delitos se relacionan con el daño a la imagen?":{"alternativa":"Injurias y calumnias.","puntaje":1},"¿Qué implica que los delitos de injurias y calumnias sean de \"acción de privados\"?":{"alternativa":"Que su persecución depende de una querella criminal.","puntaje":1},"¿Cuál es una de las desventajas del proceso penal en casos de daño a la imagen?":{"alternativa":"Las indemnizaciones suelen ser muy altas.","puntaje":0},"¿Qué se necesita para presentar una querella criminal por injurias y calumnias?":{"alternativa":"Un abogado particular.","puntaje":1},"¿Qué se concluye sobre la legislación actual en relación con el daño a la imagen en redes sociales?":{"alternativa":"No existe una legislación moderna que permita sancionar estas conductas de\r\nmanera expedita, rápida y eficiente.","puntaje":1},"¿Cuál es la tarea pendiente que señala el autor del texto?":{"alternativa":"Desarrollar una legislación moderna para sancionar el daño a la imagen en redes\r\nsociales.","puntaje":1},"¿A quiénes se dirige principalmente la tarea pendiente mencionada en el texto?":{"alternativa":"A los legisladores y a quienes trabajan en el área legal.","puntaje":1},"¿Qué tipo de texto es el que acabas de leer?":{"alternativa":"Expositivo/Argumentativo.","puntaje":1},"¿Cuál es el propósito principal del autor al escribir este texto?":{"alternativa":"Informar y crear conciencia sobre las deficiencias de la legislación actual frente al\r\ndaño en redes sociales.","puntaje":1},"¿Cuál sería un título alternativo adecuado para este texto?":{"alternativa":"\"Desafíos legales del daño a la imagen en el entorno digital\".","puntaje":1}}},{"Nombre":"MATIAS IGNACIO FUENTES DIAZ","Puntos":15,"Nota":5.1,"Simce":306,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es el principal problema que plantea el texto en relación con las redes sociales?":{"alternativa":"La \"democratización de la información\" que puede llevar al daño de la imagen.","puntaje":1},"Según el texto, ¿qué significa que las redes sociales se han convertido en un \"arma de doble filo\"?":{"alternativa":"Que su uso es beneficioso y perjudicial al mismo tiempo para las empresas.","puntaje":0},"¿A qué se refiere el texto con la expresión \"asesinar nuestra imagen\"?":{"alternativa":"Al daño que acusaciones infundadas pueden causar a la reputación de alguien.","puntaje":1},"¿Qué aspectos de la vida de una persona pueden verse gravemente afectados por el daño a la imagen en redes sociales?":{"alternativa":"La honra, el honor, y la integridad psicológica y física.","puntaje":1},"¿Cómo describe el texto la legislación actual en defensa del derecho a la imagen?":{"alternativa":"Pobrísimo, lento y de alto costo.","puntaje":1},"¿Qué herramienta legal permite a la víctima de una publicación dañina buscar una solución rápida?":{"alternativa":"La demanda civil de indemnización de perjuicios.","puntaje":0},"¿Cuál es la principal limitación del recurso de protección según el texto?":{"alternativa":"Su lentitud en el proceso judicial.","puntaje":0},"¿Qué ofrece la demanda civil de indemnización de perjuicios del artículo 2314 del Código Civil?":{"alternativa":"El amparo contra el \"asesinato de imagen\".","puntaje":1},"¿Por qué la demanda civil de indemnización de perjuicios se considera un mecanismo poco atractivo para las víctimas?":{"alternativa":"Porque no cubre el daño moral.","puntaje":0},"Según el texto, ¿cuál es el promedio aproximado que la Corte Suprema ha otorgado como indemnización por daño moral en casos de pérdida de la vida?":{"alternativa":"50 millones de pesos.","puntaje":1},"En materia penal, ¿qué delitos se relacionan con el daño a la imagen?":{"alternativa":"Injurias y calumnias.","puntaje":1},"¿Qué implica que los delitos de injurias y calumnias sean de \"acción de privados\"?":{"alternativa":"Que solo pueden ser juzgados en la esfera privada.","puntaje":0},"¿Cuál es una de las desventajas del proceso penal en casos de daño a la imagen?":{"alternativa":"Las penas son bajas y pueden tener salidas alternativas.","puntaje":1},"¿Qué se necesita para presentar una querella criminal por injurias y calumnias?":{"alternativa":"Un abogado particular.","puntaje":1},"¿Qué se concluye sobre la legislación actual en relación con el daño a la imagen en redes sociales?":{"alternativa":"No existe una legislación moderna que permita sancionar estas conductas de\r\nmanera expedita, rápida y eficiente.","puntaje":1},"¿Cuál es la tarea pendiente que señala el autor del texto?":{"alternativa":"Desarrollar una legislación moderna para sancionar el daño a la imagen en redes\r\nsociales.","puntaje":1},"¿A quiénes se dirige principalmente la tarea pendiente mencionada en el texto?":{"alternativa":"A los legisladores y a quienes trabajan en el área legal.","puntaje":1},"¿Qué tipo de texto es el que acabas de leer?":{"alternativa":"Expositivo/Argumentativo.","puntaje":1},"¿Cuál es el propósito principal del autor al escribir este texto?":{"alternativa":"Informar y crear conciencia sobre las deficiencias de la legislación actual frente al\r\ndaño en redes sociales.","puntaje":1},"¿Cuál sería un título alternativo adecuado para este texto?":{"alternativa":"\"Desafíos legales del daño a la imagen en el entorno digital\".","puntaje":1}}},{"Nombre":"JOHANN LOYOLA","Puntos":15,"Nota":5.1,"Simce":306,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es el principal problema que plantea el texto en relación con las redes sociales?":{"alternativa":"La \"democratización de la información\" que puede llevar al daño de la imagen.","puntaje":1},"Según el texto, ¿qué significa que las redes sociales se han convertido en un \"arma de doble filo\"?":{"alternativa":"Que ofrecen libertad de expresión, pero también exponen al daño a la imagen.","puntaje":1},"¿A qué se refiere el texto con la expresión \"asesinar nuestra imagen\"?":{"alternativa":"Al daño que acusaciones infundadas pueden causar a la reputación de alguien.","puntaje":1},"¿Qué aspectos de la vida de una persona pueden verse gravemente afectados por el daño a la imagen en redes sociales?":{"alternativa":"La honra, el honor, y la integridad psicológica y física.","puntaje":1},"¿Cómo describe el texto la legislación actual en defensa del derecho a la imagen?":{"alternativa":"Pobrísimo, lento y de alto costo.","puntaje":1},"¿Qué herramienta legal permite a la víctima de una publicación dañina buscar una solución rápida?":{"alternativa":"La demanda civil de indemnización de perjuicios.","puntaje":0},"¿Cuál es la principal limitación del recurso de protección según el texto?":{"alternativa":"Su lentitud en el proceso judicial.","puntaje":0},"¿Qué ofrece la demanda civil de indemnización de perjuicios del artículo 2314 del Código Civil?":{"alternativa":"La posibilidad de obtener una alta indemnización.","puntaje":0},"¿Por qué la demanda civil de indemnización de perjuicios se considera un mecanismo poco atractivo para las víctimas?":{"alternativa":"Por los altos costos y la larga duración del juicio.","puntaje":1},"Según el texto, ¿cuál es el promedio aproximado que la Corte Suprema ha otorgado como indemnización por daño moral en casos de pérdida de la vida?":{"alternativa":"50 millones de pesos.","puntaje":1},"En materia penal, ¿qué delitos se relacionan con el daño a la imagen?":{"alternativa":"Injurias y calumnias.","puntaje":1},"¿Qué implica que los delitos de injurias y calumnias sean de \"acción de privados\"?":{"alternativa":"Que solo pueden ser juzgados en la esfera privada.","puntaje":0},"¿Cuál es una de las desventajas del proceso penal en casos de daño a la imagen?":{"alternativa":"Las indemnizaciones suelen ser muy altas.","puntaje":0},"¿Qué se necesita para presentar una querella criminal por injurias y calumnias?":{"alternativa":"Un abogado particular.","puntaje":1},"¿Qué se concluye sobre la legislación actual en relación con el daño a la imagen en redes sociales?":{"alternativa":"No existe una legislación moderna que permita sancionar estas conductas de\r\nmanera expedita, rápida y eficiente.","puntaje":1},"¿Cuál es la tarea pendiente que señala el autor del texto?":{"alternativa":"Desarrollar una legislación moderna para sancionar el daño a la imagen en redes\r\nsociales.","puntaje":1},"¿A quiénes se dirige principalmente la tarea pendiente mencionada en el texto?":{"alternativa":"A los legisladores y a quienes trabajan en el área legal.","puntaje":1},"¿Qué tipo de texto es el que acabas de leer?":{"alternativa":"Expositivo/Argumentativo.","puntaje":1},"¿Cuál es el propósito principal del autor al escribir este texto?":{"alternativa":"Informar y crear conciencia sobre las deficiencias de la legislación actual frente al\r\ndaño en redes sociales.","puntaje":1},"¿Cuál sería un título alternativo adecuado para este texto?":{"alternativa":"\"Desafíos legales del daño a la imagen en el entorno digital\".","puntaje":1}}},{"Nombre":"MAXIMILIANO JARA JOFRE","Puntos":14,"Nota":4.8,"Simce":288,"Categoria":"Avanzado 🌟","Respuestas":{"¿Cuál es el principal problema que plantea el texto en relación con las redes sociales?":{"alternativa":"La \"democratización de la información\" que puede llevar al daño de la imagen.","puntaje":1},"Según el texto, ¿qué significa que las redes sociales se han convertido en un \"arma de doble filo\"?":{"alternativa":"Que ofrecen libertad de expresión, pero también exponen al daño a la imagen.","puntaje":1},"¿A qué se refiere el texto con la expresión \"asesinar nuestra imagen\"?":{"alternativa":"Al daño que acusaciones infundadas pueden causar a la reputación de alguien.","puntaje":1},"¿Qué aspectos de la vida de una persona pueden verse gravemente afectados por el daño a la imagen en redes sociales?":{"alternativa":"La honra, el honor, y la integridad psicológica y física.","puntaje":1},"¿Cómo describe el texto la legislación actual en defensa del derecho a la imagen?":{"alternativa":"Pobrísimo, lento y de alto costo.","puntaje":1},"¿Qué herramienta legal permite a la víctima de una publicación dañina buscar una solución rápida?":{"alternativa":"La querella criminal por injurias y calumnias.","puntaje":0},"¿Cuál es la principal limitación del recurso de protección según el texto?":{"alternativa":"Su alto costo económico.","puntaje":0},"¿Qué ofrece la demanda civil de indemnización de perjuicios del artículo 2314 del Código Civil?":{"alternativa":"El amparo contra el \"asesinato de imagen\".","puntaje":1},"¿Por qué la demanda civil de indemnización de perjuicios se considera un mecanismo poco atractivo para las víctimas?":{"alternativa":"Por la rapidez del proceso judicial.","puntaje":0},"Según el texto, ¿cuál es el promedio aproximado que la Corte Suprema ha otorgado como indemnización por daño moral en casos de pérdida de la vida?":{"alternativa":"50 millones de pesos.","puntaje":1},"En materia penal, ¿qué delitos se relacionan con el daño a la imagen?":{"alternativa":"Injurias y calumnias.","puntaje":1},"¿Qué implica que los delitos de injurias y calumnias sean de \"acción de privados\"?":{"alternativa":"Que su persecución depende de una querella criminal.","puntaje":1},"¿Cuál es una de las desventajas del proceso penal en casos de daño a la imagen?":{"alternativa":"Las penas son bajas y pueden tener salidas alternativas.","puntaje":1},"¿Qué se necesita para presentar una querella criminal por injurias y calumnias?":{"alternativa":"La intervención de la Defensoría Penal Pública.","puntaje":0},"¿Qué se concluye sobre la legislación actual en relación con el daño a la imagen en redes sociales?":{"alternativa":"No existe una legislación moderna que permita sancionar estas conductas de\r\nmanera expedita, rápida y eficiente.","puntaje":1},"¿Cuál es la tarea pendiente que señala el autor del texto?":{"alternativa":"Aumentar las penas para los delitos de injurias y calumnias.","puntaje":0},"¿A quiénes se dirige principalmente la tarea pendiente mencionada en el texto?":{"alternativa":"A las empresas de redes sociales.","puntaje":0},"¿Qué tipo de texto es el que acabas de leer?":{"alternativa":"Expositivo/Argumentativo.","puntaje":1},"¿Cuál es el propósito principal del autor al escribir este texto?":{"alternativa":"Informar y crear conciencia sobre las deficiencias de la legislación actual frente al\r\ndaño en redes sociales.","puntaje":1},"¿Cuál sería un título alternativo adecuado para este texto?":{"alternativa":"\"Desafíos legales del daño a la imagen en el entorno digital\".","puntaje":1}}},{"Nombre":"FELIPE GUZMÁN","Puntos":12,"Nota":4,"Simce":250,"Categoria":"Intermedio 🟡","Respuestas":{"¿Cuál es el principal problema que plantea el texto en relación con las redes sociales?":{"alternativa":"La \"democratización de la información\" que puede llevar al daño de la imagen.","puntaje":1},"Según el texto, ¿qué significa que las redes sociales se han convertido en un \"arma de doble filo\"?":{"alternativa":"Que ofrecen libertad de expresión, pero también exponen al daño a la imagen.","puntaje":1},"¿A qué se refiere el texto con la expresión \"asesinar nuestra imagen\"?":{"alternativa":"Al daño que acusaciones infundadas pueden causar a la reputación de alguien.","puntaje":1},"¿Qué aspectos de la vida de una persona pueden verse gravemente afectados por el daño a la imagen en redes sociales?":{"alternativa":"La honra, el honor, y la integridad psicológica y física.","puntaje":1},"¿Cómo describe el texto la legislación actual en defensa del derecho a la imagen?":{"alternativa":"Pobrísimo, lento y de alto costo.","puntaje":1},"¿Qué herramienta legal permite a la víctima de una publicación dañina buscar una solución rápida?":{"alternativa":"La querella criminal por injurias y calumnias.","puntaje":0},"¿Cuál es la principal limitación del recurso de protección según el texto?":{"alternativa":"La necesidad de un abogado para presentarlo.","puntaje":0},"¿Qué ofrece la demanda civil de indemnización de perjuicios del artículo 2314 del Código Civil?":{"alternativa":"El amparo contra el \"asesinato de imagen\".","puntaje":1},"¿Por qué la demanda civil de indemnización de perjuicios se considera un mecanismo poco atractivo para las víctimas?":{"alternativa":"Por los altos costos y la larga duración del juicio.","puntaje":1},"Según el texto, ¿cuál es el promedio aproximado que la Corte Suprema ha otorgado como indemnización por daño moral en casos de pérdida de la vida?":{"alternativa":"50 millones de pesos.","puntaje":1},"En materia penal, ¿qué delitos se relacionan con el daño a la imagen?":{"alternativa":"Injurias y calumnias.","puntaje":1},"¿Qué implica que los delitos de injurias y calumnias sean de \"acción de privados\"?":{"alternativa":"Que no requieren de la intervención de un abogado.","puntaje":0},"¿Cuál es una de las desventajas del proceso penal en casos de daño a la imagen?":{"alternativa":"Se requiere de una simple denuncia para iniciar el proceso.","puntaje":0},"¿Qué se necesita para presentar una querella criminal por injurias y calumnias?":{"alternativa":"Una simple denuncia.","puntaje":0},"¿Qué se concluye sobre la legislación actual en relación con el daño a la imagen en redes sociales?":{"alternativa":"Permite sancionar estas conductas de manera expedita.","puntaje":0},"¿Cuál es la tarea pendiente que señala el autor del texto?":{"alternativa":"Desarrollar una legislación moderna para sancionar el daño a la imagen en redes\r\nsociales.","puntaje":1},"¿A quiénes se dirige principalmente la tarea pendiente mencionada en el texto?":{"alternativa":"A los jueces y abogados.","puntaje":0},"¿Qué tipo de texto es el que acabas de leer?":{"alternativa":"Descriptivo.","puntaje":0},"¿Cuál es el propósito principal del autor al escribir este texto?":{"alternativa":"Informar y crear conciencia sobre las deficiencias de la legislación actual frente al\r\ndaño en redes sociales.","puntaje":1},"¿Cuál sería un título alternativo adecuado para este texto?":{"alternativa":"\"Desafíos legales del daño a la imagen en el entorno digital\".","puntaje":1}}},{"Nombre":"MARTIN CAVIERES","Puntos":12,"Nota":4,"Simce":250,"Categoria":"Intermedio 🟡","Respuestas":{"¿Cuál es el principal problema que plantea el texto en relación con las redes sociales?":{"alternativa":"La \"democratización de la información\" que puede llevar al daño de la imagen.","puntaje":1},"Según el texto, ¿qué significa que las redes sociales se han convertido en un \"arma de doble filo\"?":{"alternativa":"Que su uso es beneficioso y perjudicial al mismo tiempo para las empresas.","puntaje":0},"¿A qué se refiere el texto con la expresión \"asesinar nuestra imagen\"?":{"alternativa":"Al daño que acusaciones infundadas pueden causar a la reputación de alguien.","puntaje":1},"¿Qué aspectos de la vida de una persona pueden verse gravemente afectados por el daño a la imagen en redes sociales?":{"alternativa":"La honra, el honor, y la integridad psicológica y física.","puntaje":1},"¿Cómo describe el texto la legislación actual en defensa del derecho a la imagen?":{"alternativa":"Pobrísimo, lento y de alto costo.","puntaje":1},"¿Qué herramienta legal permite a la víctima de una publicación dañina buscar una solución rápida?":{"alternativa":"La demanda civil de indemnización de perjuicios.","puntaje":0},"¿Cuál es la principal limitación del recurso de protección según el texto?":{"alternativa":"La necesidad de un abogado para presentarlo.","puntaje":0},"¿Qué ofrece la demanda civil de indemnización de perjuicios del artículo 2314 del Código Civil?":{"alternativa":"Una solución rápida al problema.","puntaje":0},"¿Por qué la demanda civil de indemnización de perjuicios se considera un mecanismo poco atractivo para las víctimas?":{"alternativa":"Por la rapidez del proceso judicial.","puntaje":0},"Según el texto, ¿cuál es el promedio aproximado que la Corte Suprema ha otorgado como indemnización por daño moral en casos de pérdida de la vida?":{"alternativa":"50 millones de pesos.","puntaje":1},"En materia penal, ¿qué delitos se relacionan con el daño a la imagen?":{"alternativa":"Injurias y calumnias.","puntaje":1},"¿Qué implica que los delitos de injurias y calumnias sean de \"acción de privados\"?":{"alternativa":"Que no requieren de la intervención de un abogado.","puntaje":0},"¿Cuál es una de las desventajas del proceso penal en casos de daño a la imagen?":{"alternativa":"Las penas son bajas y pueden tener salidas alternativas.","puntaje":1},"¿Qué se necesita para presentar una querella criminal por injurias y calumnias?":{"alternativa":"Un abogado particular.","puntaje":1},"¿Qué se concluye sobre la legislación actual en relación con el daño a la imagen en redes sociales?":{"alternativa":"No existe una legislación moderna que permita sancionar estas conductas de\r\nmanera expedita, rápida y eficiente.","puntaje":1},"¿Cuál es la tarea pendiente que señala el autor del texto?":{"alternativa":"Mejorar la infraestructura tecnológica de los tribunales.","puntaje":0},"¿A quiénes se dirige principalmente la tarea pendiente mencionada en el texto?":{"alternativa":"A los legisladores y a quienes trabajan en el área legal.","puntaje":1},"¿Qué tipo de texto es el que acabas de leer?":{"alternativa":"Descriptivo.","puntaje":0},"¿Cuál es el propósito principal del autor al escribir este texto?":{"alternativa":"Informar y crear conciencia sobre las deficiencias de la legislación actual frente al\r\ndaño en redes sociales.","puntaje":1},"¿Cuál sería un título alternativo adecuado para este texto?":{"alternativa":"\"Desafíos legales del daño a la imagen en el entorno digital\".","puntaje":1}}}];
+
+            function openStudentModal(idx) {
+                var s = masterStudents[idx];
+                if (!s) return;
+
+                document.getElementById('modal-name').textContent = s.Nombre;
+                document.getElementById('modal-stats').textContent =
+                    'Nota: ' + s.Nota.toFixed(1).replace('.', ',') +
+                    ' | Puntos: ' + s.Puntos +
+                    ' | Categoría: ' + s.Categoria;
+
+                var listHtml = '';
+                var respuestas = s.Respuestas || {};
+                var keys = Object.keys(respuestas);
+
+                for (var i = 0; i < keys.length; i++) {
+                    var qTitle = keys[i];
+                    var dataObj = respuestas[qTitle];
+                    var cleanQ = String(qTitle).trim();
+                    var userAlt = dataObj.alternativa;
+                    var userPts = dataObj.puntaje;
+                    var isError = (userPts === 0);
+                    var badgeClass = isError ? 'bad' : 'ok';
+                    var icon = isError ? '❌ No Acertó' : '✅ Acertó';
+                    var detailsMsg = isError
+                        ? '<span style="display:block;font-size:14px;color:#ef4444;margin-top:6px;font-weight:bold;">Alternativa Marcada: <span style="text-decoration:underline;">' + userAlt + '</span></span>'
+                        : '<span style="display:block;font-size:14px;color:#2ecc71;margin-top:6px;font-weight:bold;">Alternativa Marcada: ' + userAlt + '</span>';
+
+                    listHtml += '<div class="ans-card ' + badgeClass + '">' +
+                        '<div class="ans-q">' + cleanQ + detailsMsg + '</div>' +
+                        '<div class="ans-val ' + badgeClass + '">' + icon + '</div>' +
+                        '</div>';
+                }
+
+                if (!listHtml) listHtml = '<div style="color:gray;text-align:center;padding:20px;">No hay detalle de alternativas detectado.</div>';
+
+                document.getElementById('modal-answers-list').innerHTML = listHtml;
+                document.getElementById('student-modal').style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal() {
+                document.getElementById('student-modal').style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+            </script>
+</body>
+</html>
