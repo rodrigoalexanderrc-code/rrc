@@ -979,6 +979,7 @@
         // SUBIDA DE DOCUMENTOS A GOOGLE DRIVE
         // ==========================================
         const URL_SCRIPT_GOOGLE_DRIVE = 'https://script.google.com/macros/s/AKfycbwXfNuAH2K5IZqrZwHI196-y4PS5i7XitUuY_Afb2rSFA3v995b-_dGwF3J5UV2YLEONQ/exec';
+        let driveDataCache = null;
 
         function cargarPanelSubirEvidencias() {
             cargarExploradorArchivos();
@@ -1019,9 +1020,14 @@
             document.getElementById('modalSubirEvidencia').classList.add('active');
         }
 
-        function cargarExploradorArchivos() {
+        function cargarExploradorArchivos(forceRefresh = false) {
             const contenedor = document.getElementById('contenedorCarpetas');
             if (!contenedor) return;
+
+            if (driveDataCache && !forceRefresh) {
+                renderizarExploradorArchivos(driveDataCache, contenedor);
+                return;
+            }
 
             contenedor.innerHTML = `
                 <div class="empty-state">
@@ -1033,121 +1039,8 @@
             fetch(URL_SCRIPT_GOOGLE_DRIVE)
                 .then(res => res.json())
                 .then(data => {
-                    if (data.error) {
-                        contenedor.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle text-danger"></i><p>Error: ${data.error}</p></div>`;
-                        return;
-                    }
-
-                    if ((!data.folders || data.folders.length === 0) && (!data.files || data.files.length === 0)) {
-                        contenedor.innerHTML = `
-                            <div class="empty-state">
-                                <i class="fas fa-folder-open text-muted" style="font-size: 3rem; margin-bottom: 1rem; color: #ccc;"></i>
-                                <p>No hay archivos subidos todavía.</p>
-                            </div>
-                        `;
-                        return;
-                    }
-
-                    let html = '<div class="drive-explorer" style="display: flex; flex-direction: column; gap: 1rem;">';
-
-                    // Renderizar carpetas (Alumnos)
-                    if (data.folders) {
-                        data.folders.forEach(folder => {
-                            if (folder.files && folder.files.length > 0) {
-                                let cursoEtiqueta = '';
-                                if (typeof alumnos !== 'undefined' && typeof cursos !== 'undefined') {
-                                    const alumnoInfo = alumnos.find(a => a.nombre === folder.name);
-                                    if (alumnoInfo) {
-                                        // Ocultar visualmente la carpeta si el estudiante está retirado
-                                        if (alumnoInfo.estado === 'retirado') return;
-                                        
-                                        const cursoObj = cursos.find(c => c.id == alumnoInfo.cursoId);
-                                        if (cursoObj) {
-                                            cursoEtiqueta = `<span style="background: #e0e7ff; color: #4338ca; border-radius: 4px; padding: 2px 6px; font-size: 0.75rem; font-weight: 500; border: 1px solid #c7d2fe;">${cursoObj.nombre}</span>`;
-                                        }
-                                    }
-                                }
-
-                                html += `
-                                    <div class="drive-folder" style="background: white; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
-                                        <div class="folder-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none'; const icon = this.querySelector('.fa-chevron-down'); if(icon) icon.style.transform = this.nextElementSibling.style.display === 'none' ? 'rotate(-90deg)' : 'rotate(0deg)';" style="background: #f1f5f9; padding: 10px 15px; font-weight: bold; display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                                            <i class="fas fa-folder text-warning" style="color: #fbbf24;"></i>
-                                            <span>${folder.name}</span>
-                                            ${cursoEtiqueta}
-                                            <span class="badge" style="background: #e2e8f0; color: #475569; border-radius: 12px; padding: 2px 8px; font-size: 0.8rem; margin-left: auto;">${folder.files.length}</span>
-                                            <button onclick="eliminarCarpetaDrive('${folder.id}', event)" class="btn btn-sm btn-danger" style="padding: 2px 6px; font-size: 0.8rem; background: #fee2e2; color: #dc2626; border: none; margin-left: 10px;" title="Eliminar Carpeta Completa"><i class="fas fa-trash"></i></button>
-                                            <i class="fas fa-chevron-down" style="color: #94a3b8; transition: transform 0.2s; transform: rotate(-90deg); margin-left: 10px;"></i>
-                                        </div>
-                                        <div class="folder-files" style="padding: 10px; display: none;">
-                                            <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
-                                `;
-                                folder.files.forEach(f => {
-                                    const fechaFormat = new Date(f.date).toLocaleDateString();
-                                    const nombreLimpio = f.name.replace(/_/g, ' ');
-                                    html += `
-                                                <li style="display: flex; justify-content: space-between; align-items: center; padding: 8px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0;">
-                                                    <div style="display: flex; align-items: center; gap: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                                        <i class="fas fa-file-alt text-primary" style="color: #3b82f6;"></i>
-                                                        <span title="${f.name}" style="font-size: 0.9rem; font-weight: 500;">${nombreLimpio}</span>
-                                                    </div>
-                                                    <div style="display: flex; align-items: center; gap: 5px; flex-shrink: 0;">
-                                                        <span style="font-size: 0.8rem; color: #64748b; margin-right: 10px;">${fechaFormat}</span>
-                                                        <a href="${f.url}" target="_blank" class="btn btn-sm btn-info" style="padding: 4px 8px; font-size: 0.8rem; background: #e0f2fe; color: #0284c7; border: none;" title="Ver"><i class="fas fa-eye"></i></a>
-                                                        <a href="${f.downloadUrl}" class="btn btn-sm btn-success" style="padding: 4px 8px; font-size: 0.8rem; background: #dcfce7; color: #16a34a; border: none;" title="Descargar"><i class="fas fa-download"></i></a>
-                                                        <button onclick="eliminarArchivoDrive('${f.id}')" class="btn btn-sm btn-danger" style="padding: 4px 8px; font-size: 0.8rem; background: #fee2e2; color: #dc2626; border: none;" title="Eliminar"><i class="fas fa-trash"></i></button>
-                                                    </div>
-                                                </li>
-                                    `;
-                                });
-                                html += `
-                                            </ul>
-                                        </div>
-                                    </div>
-                                `;
-                            }
-                        });
-                    }
-
-                    // Renderizar archivos sueltos
-                    if (data.files && data.files.length > 0) {
-                        html += `
-                                    <div class="drive-folder" style="background: white; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
-                                        <div class="folder-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none'; const icon = this.querySelector('.fa-chevron-down'); if(icon) icon.style.transform = this.nextElementSibling.style.display === 'none' ? 'rotate(-90deg)' : 'rotate(0deg)';" style="background: #f1f5f9; padding: 10px 15px; font-weight: bold; display: flex; align-items: center; gap: 10px; cursor: pointer;">
-                                            <i class="fas fa-folder text-warning" style="color: #fbbf24;"></i>
-                                            Archivos Generales
-                                            <span class="badge" style="background: #e2e8f0; color: #475569; border-radius: 12px; padding: 2px 8px; font-size: 0.8rem; margin-left: auto;">${data.files.length}</span>
-                                            <i class="fas fa-chevron-down" style="color: #94a3b8; transition: transform 0.2s; transform: rotate(-90deg);"></i>
-                                        </div>
-                                        <div class="folder-files" style="padding: 10px; display: none;">
-                                            <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
-                                `;
-                                data.files.forEach(f => {
-                                    const fechaFormat = new Date(f.date).toLocaleDateString();
-                                    const nombreLimpio = f.name.replace(/_/g, ' ');
-                                    html += `
-                                                <li style="display: flex; justify-content: space-between; align-items: center; padding: 8px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0;">
-                                                    <div style="display: flex; align-items: center; gap: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                                        <i class="fas fa-file-alt text-primary" style="color: #3b82f6;"></i>
-                                                        <span title="${f.name}" style="font-size: 0.9rem; font-weight: 500;">${nombreLimpio}</span>
-                                                    </div>
-                                                    <div style="display: flex; align-items: center; gap: 5px; flex-shrink: 0;">
-                                                        <span style="font-size: 0.8rem; color: #64748b; margin-right: 10px;">${fechaFormat}</span>
-                                                        <a href="${f.url}" target="_blank" class="btn btn-sm btn-info" style="padding: 4px 8px; font-size: 0.8rem; background: #e0f2fe; color: #0284c7; border: none;" title="Ver"><i class="fas fa-eye"></i></a>
-                                                        <a href="${f.downloadUrl}" class="btn btn-sm btn-success" style="padding: 4px 8px; font-size: 0.8rem; background: #dcfce7; color: #16a34a; border: none;" title="Descargar"><i class="fas fa-download"></i></a>
-                                                        <button onclick="eliminarArchivoDrive('${f.id}')" class="btn btn-sm btn-danger" style="padding: 4px 8px; font-size: 0.8rem; background: #fee2e2; color: #dc2626; border: none;" title="Eliminar"><i class="fas fa-trash"></i></button>
-                                                    </div>
-                                                </li>
-                                    `;
-                                });
-                                html += `
-                                            </ul>
-                                        </div>
-                                    </div>
-                                `;
-                    }
-
-                    html += '</div>';
-                    contenedor.innerHTML = html;
+                    driveDataCache = data;
+                    renderizarExploradorArchivos(data, contenedor);
                 })
                 .catch(error => {
                     console.error('Error fetching drive data:', error);
@@ -1155,9 +1048,138 @@
                 });
         }
 
+        function renderizarExploradorArchivos(data, contenedor) {
+            const refreshBtnHtml = `
+                <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
+                    <button onclick="cargarExploradorArchivos(true)" class="btn btn-sm" style="background: #e2e8f0; color: #475569; border: none; border-radius: 6px; padding: 6px 12px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <i class="fas fa-sync-alt"></i> Refrescar
+                    </button>
+                </div>
+            `;
+
+            if (data.error) {
+                contenedor.innerHTML = refreshBtnHtml + `<div class="empty-state"><i class="fas fa-exclamation-triangle text-danger"></i><p>Error: ${data.error}</p></div>`;
+                return;
+            }
+
+            if ((!data.folders || data.folders.length === 0) && (!data.files || data.files.length === 0)) {
+                contenedor.innerHTML = refreshBtnHtml + `
+                    <div class="empty-state">
+                        <i class="fas fa-folder-open text-muted" style="font-size: 3rem; margin-bottom: 1rem; color: #ccc;"></i>
+                        <p>No hay archivos subidos todavía.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = refreshBtnHtml + '<div class="drive-explorer" style="display: flex; flex-direction: column; gap: 1rem;">';
+
+            // Renderizar carpetas (Alumnos)
+            if (data.folders) {
+                data.folders.forEach(folder => {
+                    if (folder.files && folder.files.length > 0) {
+                        let cursoEtiqueta = '';
+                        if (typeof alumnos !== 'undefined' && typeof cursos !== 'undefined') {
+                            const alumnoInfo = alumnos.find(a => a.nombre === folder.name);
+                            if (alumnoInfo) {
+                                // Ocultar visualmente la carpeta si el estudiante está retirado
+                                if (alumnoInfo.estado === 'retirado') return;
+                                
+                                const cursoObj = cursos.find(c => c.id == alumnoInfo.cursoId);
+                                if (cursoObj) {
+                                    cursoEtiqueta = `<span style="background: #e0e7ff; color: #4338ca; border-radius: 4px; padding: 2px 6px; font-size: 0.75rem; font-weight: 500; border: 1px solid #c7d2fe;">${cursoObj.nombre}</span>`;
+                                }
+                            }
+                        }
+
+                        html += `
+                            <div class="drive-folder" id="drive-folder-${folder.id}" style="background: white; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+                                <div class="folder-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none'; const icon = this.querySelector('.fa-chevron-down'); if(icon) icon.style.transform = this.nextElementSibling.style.display === 'none' ? 'rotate(-90deg)' : 'rotate(0deg)';" style="background: #f1f5f9; padding: 10px 15px; font-weight: bold; display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                    <i class="fas fa-folder text-warning" style="color: #fbbf24;"></i>
+                                    <span>${folder.name}</span>
+                                    ${cursoEtiqueta}
+                                    <span class="badge" style="background: #e2e8f0; color: #475569; border-radius: 12px; padding: 2px 8px; font-size: 0.8rem; margin-left: auto;">${folder.files.length}</span>
+                                    <button onclick="eliminarCarpetaDrive('${folder.id}', event)" class="btn btn-sm btn-danger" style="padding: 2px 6px; font-size: 0.8rem; background: #fee2e2; color: #dc2626; border: none; margin-left: 10px;" title="Eliminar Carpeta Completa"><i class="fas fa-trash"></i></button>
+                                    <i class="fas fa-chevron-down" style="color: #94a3b8; transition: transform 0.2s; transform: rotate(-90deg); margin-left: 10px;"></i>
+                                </div>
+                                <div class="folder-files" style="padding: 10px; display: none;">
+                                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
+                        `;
+                        folder.files.forEach(f => {
+                            const fechaFormat = new Date(f.date).toLocaleDateString();
+                            const nombreLimpio = f.name.replace(/_/g, ' ');
+                            html += `
+                                        <li id="drive-file-${f.id}" style="display: flex; justify-content: space-between; align-items: center; padding: 8px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0;">
+                                            <div style="display: flex; align-items: center; gap: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                                <i class="fas fa-file-alt text-primary" style="color: #3b82f6;"></i>
+                                                <span title="${f.name}" style="font-size: 0.9rem; font-weight: 500;">${nombreLimpio}</span>
+                                            </div>
+                                            <div style="display: flex; align-items: center; gap: 5px; flex-shrink: 0;">
+                                                <span style="font-size: 0.8rem; color: #64748b; margin-right: 10px;">${fechaFormat}</span>
+                                                <a href="${f.url}" target="_blank" class="btn btn-sm btn-info" style="padding: 4px 8px; font-size: 0.8rem; background: #e0f2fe; color: #0284c7; border: none;" title="Ver"><i class="fas fa-eye"></i></a>
+                                                <a href="${f.downloadUrl}" class="btn btn-sm btn-success" style="padding: 4px 8px; font-size: 0.8rem; background: #dcfce7; color: #16a34a; border: none;" title="Descargar"><i class="fas fa-download"></i></a>
+                                                <button onclick="eliminarArchivoDrive('${f.id}')" class="btn btn-sm btn-danger" style="padding: 4px 8px; font-size: 0.8rem; background: #fee2e2; color: #dc2626; border: none;" title="Eliminar"><i class="fas fa-trash"></i></button>
+                                            </div>
+                                        </li>
+                            `;
+                        });
+                        html += `
+                                    </ul>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            }
+
+            // Renderizar archivos sueltos
+            if (data.files && data.files.length > 0) {
+                html += `
+                            <div class="drive-folder" style="background: white; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+                                <div class="folder-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'block' : 'none'; const icon = this.querySelector('.fa-chevron-down'); if(icon) icon.style.transform = this.nextElementSibling.style.display === 'none' ? 'rotate(-90deg)' : 'rotate(0deg)';" style="background: #f1f5f9; padding: 10px 15px; font-weight: bold; display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                    <i class="fas fa-folder text-warning" style="color: #fbbf24;"></i>
+                                    Archivos Generales
+                                    <span class="badge" style="background: #e2e8f0; color: #475569; border-radius: 12px; padding: 2px 8px; font-size: 0.8rem; margin-left: auto;">${data.files.length}</span>
+                                    <i class="fas fa-chevron-down" style="color: #94a3b8; transition: transform 0.2s; transform: rotate(-90deg);"></i>
+                                </div>
+                                <div class="folder-files" style="padding: 10px; display: none;">
+                                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
+                        `;
+                        data.files.forEach(f => {
+                            const fechaFormat = new Date(f.date).toLocaleDateString();
+                            const nombreLimpio = f.name.replace(/_/g, ' ');
+                            html += `
+                                        <li id="drive-file-${f.id}" style="display: flex; justify-content: space-between; align-items: center; padding: 8px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0;">
+                                            <div style="display: flex; align-items: center; gap: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                                <i class="fas fa-file-alt text-primary" style="color: #3b82f6;"></i>
+                                                <span title="${f.name}" style="font-size: 0.9rem; font-weight: 500;">${nombreLimpio}</span>
+                                            </div>
+                                            <div style="display: flex; align-items: center; gap: 5px; flex-shrink: 0;">
+                                                <span style="font-size: 0.8rem; color: #64748b; margin-right: 10px;">${fechaFormat}</span>
+                                                <a href="${f.url}" target="_blank" class="btn btn-sm btn-info" style="padding: 4px 8px; font-size: 0.8rem; background: #e0f2fe; color: #0284c7; border: none;" title="Ver"><i class="fas fa-eye"></i></a>
+                                                <a href="${f.downloadUrl}" class="btn btn-sm btn-success" style="padding: 4px 8px; font-size: 0.8rem; background: #dcfce7; color: #16a34a; border: none;" title="Descargar"><i class="fas fa-download"></i></a>
+                                                <button onclick="eliminarArchivoDrive('${f.id}')" class="btn btn-sm btn-danger" style="padding: 4px 8px; font-size: 0.8rem; background: #fee2e2; color: #dc2626; border: none;" title="Eliminar"><i class="fas fa-trash"></i></button>
+                                            </div>
+                                        </li>
+                            `;
+                        });
+                        html += `
+                                    </ul>
+                                </div>
+                            </div>
+                        `;
+            }
+
+            html += '</div>';
+            contenedor.innerHTML = html;
+        }
+
         function eliminarArchivoDrive(fileId) {
             if (confirm('¿Estás seguro de que deseas eliminar este archivo? Esta acción enviará el archivo a la papelera.')) {
                 showToast('Eliminando archivo...', 'info');
+                
+                const li = document.getElementById('drive-file-' + fileId);
+                if (li) li.style.opacity = '0.5';
                 
                 fetch(URL_SCRIPT_GOOGLE_DRIVE, {
                     method: 'POST',
@@ -1170,14 +1192,17 @@
                 .then(mensaje => {
                     if (mensaje.includes('Éxito')) {
                         showToast('✅ Archivo eliminado correctamente', 'success');
-                        cargarExploradorArchivos();
+                        if (li) li.remove();
+                        driveDataCache = null; // Invalida el caché para que se actualice si refrescan
                     } else {
                         showToast('❌ Error al eliminar: ' + mensaje, 'error');
+                        if (li) li.style.opacity = '1';
                     }
                 })
                 .catch(err => {
                     console.error('Error al eliminar:', err);
                     showToast('❌ Error de conexión al intentar eliminar', 'error');
+                    if (li) li.style.opacity = '1';
                 });
             }
         }
@@ -1188,6 +1213,9 @@
             if (confirm('⚠️ ¡ADVERTENCIA! ¿Estás seguro de que deseas eliminar ESTA CARPETA y TODOS los archivos en su interior? Esta acción enviará la carpeta a la papelera y no se puede deshacer.')) {
                 showToast('Eliminando carpeta...', 'info');
                 
+                const folderDiv = document.getElementById('drive-folder-' + folderId);
+                if (folderDiv) folderDiv.style.opacity = '0.5';
+
                 fetch(URL_SCRIPT_GOOGLE_DRIVE, {
                     method: 'POST',
                     headers: {
@@ -1199,14 +1227,17 @@
                 .then(mensaje => {
                     if (mensaje.includes('Éxito')) {
                         showToast('✅ Carpeta eliminada correctamente', 'success');
-                        cargarExploradorArchivos();
+                        if (folderDiv) folderDiv.remove();
+                        driveDataCache = null; // Invalida el caché
                     } else {
                         showToast('❌ Error al eliminar carpeta: ' + mensaje, 'error');
+                        if (folderDiv) folderDiv.style.opacity = '1';
                     }
                 })
                 .catch(err => {
                     console.error('Error al eliminar carpeta:', err);
                     showToast('❌ Error de conexión al intentar eliminar carpeta', 'error');
+                    if (folderDiv) folderDiv.style.opacity = '1';
                 });
             }
         }
@@ -1329,7 +1360,43 @@
             }
         };
 
-        document.getElementById('formSubidaDocumentos').addEventListener('submit', function(e) {
+        function comprimirImagen(file, maxWidth = 1920, maxHeight = 1920, quality = 0.7) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = event => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height) {
+                            if (width > maxWidth) {
+                                height = Math.round((height * maxWidth) / width);
+                                width = maxWidth;
+                            }
+                        } else {
+                            if (height > maxHeight) {
+                                width = Math.round((width * maxHeight) / height);
+                                height = maxHeight;
+                            }
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        const base64Str = canvas.toDataURL('image/jpeg', quality);
+                        resolve(base64Str);
+                    };
+                    img.onerror = error => reject(error);
+                };
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        document.getElementById('formSubidaDocumentos').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const btn = document.getElementById('btnSubirDrive');
@@ -1352,9 +1419,10 @@
             }
             
             const archivo = archivoInput.files[0];
+            const esImagen = archivo.type.startsWith('image/');
             
-            // Validar tamaño (ejemplo max 5MB = 5 * 1024 * 1024 bytes)
-            if (archivo.size > 5242880) {
+            // Validar tamaño si no es imagen (ejemplo max 5MB = 5 * 1024 * 1024 bytes)
+            if (!esImagen && archivo.size > 5242880) {
                 showToast('El archivo es demasiado grande. Máximo 5MB.', 'error');
                 return;
             }
@@ -1362,48 +1430,60 @@
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo archivo...';
             
-            const lector = new FileReader();
-            
-            lector.onload = function() {
+            try {
+                let base64Data = '';
+                let mimeType = archivo.type;
+
+                if (esImagen) {
+                    btn.innerHTML = '<i class="fas fa-compress-arrows-alt"></i> Comprimiendo imagen...';
+                    base64Data = await comprimirImagen(archivo, 1920, 1920, 0.7);
+                    base64Data = base64Data.split(',')[1]; // Remover el prefijo
+                    mimeType = 'image/jpeg'; // Porque forzamos jpeg en la compresión
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo archivo...';
+                } else {
+                    base64Data = await new Promise((resolve, reject) => {
+                        const lector = new FileReader();
+                        lector.onload = () => resolve(lector.result.split(',')[1]);
+                        lector.onerror = reject;
+                        lector.readAsDataURL(archivo);
+                    });
+                }
+
                 // Crear un nombre de archivo descriptivo
                 const fecha = new Date().toLocaleDateString('es-CL').replace(/\//g, '-');
                 const apoderadoSeguro = apoderadoNombre.replace(/[^a-zA-Z0-9 áéíóúÁÉÍÓÚñÑ]/g, '').trim();
-                const extension = archivo.name.split('.').pop();
+                const extension = esImagen ? 'jpg' : archivo.name.split('.').pop();
                 const nuevoNombreArchivo = `${tipoDoc} - Apoderado ${apoderadoSeguro} - ${fecha}.${extension}`;
                 
                 const datos = {
                     fileName: nuevoNombreArchivo,
-                    mimeType: archivo.type,
-                    fileData: lector.result.split(',')[1], // Obtener solo base64 sin prefijo
+                    mimeType: mimeType,
+                    fileData: base64Data,
                     studentName: alumnoNombre || 'Sin_Asignar' // Enviar el nombre del alumno para crear la carpeta
                 };
                 
-                fetch(URL_SCRIPT_GOOGLE_DRIVE, {
+                const respuesta = await fetch(URL_SCRIPT_GOOGLE_DRIVE, {
                     method: 'POST',
                     body: new URLSearchParams(datos)
-                })
-                .then(respuesta => respuesta.text())
-                .then(mensaje => {
-                    if (mensaje.includes('Éxito')) {
-                        showToast('✅ Archivo subido a la Base de Datos correctamente', 'success');
-                        document.getElementById('formSubidaDocumentos').reset();
-                        cerrarModal('modalSubirEvidencia');
-                        cargarExploradorArchivos();
-                    } else {
-                        showToast('❌ Error al subir: ' + mensaje, 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showToast('❌ Error de conexión al intentar subir', 'error');
-                })
-                .finally(() => {
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-upload"></i> Subir Archivo';
                 });
-            };
-            
-            lector.readAsDataURL(archivo);
+                
+                const mensaje = await respuesta.text();
+                
+                if (mensaje.includes('Éxito')) {
+                    showToast('✅ Archivo subido a la Base de Datos correctamente', 'success');
+                    document.getElementById('formSubidaDocumentos').reset();
+                    cerrarModal('modalSubirEvidencia');
+                    cargarExploradorArchivos(true); // Forzar refresco
+                } else {
+                    showToast('❌ Error al subir: ' + mensaje, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('❌ Error de conexión al intentar subir', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-upload"></i> Subir Archivo';
+            }
         });
 
         // ==========================================

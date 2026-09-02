@@ -1173,6 +1173,9 @@
                     </div>
                     <div class="card-body">
                         <form id="formConfiguracion" onsubmit="guardarConfiguracion(event)">
+                            
+                            <!-- Grupo 1: Alertas y Riesgo de Alumnos -->
+                            <h4 style="margin-top: 10px; margin-bottom: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; color: #475569;"><i class="fas fa-user-graduate"></i> Alertas y Riesgo Individual</h4>
                             <div class="grid-2">
                                 <div class="form-group">
                                     <label>Alerta de Riesgo Anual Crítico (Rojo) %</label>
@@ -1185,6 +1188,16 @@
                                     <small class="text-muted" style="display:block; margin-top:5px; line-height:1.4;"><strong>¿Qué hace?:</strong> Define el umbral para una alerta preventiva. Los estudiantes por debajo de este porcentaje (pero por encima del nivel crítico) se mostrarán en color naranja (advertencia).<br><strong>¿Cómo configurar?:</strong> Escriba un número mayor al crítico (ej: 85). Sirve para advertir a los alumnos antes de que lleguen a la zona de riesgo grave.</small>
                                 </div>
                                 <div class="form-group">
+                                    <label>Días consecutivos ausente para Alerta</label>
+                                    <input type="number" id="configAusenciasConsecutivas" min="1" max="30" required style="max-width: 120px;">
+                                    <small class="text-muted" style="display:block; margin-top:5px; line-height:1.4;"><strong>¿Qué hace?:</strong> Establece la cantidad de inasistencias seguidas necesarias para disparar la 'Alerta Temprana'. Es vital para detectar de inmediato a estudiantes que dejaron de asistir abruptamente, sin importar si su promedio anual es alto.<br><strong>¿Cómo configurar?:</strong> Se recomienda ingresar 3 o 4 días hábiles.</small>
+                                </div>
+                            </div>
+
+                            <!-- Grupo 2: Indicadores de Curso (Semáforo y Gráficos) -->
+                            <h4 style="margin-top: 30px; margin-bottom: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; color: #475569;"><i class="fas fa-users"></i> Indicadores de Curso (Semáforo y Gráficos)</h4>
+                            <div class="grid-2">
+                                <div class="form-group">
                                     <label>Semáforo de Curso Excelente (Verde) %</label>
                                     <input type="number" id="configSemaforoExcelente" min="0" max="100" required style="max-width: 120px;">
                                     <small class="text-muted" style="display:block; margin-top:5px; line-height:1.4;"><strong>¿Qué hace?:</strong> En el widget 'Semáforo de Asistencia', los cursos cuya asistencia promedio mensual supere este valor aparecerán en verde, indicando una asistencia óptima.<br><strong>¿Cómo configurar?:</strong> Usualmente se sitúa en una meta alta, como el 95.</small>
@@ -1195,15 +1208,15 @@
                                     <small class="text-muted" style="display:block; margin-top:5px; line-height:1.4;"><strong>¿Qué hace?:</strong> En el 'Semáforo de Asistencia', los cursos que no alcancen el nivel excelente pero superen este valor aparecerán en amarillo. Si un curso cae por debajo de este número, se pintará automáticamente en rojo indicando problemas grupales.<br><strong>¿Cómo configurar?:</strong> Debe ser un valor intermedio (ej: 90).</small>
                                 </div>
                                 <div class="form-group">
-                                    <label>Días consecutivos ausente para Alerta</label>
-                                    <input type="number" id="configAusenciasConsecutivas" min="1" max="30" required style="max-width: 120px;">
-                                    <small class="text-muted" style="display:block; margin-top:5px; line-height:1.4;"><strong>¿Qué hace?:</strong> Establece la cantidad de inasistencias seguidas necesarias para disparar la 'Alerta Temprana'. Es vital para detectar de inmediato a estudiantes que dejaron de asistir abruptamente, sin importar si su promedio anual es alto.<br><strong>¿Cómo configurar?:</strong> Se recomienda ingresar 3 o 4 días hábiles.</small>
-                                </div>
-                                <div class="form-group">
                                     <label>Días en Gráfico de Tendencia</label>
                                     <input type="number" id="configDiasTendencia" min="3" max="30" required style="max-width: 120px;">
                                     <small class="text-muted" style="display:block; margin-top:5px; line-height:1.4;"><strong>¿Qué hace?:</strong> Controla cuántos días hacia atrás se dibujan en el gráfico principal de barras ('Tendencia de Asistencia').<br><strong>¿Cómo configurar?:</strong> Un valor de 5 muestra la última semana hábil. Escriba 10 o 15 si prefiere una visión quincenal o casi mensual para analizar el ausentismo.</small>
                                 </div>
+                            </div>
+
+                            <!-- Grupo 3: Parámetros Generales del Sistema -->
+                            <h4 style="margin-top: 30px; margin-bottom: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; color: #475569;"><i class="fas fa-sliders-h"></i> Parámetros del Sistema</h4>
+                            <div class="grid-2">
                                 <div class="form-group">
                                     <label>Fijar Año Lectivo (Opcional)</label>
                                     <input type="number" id="configAnioLectivo" min="2020" max="2100" placeholder="Ej: 2025" style="max-width: 120px;">
@@ -1215,7 +1228,8 @@
                                     <small class="text-muted" style="display:block; margin-top:5px; line-height:1.4;"><strong>¿Qué hace?:</strong> Bloquea los calendarios de asistencia para que nadie pueda registrar datos antes de este día y le indica al sistema que ignore las asistencias pendientes de fechas previas al lanzamiento oficial.<br><strong>¿Cómo configurar?:</strong> Seleccione la fecha exacta en la que los inspectores comenzaron a tomar asistencia obligatoria por primera vez. Si deja esto en blanco, el sistema asume el 1 de marzo.</small>
                                 </div>
                             </div>
-                            <div style="margin-top:20px;">
+                            
+                            <div style="margin-top:30px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
                                 <button type="submit" id="btnGuardarConfig" class="btn btn-primary offline-restrict"><i class="fas fa-save"></i> Guardar Configuración</button>
                             </div>
                         </form>
