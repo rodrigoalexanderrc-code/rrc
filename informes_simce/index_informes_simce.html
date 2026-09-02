@@ -11,7 +11,7 @@
     <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #0B4F6C;
@@ -281,6 +281,7 @@
             line-height: 1.4;
             display: -webkit-box;
             -webkit-line-clamp: 3;
+            line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
             word-break: break-word;
@@ -474,7 +475,7 @@
     <!-- Overlay de Autenticación -->
     <div id="loginOverlay">
         <div class="login-box">
-            <img src="https://www.liceo-simonbolivar.cl/intranet/insignia/ESCUDO.png" alt="Escudo" style="height: 70px; margin-bottom: 1rem;">
+            <img src="insignia/insignia.jpg" alt="Escudo" style="height: 70px; margin-bottom: 1rem;">
             <h2>Acceso Profesores</h2>
             <div id="loginError" class="login-error">Usuario o contraseña incorrectos.</div>
             <input type="text" id="usernameInput" placeholder="Usuario" autocomplete="off">
@@ -486,7 +487,7 @@
     <!-- Barra Lateral -->
     <aside class="sidebar">
         <div class="sidebar-logo">
-            <img src="https://www.liceo-simonbolivar.cl/intranet/insignia/ESCUDO.png" alt="Escudo">
+            <img src="insignia/insignia.jpg" alt="Escudo">
             <h1>Liceo Libertador<br>Simón Bolívar</h1>
         </div>
 
@@ -512,11 +513,12 @@
             <!-- Se llena con grupos de cursos -->
         </div>
 
-        <footer
-            style="margin-top: 5rem; padding-bottom: 2rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
-            <p>Liceo Libertador Simón Bolívar · Sistema de Reportes SIMCE</p>
-        </footer>
     </main>
+
+    <footer
+        style="margin-top: 5rem; padding-bottom: 2rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+        <p>Liceo Libertador Simón Bolívar · Sistema de Reportes SIMCE</p>
+    </footer>
 
     <script src="datos_informes.js"></script>
     <script>
