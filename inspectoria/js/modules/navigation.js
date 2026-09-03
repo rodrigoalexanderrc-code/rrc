@@ -26,6 +26,7 @@
                 comunicacion: ['Comunicación', 'Contacto con apoderados'],
                 bitacora: ['Bitácora de Novedades', 'Registro disciplinario'],
                 'asistente-social': ['Módulo Asistente Social', 'Gestión de Inasistencias y Casos'],
+                'semanas-mes': ['Semanas por mes', 'Matriz de Seguimiento Semanal'],
                 'licencias-justificaciones': ['Licencias y Justificaciones', 'Registro mensual por curso'],
                 'inasistencia-injustificada': ['Inasistencias sin Justificar', 'Registro de inasistencias sin licencia o justificación'],
                 'informes-licencias': ['Informes Licencias y Justif.', 'Reportes filtrados de asistencia'],
@@ -45,6 +46,7 @@
                 alumnos: () => { cargarAlumnos(); cargarSelectsAlumnos(); },
                 'alumnos-riesgo': cargarAlumnosRiesgoPanel,
                 asistencia: () => { cargarSelectsAsistencia(); cargarListaAsistencia(); },
+                'semanas-mes': () => { if(typeof cargarInicialSemanasMes === 'function') cargarInicialSemanasMes(); },
                 'reporte-diario': () => {
                     document.getElementById('reporteFecha').value = '';
                     document.getElementById('reporteDiarioContainer').innerHTML = `

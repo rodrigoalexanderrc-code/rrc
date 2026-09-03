@@ -3256,3 +3256,482 @@
                 container.innerHTML = '<div class="empty-state"><i class="fas fa-file-alt"></i><p>Seleccione los filtros y presione "Generar"</p></div>';
             }
         };
+
+// ==========================================
+// MÓDULO SEMANAS POR MES (MATRIZ SEGUIMIENTO)
+// ==========================================
+
+let matrizSemanasMesState = {
+    cursoId: null,
+    semana: null,
+    nombreInspectora: '',
+    nombreDocente: '',
+    alumnosEnMatriz: [], // Array de objetos {rut, profContacto, profObs, inspContacto, inspObs, asisContacto, asisObs}
+    idGuardado: null // ID de la bitácora si ya existe
+};
+
+window.cargarInicialSemanasMes = function() {
+    const selectCurso = document.getElementById('filtroSemanasMesCurso');
+    let html = '<option value="">Seleccione un curso...</option>';
+    cursos.forEach(c => {
+        html += `<option value="${c.id}">${c.nombre}</option>`;
+    });
+    selectCurso.innerHTML = html;
+    
+    // Set current week as default
+    const now = new Date();
+    const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+    const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1)/7);
+    document.getElementById('filtroSemanasMesSemana').value = `${d.getUTCFullYear()}-W${weekNo.toString().padStart(2, '0')}`;
+};
+
+window.cargarSelectAlumnosSemanasMes = function() {
+    const cursoId = parseInt(document.getElementById('filtroSemanasMesCurso').value);
+    const selectAlumno = document.getElementById('filtroSemanasMesAlumno');
+    const btnAgregar = document.getElementById('btnAgregarAlumnoMatriz');
+    
+    if (isNaN(cursoId)) {
+        selectAlumno.innerHTML = '<option value="">Seleccione curso primero...</option>';
+        selectAlumno.disabled = true;
+        btnAgregar.disabled = true;
+        return;
+    }
+    
+    const alumnosCurso = alumnos.filter(a => a.cursoId === cursoId && a.estado !== 'retirado').sort((a,b) => a.nombre.localeCompare(b.nombre));
+    let html = '<option value="">Seleccione un estudiante...</option>';
+    alumnosCurso.forEach((a, index) => {
+        html += `<option value="${a.rut}">${index + 1} - ${a.nombre}</option>`;
+    });
+    selectAlumno.innerHTML = html;
+    selectAlumno.disabled = false;
+    btnAgregar.disabled = false;
+    
+    cargarMatrizSemanasMes(); // Recargar datos si cambia el curso
+};
+
+function getFechasSemana(weekString) {
+    if (!weekString) return [];
+    const [year, week] = weekString.split('-W');
+    const y = parseInt(year);
+    const w = parseInt(week);
+    
+    const simple = new Date(y, 0, 1 + (w - 1) * 7);
+    const dow = simple.getDay();
+    const ISOweekStart = simple;
+    if (dow <= 4)
+        ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
+    else
+        ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
+    
+    const fechas = [];
+    for(let i=0; i<5; i++) { // Lunes a Viernes
+        const f = new Date(ISOweekStart);
+        f.setDate(f.getDate() + i);
+        const yyyy = f.getFullYear();
+        const mm = String(f.getMonth() + 1).padStart(2, '0');
+        const dd = String(f.getDate()).padStart(2, '0');
+        fechas.push({ fecha: `${yyyy}-${mm}-${dd}`, nroDia: f.getDate() });
+    }
+    return fechas;
+}
+
+window.cargarMatrizSemanasMes = async function() {
+    const cursoId = document.getElementById('filtroSemanasMesCurso').value;
+    const semanaStr = document.getElementById('filtroSemanasMesSemana').value;
+    const tbody = document.getElementById('tbodySemanasMes');
+    const thFechas = document.getElementById('encabezadoDiasSemanasMes');
+    
+    if (!cursoId || !semanaStr) {
+        tbody.innerHTML = '<tr><td colspan="14" style="text-align: center; padding: 20px; color: #64748b;">Seleccione curso y semana.</td></tr>';
+        return;
+    }
+    
+    const fechas = getFechasSemana(semanaStr);
+    thFechas.innerHTML = `Asistencia<br>(${fechas[0].nroDia} al ${fechas[4].nroDia})`;
+
+    // Buscar si ya hay datos guardados en la bitácora
+    matrizSemanasMesState.cursoId = parseInt(cursoId);
+    matrizSemanasMesState.semana = semanaStr;
+    matrizSemanasMesState.nombreInspectora = '';
+    matrizSemanasMesState.nombreDocente = '';
+    matrizSemanasMesState.alumnosEnMatriz = [];
+    matrizSemanasMesState.idGuardado = null;
+    
+    const registrosCoincidentes = (window.semanasMesGlobal || []).filter(b => 
+        b.estudiante === 'MATRIZ_SEMANAL' && 
+        (b.apoderado == cursoId || b.telefono == cursoId) && 
+        b.fecha && b.fecha.toString().startsWith(fechas[0].fecha)
+    );
+    
+    // Como las inserciones antiguas no tenían ID, la forma más segura de obtener el último guardado 
+    // es tomar la última fila encontrada (la más reciente al final de la tabla)
+    const registroGuardado = registrosCoincidentes.length > 0 ? registrosCoincidentes[registrosCoincidentes.length - 1] : null;
+    
+    if (registroGuardado) {
+        let rawJsonStr = registroGuardado.motivo;
+        if (registroGuardado.resultado && registroGuardado.resultado.toString().includes('{')) {
+            rawJsonStr = registroGuardado.resultado;
+        } else if (registroGuardado.motivo && !registroGuardado.motivo.toString().includes('{') && registroGuardado.resultado && registroGuardado.resultado.toString().includes('[')) {
+            rawJsonStr = registroGuardado.resultado;
+        }
+
+        if (rawJsonStr) {
+            try {
+                // Revertir la sanitización HTML que convierte las comillas del JSON en &quot;
+                let rawJson = rawJsonStr
+                    .replace(/&quot;/g, '"')
+                    .replace(/&#39;/g, "'")
+                    .replace(/&lt;/g, '<')
+                    .replace(/&gt;/g, '>')
+                    .replace(/&amp;/g, '&');
+                    
+                const data = JSON.parse(rawJson);
+                if (Array.isArray(data)) {
+                    // Retrocompatibilidad con el array original
+                    matrizSemanasMesState.alumnosEnMatriz = data;
+                } else {
+                    // Nuevo formato
+                    matrizSemanasMesState.alumnosEnMatriz = data.alumnos || [];
+                    matrizSemanasMesState.nombreInspectora = data.inspectora || '';
+                    matrizSemanasMesState.nombreDocente = data.docente || '';
+                }
+                matrizSemanasMesState.idGuardado = registroGuardado.id;
+            } catch(e) {
+                console.error("Error parseando matriz guardada", e);
+            }
+        }
+    }
+    
+    // Actualizar inputs en la UI
+    document.getElementById('matrizNombreInspectora').value = matrizSemanasMesState.nombreInspectora;
+    document.getElementById('matrizNombreDocente').value = matrizSemanasMesState.nombreDocente;
+    
+    // Auto-ajustar altura al cargar para los encabezados
+    setTimeout(() => {
+        ['matrizNombreInspectora', 'matrizNombreDocente'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el && el.tagName.toLowerCase() === 'textarea') {
+                el.style.height = '27px';
+                if (el.scrollHeight > 27) el.style.height = el.scrollHeight + 'px';
+            }
+        });
+    }, 10);
+
+    renderTablaSemanasMes(fechas);
+};
+
+window.agregarAlumnoAMatrizSemanasMes = function() {
+    const selectAlumno = document.getElementById('filtroSemanasMesAlumno');
+    const rut = selectAlumno.value;
+    if(!rut) return;
+    
+    // Verificar si ya existe
+    if(matrizSemanasMesState.alumnosEnMatriz.find(a => a.rut === rut)) {
+        showToast('El alumno ya está en la matriz', 'warning');
+        return;
+    }
+    
+    matrizSemanasMesState.alumnosEnMatriz.push({
+        rut: rut,
+        profContacto: '', profObs: '',
+        inspContacto: '', inspObs: '',
+        asisContacto: '', asisObs: ''
+    });
+    
+    selectAlumno.value = "";
+    
+    const semanaStr = document.getElementById('filtroSemanasMesSemana').value;
+    renderTablaSemanasMes(getFechasSemana(semanaStr));
+};
+
+function renderTablaSemanasMes(fechas) {
+    const tbody = document.getElementById('tbodySemanasMes');
+    
+    if (matrizSemanasMesState.alumnosEnMatriz.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="14" style="text-align: center; padding: 20px; color: #64748b;">No hay alumnos añadidos a la matriz. Selecciona y presiona "Añadir a Matriz".</td></tr>';
+        return;
+    }
+    
+    // Obtener todos los alumnos del curso para saber Nro y Nombre
+    const alumnosCurso = alumnos.filter(a => a.cursoId === matrizSemanasMesState.cursoId).sort((a,b) => a.nombre.localeCompare(b.nombre));
+    
+    let html = '';
+    
+    matrizSemanasMesState.alumnosEnMatriz.forEach((est, indexMatriz) => {
+        const alumnoObj = alumnosCurso.find(a => a.rut === est.rut);
+        if(!alumnoObj) return; // Por si fue borrado
+        
+        const nroLista = alumnosCurso.indexOf(alumnoObj) + 1;
+        
+        html += `<tr>
+            <td style="text-align: center; font-weight: bold;">${nroLista}</td>
+            <td style="font-size: 0.8rem; font-weight: 500;">
+                <div class="flex justify-between items-center">
+                    ${alumnoObj.nombre}
+                    <button class="btn btn-sm" style="padding: 2px 5px; color: red; background: none; border: none; font-size:12px;" onclick="quitarDeMatriz(${indexMatriz})" title="Quitar de matriz"><i class="fas fa-times"></i></button>
+                </div>
+            </td>
+            <td style="font-size: 0.75rem; color: #64748b;">${alumnoObj.rut}</td>`;
+            
+        // Columnas de asistencia L M M J V
+        fechas.forEach(f => {
+            const dateStr = f.fecha;
+            const reg = asistenciaRegistros.find(r => r.alumno_rut === alumnoObj.rut && r.fecha === dateStr);
+            
+            // Color manual específico para este día
+            const colorDia = (est.coloresDia && est.coloresDia[dateStr]) ? est.coloresDia[dateStr] : '';
+            let bgColor = '';
+            if(colorDia === 'verde') bgColor = '#22c55e';
+            else if(colorDia === 'amarillo') bgColor = '#eab308';
+            else if(colorDia === 'rojo') bgColor = '#ef4444';
+
+            let icon = `<span style="color:${bgColor ? '#ffffff' : '#cbd5e1'}; font-weight:bold;">-</span>`; 
+            
+            if(reg) {
+                let iconColor = '';
+                if(reg.estado === 'Presente') iconColor = '#22c55e';
+                else if(reg.estado === 'Ausente' || reg.estado === 'Fuga') iconColor = '#ef4444';
+                else if(reg.estado === 'Atraso') iconColor = '#eab308';
+                
+                if(bgColor) iconColor = '#ffffff'; 
+                
+                icon = `<i class="fas fa-circle" style="color: ${iconColor}; font-size: 8px;"></i>`;
+            }
+            
+            html += `
+            <td style="text-align: center; border-left: 1px solid #cbd5e1; background-color: ${bgColor || 'transparent'}; position: relative; padding: 0;">
+                <div style="position: absolute; top:0; left:0; right:0; bottom:0; display:flex; align-items:center; justify-content:center; pointer-events: none;">
+                    ${icon}
+                </div>
+                <select onchange="actualizarColorDia(${indexMatriz}, '${dateStr}', this.value)" title="Seleccionar color para este día" style="width: 100%; height: 100%; min-height: 26px; appearance: none; background: transparent; border: none; color: transparent; cursor: pointer;">
+                    <option value="" ${colorDia===''?'selected':''}>Sin color</option>
+                    <option style="color: black; font-weight: bold;" value="verde" ${colorDia==='verde'?'selected':''}>Verde (Sobre 85%)</option>
+                    <option style="color: black; font-weight: bold;" value="amarillo" ${colorDia==='amarillo'?'selected':''}>Amarillo (50% a 84%)</option>
+                    <option style="color: black; font-weight: bold;" value="rojo" ${colorDia==='rojo'?'selected':''}>Rojo (0% a 49%)</option>
+                </select>
+            </td>`;
+        });
+        
+        // Función auxiliar para generar el textarea auto-ajustable
+        const crearTextarea = (valor, campo) => {
+            return `<textarea class="form-control" style="font-family: inherit; font-size: 0.8rem; padding: 5px 6px; min-height: 30px; height: 30px; border: 1px solid #cbd5e1; border-radius: 3px; background-color: #f8fafc; resize: none; overflow: hidden; width: 100%; box-sizing: border-box; line-height: 1.3;" placeholder="Escribir..." oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'" onchange="actualizarDatoMatriz(${indexMatriz}, '${campo}', this.value)">${valor}</textarea>`;
+        };
+
+        // Profesora Jefe
+        html += `
+            <td style="padding: 2px; vertical-align: top;">${crearTextarea(est.profContacto, 'profContacto')}</td>
+            <td style="padding: 2px; vertical-align: top;">${crearTextarea(est.profObs, 'profObs')}</td>
+        `;
+        // Inspectora
+        html += `
+            <td style="padding: 2px; border-left: 1px solid #e2e8f0; vertical-align: top;">${crearTextarea(est.inspContacto, 'inspContacto')}</td>
+            <td style="padding: 2px; vertical-align: top;">${crearTextarea(est.inspObs, 'inspObs')}</td>
+        `;
+        // Asistente
+        html += `
+            <td style="padding: 2px; border-left: 1px solid #e2e8f0; vertical-align: top;">${crearTextarea(est.asisContacto, 'asisContacto')}</td>
+            <td style="padding: 2px; vertical-align: top;">${crearTextarea(est.asisObs, 'asisObs')}</td>
+        `;
+        html += '</tr>';
+    });
+    
+    tbody.innerHTML = html;
+    
+    // Auto-ajustar la altura de todos los textareas recién renderizados
+    setTimeout(() => {
+        tbody.querySelectorAll('textarea').forEach(ta => {
+            ta.style.height = '30px';
+            if (ta.scrollHeight > 30) {
+                ta.style.height = ta.scrollHeight + 'px';
+            }
+        });
+    }, 10);
+}
+
+window.actualizarDatoMatriz = function(index, campo, valor) {
+    if(matrizSemanasMesState.alumnosEnMatriz[index]) {
+        matrizSemanasMesState.alumnosEnMatriz[index][campo] = valor;
+    }
+};
+
+window.actualizarColorDia = function(index, fecha, color) {
+    if(!matrizSemanasMesState.alumnosEnMatriz[index].coloresDia) {
+        matrizSemanasMesState.alumnosEnMatriz[index].coloresDia = {};
+    }
+    matrizSemanasMesState.alumnosEnMatriz[index].coloresDia[fecha] = color;
+    
+    // Re-render para mostrar el color seleccionado
+    const semanaStr = document.getElementById('filtroSemanasMesSemana').value;
+    renderTablaSemanasMes(getFechasSemana(semanaStr));
+};
+
+window.quitarDeMatriz = function(index) {
+    if(confirm('¿Quitar alumno de la matriz de seguimiento?')) {
+        matrizSemanasMesState.alumnosEnMatriz.splice(index, 1);
+        const semanaStr = document.getElementById('filtroSemanasMesSemana').value;
+        renderTablaSemanasMes(getFechasSemana(semanaStr));
+    }
+};
+
+window.guardarSemanasMes = async function() {
+    if (!navigator.onLine) {
+        showToast('❌ Sin conexión a internet.', 'error');
+        return;
+    }
+    
+    if (matrizSemanasMesState.cursoId == null || !matrizSemanasMesState.semana) {
+        showToast('Nada que guardar.', 'warning');
+        return;
+    }
+    
+    const fechas = getFechasSemana(matrizSemanasMesState.semana);
+    const fechaLunes = fechas[0].fecha; // Clave para guardar
+    
+    const payload = {
+        fecha: fechaLunes,
+        estudiante: 'MATRIZ_SEMANAL', // Usamos este campo como identificador de tipo
+        apoderado: matrizSemanasMesState.cursoId.toString(), // Guardamos el curso en apoderado
+        telefono: matrizSemanasMesState.semana, // Guardamos la semana en telefono para fácil búsqueda
+        motivo: JSON.stringify({ // Guardamos todo el arreglo en motivo
+            inspectora: document.getElementById('matrizNombreInspectora').value,
+            docente: document.getElementById('matrizNombreDocente').value,
+            alumnos: matrizSemanasMesState.alumnosEnMatriz
+        }),
+        resultado: '', // vacío
+        categoria: 'Seguimiento Semanal', // Usamos categoría para filtrar
+        responsable: CONFIG.USER_ROLE
+    };
+    
+    try {
+        let ok = false;
+        if (matrizSemanasMesState.idGuardado) {
+            ok = await apiCall('update', 'Bitacora', payload, matrizSemanasMesState.idGuardado);
+        } else {
+            if (typeof nextBitacoraId !== 'undefined') {
+                payload.id = nextBitacoraId++;
+            }
+            ok = await apiCall('insert', 'Bitacora', payload);
+        }
+        
+        if(ok) {
+            showToast('Datos planilla guardados exitosamente.', 'success');
+            await fetchData(true); // Recargar datos de bitácora por detrás
+        } else {
+            showToast('Error al guardar.', 'error');
+        }
+    } catch(e) {
+        showToast('Error de conexión.', 'error');
+    }
+};
+
+window.exportarExcelSemanasMes = function() {
+    const table = document.getElementById('tablaSemanasMes');
+    if (!table) return;
+    
+    let htmlContent = `
+    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+    <head><meta charset="UTF-8"></head>
+    <body>
+        <h2>Matriz de Seguimiento - Semana ${matrizSemanasMesState.semana}</h2>
+        ${table.outerHTML}
+    </body>
+    </html>`;
+
+    let blob = new Blob([htmlContent], { type: 'application/vnd.ms-excel' });
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement('a');
+    a.href = url;
+    a.download = `Matriz_Seguimiento_${matrizSemanasMesState.semana}.xls`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+};
+
+
+window.abrirModalBuscarMatriz = function() {
+    const tbody = document.getElementById('tbodyBuscarMatriz');
+    tbody.innerHTML = '';
+    const matrices = window.semanasMesGlobal || [];
+    
+    if (matrices.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" class="text-center text-gray-500" style="padding: 20px;">No hay matrices guardadas en el sistema.</td></tr>';
+    } else {
+        // Ordenar por fecha más reciente
+        matrices.sort((a, b) => {
+            if (a.fecha < b.fecha) return 1;
+            if (a.fecha > b.fecha) return -1;
+            return 0;
+        });
+
+        // Filtrar duplicados (tomar solo el más reciente por curso y semana)
+        const matricesUnicas = [];
+        const vistos = new Set();
+        
+        matrices.forEach(m => {
+            let semanaParaLlave = m.telefono;
+            if (!semanaParaLlave && m.fecha) semanaParaLlave = m.fecha; // fallback para llave única
+            const llave = `${m.apoderado}_${semanaParaLlave}`;
+            if (!vistos.has(llave)) {
+                vistos.add(llave);
+                matricesUnicas.push(m);
+            }
+        });
+
+        matricesUnicas.forEach(m => {
+            const curso = (typeof cursos !== 'undefined' ? cursos : []).find(c => c.id == m.apoderado);
+            const nombreCurso = curso ? curso.nombre : 'Curso Desconocido';
+            
+            let semanaTexto = m.telefono; 
+            
+            // Si la matriz es antigua y no tiene guardada la semana en 'telefono', calculamos la semana a partir de la fecha
+            if (!semanaTexto && m.fecha) {
+                try {
+                    const date = new Date(m.fecha + "T00:00:00");
+                    date.setHours(0, 0, 0, 0);
+                    date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+                    const week1 = new Date(date.getFullYear(), 0, 4);
+                    const weekNumber = 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+                    semanaTexto = `${date.getFullYear()}-W${weekNumber.toString().padStart(2, '0')}`;
+                } catch(e) {
+                    semanaTexto = m.fecha; // fallback
+                }
+            }
+            
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${nombreCurso}</td>
+                <td>Semana ${semanaTexto}</td>
+                <td style="text-align: center;">
+                    <button class="btn btn-primary btn-sm" onclick="cargarMatrizDesdeBuscador('${m.apoderado}', '${semanaTexto}')">
+                        <i class="fas fa-folder-open"></i> Abrir
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+    
+    document.getElementById('modalBuscarMatriz').classList.add('active');
+};
+
+window.cargarMatrizDesdeBuscador = function(cursoId, semanaStr) {
+    document.getElementById('modalBuscarMatriz').classList.remove('active');
+    
+    if (!semanaStr) {
+        showToast('Error: No se pudo determinar la semana guardada.', 'error');
+        return;
+    }
+    
+    const selectCurso = document.getElementById('filtroSemanasMesCurso');
+    const inputSemana = document.getElementById('filtroSemanasMesSemana');
+    
+    selectCurso.value = cursoId;
+    cargarSelectAlumnosSemanasMes(); 
+    
+    inputSemana.value = semanaStr;
+    cargarMatrizSemanasMes();
+};

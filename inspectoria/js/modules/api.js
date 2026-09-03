@@ -106,7 +106,9 @@
                     comunicacionesHistorial = sanitizeRows(result.data.historial || []);
                     comunicacionesHistorial.forEach(h => h.id = (h.id !== undefined && h.id !== null && h.id !== "") ? (parseInt(h.id) || 0) : 0);
                     comunicacionesHistorial.reverse(); // Mostrar del más reciente al más antiguo
-                    bitacoraLlamadas = sanitizeRows(result.data.bitacora || []);
+                    const _allBitacora = sanitizeRows(result.data.bitacora || []);
+                    window.semanasMesGlobal = _allBitacora.filter(b => b.estudiante === 'MATRIZ_SEMANAL');
+                    bitacoraLlamadas = _allBitacora.filter(b => b.estudiante !== 'MATRIZ_SEMANAL');
                     comprobantes = sanitizeRows(result.data.comprobantes || []);
 
                     cursos.forEach(c => c.id = parseInt(c.id) || 0);
@@ -121,7 +123,7 @@
 
                     nextCursoId = cursos.length > 0 ? Math.max(...cursos.map(c => c.id)) + 1 : 1;
                     nextAlumnoId = alumnos.length > 0 ? Math.max(...alumnos.map(a => a.id)) + 1 : 1;
-                    nextBitacoraId = bitacoraLlamadas.length > 0 ? Math.max(...bitacoraLlamadas.map(b => b.id)) + 1 : 1;
+                    nextBitacoraId = _allBitacora.length > 0 ? Math.max(..._allBitacora.map(b => parseInt(b.id) || 0)) + 1 : 1;
                     nextComprobanteId = comprobantes.length > 0 ? Math.max(...comprobantes.map(c => c.id)) + 1 : 1;
                     nextComunicacionId = crudas.length > 0 ? Math.max(...crudas.map(c => c.id)) + 1 : 1;
                     nextHistorialId = comunicacionesHistorial.length > 0 ? Math.max(...comunicacionesHistorial.map(h => h.id || 0)) + 1 : 1;
@@ -276,7 +278,9 @@
                     comunicacionesHistorial.forEach(h => h.id = (h.id !== undefined && h.id !== null && h.id !== "") ? (parseInt(h.id) || 0) : 0);
                     comunicacionesHistorial.reverse(); 
 
-                    bitacoraLlamadas = sanitizeRows(res.result.bitacora || []);
+                    const _allBitacora2 = sanitizeRows(res.result.bitacora || []);
+                    window.semanasMesGlobal = _allBitacora2.filter(b => b.estudiante === 'MATRIZ_SEMANAL');
+                    bitacoraLlamadas = _allBitacora2.filter(b => b.estudiante !== 'MATRIZ_SEMANAL');
                     bitacoraLlamadas.forEach(b => b.id = parseInt(b.id) || 0);
 
                     sanitizeDataModel();

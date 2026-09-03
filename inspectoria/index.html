@@ -99,6 +99,7 @@
                     <span class="sidebar-category">Módulo Asist. Social</span>
                 </li>
                 <li><a data-panel="asistente-social"><i class="fas fa-home"></i> Asistente Social</a></li>
+                <li><a data-panel="semanas-mes"><i class="fas fa-calendar-alt"></i> Semanas por mes</a></li>
                 <li><a data-panel="informes-asistente"><i class="fas fa-file-invoice"></i> Informes Asist. Social</a>
                 </li>
                 <li><a data-panel="licencias-justificaciones"><i class="fas fa-file-medical"></i> Licencias y
@@ -699,6 +700,109 @@
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==========================================================
+            PANEL: SEMANAS POR MES (MATRIZ DE SEGUIMIENTO)
+            ========================================================== -->
+            <div id="panel-semanas-mes" class="panel">
+                <div class="card" style="overflow: visible;">
+                    <div class="card-header flex-wrap gap-2">
+                        <h3><i class="fas fa-calendar-alt text-primary"></i> Semanas por mes (Seguimiento)</h3>
+                        <div class="flex gap-2 flex-wrap">
+                            <button class="btn btn-success" onclick="exportarExcelSemanasMes()"><i class="fas fa-file-excel"></i> Exportar a EXCEL</button>
+                            <button class="btn btn-primary" onclick="guardarSemanasMes()"><i class="fas fa-save"></i> Guardar Cambios</button>
+                        </div>
+                    </div>
+                    <div class="panel-filter-bar">
+                        <button class="btn btn-secondary text-gray-700 font-medium d-none" onclick="abrirModalBuscarMatriz()"><i class="fas fa-search"></i> Buscar Guardadas</button>
+                        <select id="filtroSemanasMesCurso" class="form-control min-w-160 text-gray-700 font-medium" onchange="cargarSelectAlumnosSemanasMes()">
+                            <option value="">Seleccione un curso...</option>
+                        </select>
+                        
+                        <input type="week" id="filtroSemanasMesSemana" class="form-control text-gray-700" onchange="cargarMatrizSemanasMes()">
+                        
+                        <div style="flex-grow: 1; display: flex; align-items: center; gap: 10px;">
+                            <select id="filtroSemanasMesAlumno" class="form-control min-w-200 text-gray-700" disabled>
+                                <option value="">Seleccione curso primero...</option>
+                            </select>
+                            <button class="btn btn-outline" id="btnAgregarAlumnoMatriz" onclick="agregarAlumnoAMatrizSemanasMes()" disabled><i class="fas fa-plus"></i> Añadir a la planilla</button>
+                        </div>
+                    </div>
+                    <!-- Encabezado: leyenda + nombres responsables -->
+                    <div style="display: flex; align-items: flex-end; justify-content: space-between; padding: 12px 15px 8px 15px; gap: 15px; flex-wrap: wrap;">
+                        <div style="display: flex; flex-direction: column; gap: 2px; font-size: 0.7rem; font-weight: bold; text-align: center;">
+                            <div style="background-color: #22c55e; color: white; padding: 3px 10px;">Sobre 85% de asistencia</div>
+                            <div style="background-color: #eab308; color: black; padding: 3px 10px;">Inasistencia Grave 50% al 84%</div>
+                            <div style="background-color: #ef4444; color: white; padding: 3px 10px;">Inasistencia crítica 0% al 49%</div>
+                        </div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <div style="display: flex; flex-direction: column;">
+                                <label style="font-size: 0.7rem; font-weight: bold; color: #1e3a5f; background-color: #dbeafe; padding: 4px 8px; border: 1px solid #93c5fd; border-bottom: none; text-align: center;">INSPECTOR (A)</label>
+                                <textarea id="matrizNombreInspectora" class="form-control" style="font-family: inherit; border: 1px solid #93c5fd; border-radius: 0; font-size: 0.8rem; font-weight: 600; text-align: center; padding: 4px; width: 200px; resize: none; overflow: hidden; min-height: 27px; height: 27px; line-height: 1.2;" placeholder="Nombre" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'" onchange="matrizSemanasMesState.nombreInspectora = this.value"></textarea>
+                            </div>
+                            <div style="display: flex; flex-direction: column;">
+                                <label style="font-size: 0.7rem; font-weight: bold; color: #1e3a5f; background-color: #dbeafe; padding: 4px 8px; border: 1px solid #93c5fd; border-bottom: none; text-align: center;">PROFESOR (A) JEFE</label>
+                                <textarea id="matrizNombreDocente" class="form-control" style="font-family: inherit; border: 1px solid #93c5fd; border-radius: 0; font-size: 0.8rem; font-weight: 600; text-align: center; padding: 4px; width: 200px; resize: none; overflow: hidden; min-height: 27px; height: 27px; line-height: 1.2;" placeholder="Nombre" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'" onchange="matrizSemanasMesState.nombreDocente = this.value"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body" style="padding: 0 10px 10px 10px;">
+                        <table id="tablaSemanasMes" style="width: 100%; font-size: 0.7rem; border-collapse: collapse; table-layout: fixed; word-wrap: break-word;">
+                            <colgroup>
+                                <col style="width: 3%;"><!-- Nro -->
+                                <col style="width: 15%;"><!-- Alumno -->
+                                <col style="width: 7%;"><!-- Run -->
+                                <col style="width: 2%;"><!-- L -->
+                                <col style="width: 2%;"><!-- M -->
+                                <col style="width: 2%;"><!-- M -->
+                                <col style="width: 2%;"><!-- J -->
+                                <col style="width: 2%;"><!-- V -->
+                                <col style="width: 8.5%;"><!-- Prof Res -->
+                                <col style="width: 13%;"><!-- Prof Obs -->
+                                <col style="width: 8.5%;"><!-- Insp Res -->
+                                <col style="width: 13%;"><!-- Insp Obs -->
+                                <col style="width: 8.5%;"><!-- Asis Res -->
+                                <col style="width: 13%;"><!-- Asis Obs -->
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th rowspan="2" style="text-align: center; border: 1px solid #cbd5e1; padding: 2px; text-transform: uppercase;">Nro</th>
+                                    <th rowspan="2" style="text-align: center; border: 1px solid #cbd5e1; padding: 2px; text-transform: uppercase;">Alumno</th>
+                                    <th rowspan="2" style="text-align: center; border: 1px solid #cbd5e1; padding: 2px; text-transform: uppercase;">Run</th>
+                                    <th colspan="5" style="text-align: center; background-color: #f8fafc; border: 1px solid #cbd5e1; padding: 2px; white-space: normal; overflow: hidden;" id="encabezadoDiasSemanasMes">Asistencia</th>
+                                    <th colspan="2" style="text-align: center; background-color: #fdf2f8; color: #db2777; border: 1px solid #cbd5e1; padding: 2px;">PROFESOR (A) JEFE</th>
+                                    <th colspan="2" style="text-align: center; background-color: #f0fdf4; color: #16a34a; border: 1px solid #cbd5e1; padding: 2px;">INSPECTOR (A)</th>
+                                    <th colspan="2" style="text-align: center; background-color: #fffbeb; color: #d97706; border: 1px solid #cbd5e1; padding: 2px;">ASISTENTE SOCIAL</th>
+                                </tr>
+                                <tr>
+                                    <th style="text-align: center; padding: 1px; border: 1px solid #cbd5e1;">L</th>
+                                    <th style="text-align: center; padding: 1px; border: 1px solid #cbd5e1;">M</th>
+                                    <th style="text-align: center; padding: 1px; border: 1px solid #cbd5e1;">M</th>
+                                    <th style="text-align: center; padding: 1px; border: 1px solid #cbd5e1;">J</th>
+                                    <th style="text-align: center; padding: 1px; border: 1px solid #cbd5e1;">V</th>
+                                    
+                                    <th style="background-color: #fdf2f8; border: 1px solid #cbd5e1; padding: 2px; text-align: center; white-space: normal;">Resultado Contacto Apoderado</th>
+                                    <th style="background-color: #fdf2f8; border: 1px solid #cbd5e1; padding: 2px; text-align: center;">Observación</th>
+                                    
+                                    <th style="background-color: #f0fdf4; border: 1px solid #cbd5e1; padding: 2px; text-align: center; white-space: normal;">Resultado Contacto Apoderado</th>
+                                    <th style="background-color: #f0fdf4; border: 1px solid #cbd5e1; padding: 2px; text-align: center;">Observación</th>
+                                    
+                                    <th style="background-color: #fffbeb; border: 1px solid #cbd5e1; padding: 2px; text-align: center; white-space: normal;">Resultado Contacto Apoderado</th>
+                                    <th style="background-color: #fffbeb; border: 1px solid #cbd5e1; padding: 2px; text-align: center;">Observación</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodySemanasMes">
+                                <tr>
+                                    <td colspan="14" style="text-align: center; padding: 20px; color: #64748b; border: 1px solid #e2e8f0;">
+                                        Seleccione un curso, semana, y agregue alumnos a la matriz para comenzar.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -1922,6 +2026,30 @@
     <!-- ==========================================================
     SCRIPT PRINCIPAL
     ========================================================== -->
+    <!-- Modal Buscar Matrices Guardadas -->
+    <div class="modal-overlay" id="modalBuscarMatriz">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2 id="modalBuscarMatrizTitle">Buscar Matrices Guardadas</h2><button class="modal-close"
+                    onclick="document.getElementById('modalBuscarMatriz').classList.remove('active')">&times;</button>
+            </div>
+            <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+                <table class="table" style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>Curso</th>
+                            <th>Semana</th>
+                            <th style="text-align: center;">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyBuscarMatriz">
+                        <!-- Llenado dinámico -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts Modularizados -->
     <script src="js/config.js?v=3.9"></script>
     <script src="js/modules/state.js?v=3.5"></script>
