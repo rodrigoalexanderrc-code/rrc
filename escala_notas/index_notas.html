@@ -790,8 +790,7 @@
 <body>
     <div class="container">
         <div class="header-container">
-            <a href="https://rodrigoalexanderrc-code.github.io/rrc/escala_notas/manual_escrito.html" target="_blank"
-                rel="noopener noreferrer" class="btn-manual">
+            <a href="#" id="btn-abrir-manual" class="btn-manual">
                 📘 Manual de Usuario
             </a>
             <img src="insignia/insignia.jpg?v=2" alt="Escudo Liceo Simón Bolívar"
@@ -944,6 +943,19 @@
                 <button class="btn-modal btn-cancel">Cancelar</button>
                 <button class="btn-modal btn-confirm" id="btn-confirm-manual">Generar</button>
                 <button class="btn-modal btn-confirm" id="btn-confirm-excel" style="display:none">Cargar Excel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Manual de Usuario -->
+    <div id="modal-manual" class="modal">
+        <div class="modal-content" style="width: 95%; max-width: 95%; height: 95vh; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <h2>Manual de Usuario</h2>
+                <span class="close" id="close-manual">&times;</span>
+            </div>
+            <div class="modal-body" style="flex: 1; padding: 0; overflow: hidden;">
+                <iframe src="https://rodrigoalexanderrc-code.github.io/rrc/escala_notas/manual_escrito.html" width="100%" height="100%" style="border:none; border-bottom-left-radius: 18px; border-bottom-right-radius: 18px;"></iframe>
             </div>
         </div>
     </div>
@@ -1166,6 +1178,19 @@
         // Función para cerrar el modal de generar planilla
         function cerrarModalPlanilla() {
             const modal = document.getElementById('modal-planilla');
+            modal.classList.remove('active');
+        }
+
+        // Función para abrir el modal del manual
+        function abrirModalManual(e) {
+            e.preventDefault();
+            const modal = document.getElementById('modal-manual');
+            modal.classList.add('active');
+        }
+
+        // Función para cerrar el modal del manual
+        function cerrarModalManual() {
+            const modal = document.getElementById('modal-manual');
             modal.classList.remove('active');
         }
 
@@ -1568,10 +1593,14 @@
             document.getElementById('btn-generar-planilla').addEventListener('click', abrirModalPlanilla);
 
             // Modal de planilla
-            document.querySelector('.close').addEventListener('click', cerrarModalPlanilla);
+            document.querySelector('#modal-planilla .close').addEventListener('click', cerrarModalPlanilla);
             document.querySelector('.btn-cancel').addEventListener('click', cerrarModalPlanilla);
             document.getElementById('btn-confirm-manual').addEventListener('click', generarPlanillaAlumnos);
             document.getElementById('btn-confirm-excel').addEventListener('click', generarPlanillaDesdeExcel);
+
+            // Modal de manual
+            document.getElementById('btn-abrir-manual').addEventListener('click', abrirModalManual);
+            document.getElementById('close-manual').addEventListener('click', cerrarModalManual);
 
             // Inicializar tabs y drop zone del Excel
             inicializarTabsModal();
@@ -1584,9 +1613,13 @@
 
             // Cerrar modal al hacer clic fuera de él
             window.addEventListener('click', function (event) {
-                const modal = document.getElementById('modal-planilla');
-                if (event.target === modal) {
+                const modalPlanilla = document.getElementById('modal-planilla');
+                const modalManual = document.getElementById('modal-manual');
+                if (event.target === modalPlanilla) {
                     cerrarModalPlanilla();
+                }
+                if (event.target === modalManual) {
+                    cerrarModalManual();
                 }
             });
         });
