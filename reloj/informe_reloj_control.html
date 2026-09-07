@@ -1571,7 +1571,7 @@
                 // Excluir feriados, turnos no planificados y horario libre
                 // NOTA: Los permisos NO eximen los atrasos de entrada
                 const esHorarioLibreBolsa = reg.turno && reg.turno.includes('Horario Libre');
-                if (!reg.esFeriado && reg.turno !== 'No Planificado' && !esHorarioLibreBolsa) {
+                if (!reg.esFeriado && reg.turno !== 'No Planificado' && reg.turno !== 'Descanso' && !esHorarioLibreBolsa) {
                     fData.totalAtrasoMin += minAtraso;
                     fData.totalAdelantoMin += minAdelanto;
                     if (minAtraso > 0) fData.numAtrasos++;
@@ -1609,7 +1609,7 @@
 
                     const tieneJustificacion = reg.permiso && reg.permiso !== "Ninguno";
 
-                    if ((faltaEntrada || faltaSalida) && !reg.esFeriado && reg.turno !== 'No Planificado') {
+                    if ((faltaEntrada || faltaSalida) && !reg.esFeriado && reg.turno !== 'No Planificado' && reg.turno !== 'Descanso') {
                         if (!tienePermiso) tieneFaltaMarca = true;
 
                         // Solo agregar observación de falta de marca si NO es P. administrativo
@@ -1637,11 +1637,11 @@
 
                     const esHorarioLibre = reg.turno && reg.turno.includes('Horario Libre');
 
-                    if (atrasoMin > 0 && !reg.esFeriado && reg.turno !== 'No Planificado' && !esHorarioLibre) {
+                    if (atrasoMin > 0 && !reg.esFeriado && reg.turno !== 'No Planificado' && reg.turno !== 'Descanso' && !esHorarioLibre) {
                         const colorFecha = '#b91c1c';
                         observacionesList.push(`<span style="color:${colorFecha}; font-weight:bold;">${reg.fecha}</span>: ⏰ Atraso de ${reg.atraso} (${Math.round(atrasoMin)} min).`);
                     }
-                    if (adelantoMin > 0 && !reg.esFeriado && reg.turno !== 'No Planificado' && !esHorarioLibre) {
+                    if (adelantoMin > 0 && !reg.esFeriado && reg.turno !== 'No Planificado' && reg.turno !== 'Descanso' && !esHorarioLibre) {
                         const colorFecha = '#b91c1c';
                         observacionesList.push(`<span style="color:${colorFecha}; font-weight:bold;">${reg.fecha}</span>: 🏃 Adelanto de ${reg.adelanto} (${Math.round(adelantoMin)} min).`);
                     }
@@ -1709,7 +1709,7 @@
                     if (tienePermiso) {
                         observacionesList.push(reg.fecha + ': 📄 Permiso: "' + reg.permiso + '".');
                     }
-                    if ((faltaEntrada || faltaSalida || htCero) && (!reg.permiso || reg.permiso === "Ninguno") && !reg.esFeriado && reg.turno !== 'No Planificado') {
+                    if ((faltaEntrada || faltaSalida || htCero) && (!reg.permiso || reg.permiso === "Ninguno") && !reg.esFeriado && reg.turno !== 'No Planificado' && reg.turno !== 'Descanso') {
                         sinJustificacion = true;
                         if (!observacionesList.includes(reg.fecha + ': ⚠️ Día sin registrar horas ni permiso justificado.')) {
                             if (!(faltaEntrada || faltaSalida)) {
@@ -1942,7 +1942,7 @@
                     let faltasEntrada = 0;
                     let faltasSalida = 0;
                     f.registros.forEach(reg => {
-                        if (reg.esFeriado || reg.turno === 'No Planificado') return;
+                        if (reg.esFeriado || reg.turno === 'No Planificado' || reg.turno === 'Descanso') return;
                         const tieneJust = reg.permiso && reg.permiso !== 'Ninguno';
                         if (tieneJust) return;
 
@@ -2056,7 +2056,7 @@
             funcionarios.forEach(f => {
                 // Ordenar registros por fecha para detectar consecutivos
                 const regsOrdenados = [...f.registros]
-                    .filter(r => !r.esFeriado && r.turno !== 'No Planificado')
+                    .filter(r => !r.esFeriado && r.turno !== 'No Planificado' && r.turno !== 'Descanso')
                     .sort((a, b) => a.fechaProcesada - b.fechaProcesada);
 
                 // --- ALERTA 1: 3+ atrasos consecutivos en la semana ---
@@ -2264,11 +2264,11 @@
                     const esHorarioLibre = reg.turno && reg.turno.includes('Horario Libre');
 
                     // Clases para resaltar errores
-                    const entradaClase = (!reg.entrada || reg.entrada.trim() === "" || minAtraso > 0) && !reg.esFeriado && reg.turno !== 'No Planificado' && !esHorarioLibre ? 'missing' : '';
+                    const entradaClase = (!reg.entrada || reg.entrada.trim() === "" || minAtraso > 0) && !reg.esFeriado && reg.turno !== 'No Planificado' && reg.turno !== 'Descanso' && !esHorarioLibre ? 'missing' : '';
 
                     // Salida Final: Verificamos si tiene AL MENOS una salida (en col 1 o col 2)
                     const tieneAlgunaSalida = isTime(reg.salida) || isTime(reg.salida2);
-                    const salidaClase = (!tieneAlgunaSalida || minAdelanto > 0) && !reg.esFeriado && reg.turno !== 'No Planificado' && !esHorarioLibre ? 'missing' : '';
+                    const salidaClase = (!tieneAlgunaSalida || minAdelanto > 0) && !reg.esFeriado && reg.turno !== 'No Planificado' && reg.turno !== 'Descanso' && !esHorarioLibre ? 'missing' : '';
 
                     // Marcas extra en turno Sin Colación: deben ser resaltadas como error
                     const colacionInesperadaClase = esSinColacion && (isTime(reg.salida) || isTime(reg.entrada2)) ? 'missing' : '';
@@ -2578,8 +2578,8 @@
                         const esHorarioLibre = reg.turno && reg.turno.includes('Horario Libre');
                         const tieneAlgunaSalida = isTime(reg.salida) || isTime(reg.salida2);
                         const estiloErrorCol = 'background-color:#fee2e2; color:#b91c1c; font-weight:bold;';
-                        const entradaStyle = (!reg.entrada || reg.entrada.trim() === "" || minAtraso > 0) && !reg.esFeriado && reg.turno !== 'No Planificado' && !esHorarioLibre && !tieneJustificacion ? estiloFalta : '';
-                        const salidaStyle = (!tieneAlgunaSalida || minAdelanto > 0) && !reg.esFeriado && reg.turno !== 'No Planificado' && !esHorarioLibre && !tieneJustificacion ? estiloFalta : '';
+                        const entradaStyle = (!reg.entrada || reg.entrada.trim() === "" || minAtraso > 0) && !reg.esFeriado && reg.turno !== 'No Planificado' && reg.turno !== 'Descanso' && !esHorarioLibre && !tieneJustificacion ? estiloFalta : '';
+                        const salidaStyle = (!tieneAlgunaSalida || minAdelanto > 0) && !reg.esFeriado && reg.turno !== 'No Planificado' && reg.turno !== 'Descanso' && !esHorarioLibre && !tieneJustificacion ? estiloFalta : '';
 
                         return `
                     <tr>
@@ -4276,7 +4276,7 @@
 
                     const minAtraso = timeToMinutesReport(reg.atraso);
                     const minAdelanto = timeToMinutesReport(reg.adelanto);
-                    const esValido = !reg.esFeriado && reg.turno !== 'No Planificado' && !(reg.turno && reg.turno.includes('Horario Libre'));
+                    const esValido = !reg.esFeriado && reg.turno !== 'No Planificado' && reg.turno !== 'Descanso' && !(reg.turno && reg.turno.includes('Horario Libre'));
 
                     if (esValido && (minAtraso > 0 || minAdelanto > 0)) {
                         const fData = empData.get(reg.id);
