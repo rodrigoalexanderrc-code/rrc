@@ -650,12 +650,14 @@ function guardarPermiso() {
 
     const successMsg = `<span style="color:green;">✅ Permiso guardado. Días: ${Number(diasSolicitados.toFixed(1))}. Total usado: ${Number((usados + diasSolicitados).toFixed(1))} / 6.</span>`;
 
+    window.lastSavedPermiso = { rut: func.rut, id: permiso.id };
+
     // Limpiar formulario automáticamente para un nuevo ingreso
     document.getElementById('btnLimpiarForm').click();
     // Restaurar mensaje de éxito porque el limpiado lo borra
     document.getElementById('mensaje').innerHTML = successMsg;
 
-    refrescarReporte();
+    renderizarReporte();
     refrescarListadoFuncionarios();
 
     // Intentar sincronizar en segundo plano
@@ -843,7 +845,7 @@ window.eliminarPermiso = function(rut, id) {
             // Fallback: also re-save func in case server just replaces it entirely
             addActionToQueue({ action: 'saveFuncionario', funcionario: func });
             
-            refrescarReporte();
+            renderizarReporte();
             refrescarListadoFuncionarios();
             syncQueue();
             
@@ -1147,7 +1149,7 @@ function ejecutarBorrado(tipo) {
         }
 
         localStorage.setItem(LOCAL_BACKUP_KEY, JSON.stringify(localCache));
-        refrescarReporte();
+        renderizarReporte();
         refrescarListadoFuncionarios();
         document.getElementById('mensaje').innerHTML = '<span style="color:green;">✅ Proceso de borrado completado.</span>';
         actualizarVistaFormulario();
@@ -1257,7 +1259,7 @@ window.eliminarFuncionarioMantenedor = function(rut) {
             localStorage.setItem(LOCAL_BACKUP_KEY, JSON.stringify(localCache));
             addActionToQueue({ action: 'deleteFuncionario', rut: rut });
             refrescarListadoFuncionarios();
-            refrescarReporte();
+            renderizarReporte();
             syncQueue();
         }
     });
@@ -1417,7 +1419,7 @@ function ejecutarBorradoMasivo() {
 
         localStorage.setItem(LOCAL_BACKUP_KEY, JSON.stringify(localCache));
         refrescarListadoFuncionarios();
-        refrescarReporte();
+        renderizarReporte();
         syncQueue();
 
         bulkDeleteMode = false;
@@ -1451,7 +1453,13 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById(tabId).classList.add('active');
 
             if (tabId === 'tab-documento') {
-                generarVistaPreviaFormulario();
+                const rutVal = document.getElementById('rut').value.trim();
+                const nombreVal = document.getElementById('nombre').value.trim();
+                if (rutVal || nombreVal) {
+                    generarVistaPreviaFormulario();
+                } else if (window.lastSavedPermiso) {
+                    mostrarDocumento(window.lastSavedPermiso.rut, window.lastSavedPermiso.id);
+                }
             }
         });
     });
